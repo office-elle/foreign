@@ -1,0 +1,2637 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>朝日屋 ご葬儀サポート お見積もり</title>
+  
+  <style>
+    :root {
+      --clr-primary: #5d4037; /* 石田藍 */
+      --clr-primary-light: #d0e4f7;
+      --clr-primary-dark: #0d2340;
+      --clr-secondary: #d4af37; /* 石田ゴールド */
+      --clr-secondary-light: #f0e8d5;
+      --clr-background: #f4f7fb; /* 石田背景 */
+      --clr-white: #FFFFFF;
+      --clr-text: #333333;
+      --clr-text-light: #666666;
+      --clr-success: #4CAF50;
+      --clr-error: #F44336;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Hiragino Kaku Gothic Pro', 'Yu Gothic', 'Meiryo', sans-serif;
+      background: var(--clr-background);
+      color: var(--clr-text);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-text-size-adjust: 100%;
+    }
+    
+    .app-container {
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--clr-white);
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(26, 58, 92, 0.1);
+    }
+    
+    .app-header {
+      background: linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-primary-dark) 100%);
+      color: var(--clr-white);
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .app-header::before {
+      content: '✦ ✦ ✦';
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      font-size: 12px;
+      opacity: 0.7;
+    }
+    
+    .app-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    
+    .app-subtitle {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      font-weight: normal;
+    }
+    
+    .progress-container {
+      background: var(--clr-white);
+      padding: 20px 16px;
+      border-bottom: 1px solid #F0F0F0;
+    }
+    
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    
+    .progress-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+      border: 2px solid #E0E0E0;
+      background: var(--clr-white);
+      color: #999;
+      transition: all 0.3s ease;
+    }
+    
+    .progress-dot.active {
+      background: var(--clr-primary);
+      border-color: var(--clr-primary);
+      color: var(--clr-white);
+      box-shadow: 0 0 0 4px var(--clr-primary-light);
+    }
+    
+    .progress-dot.done {
+      background: var(--clr-primary-dark);
+      border-color: var(--clr-primary-dark);
+      color: var(--clr-white);
+    }
+    
+    .progress-connector {
+      flex: 1;
+      height: 2px;
+      background: #E0E0E0;
+      margin: 0 8px;
+      transition: background 0.3s ease;
+    }
+    
+    .progress-connector.done {
+      background: var(--clr-primary);
+    }
+    
+    .step {
+      display: none;
+      padding: 24px 20px;
+      animation: fadeIn 0.4s ease;
+    }
+    
+    .step.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .step-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--clr-primary);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: var(--clr-text);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #E0E0E0;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: var(--clr-white);
+      transition: border-color 0.3s ease;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--clr-primary);
+      box-shadow: 0 0 0 3px var(--clr-primary-light);
+    }
+    
+    .form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+    }
+    
+    .plan-grid, .hall-grid, .course-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1fr;
+    }
+    
+    .plan-card, .hall-card, .course-card {
+      border: 2px solid #E0E0E0;
+      border-radius: 12px;
+      padding: 16px;
+      background: var(--clr-white);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .plan-card:hover, .hall-card:hover, .course-card:hover {
+      border-color: var(--clr-primary-light);
+      box-shadow: 0 4px 12px rgba(26, 58, 92, 0.1);
+    }
+    
+    .plan-card.selected, .hall-card.selected, .course-card.selected {
+      border-color: var(--clr-primary);
+      background: var(--clr-primary-light);
+      box-shadow: 0 4px 16px rgba(26, 58, 92, 0.2);
+    }
+    
+    .plan-name, .hall-name, .course-name {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--clr-primary);
+      margin-bottom: 8px;
+    }
+    
+    .plan-price {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: var(--clr-primary-dark);
+      margin: 8px 0;
+    }
+    
+    .plan-details, .hall-details, .course-details {
+      font-size: 0.9rem;
+      color: var(--clr-text-light);
+      line-height: 1.5;
+    }
+    
+    .nav-buttons {
+      display: flex;
+      gap: 12px;
+      padding: 20px;
+      background: var(--clr-white);
+      border-top: 1px solid #F0F0F0;
+    }
+    
+    .btn {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-back {
+      background: #F5F5F5;
+      color: var(--clr-text);
+    }
+    
+    .btn-back:hover {
+      background: #E0E0E0;
+    }
+    
+    .btn-next, .btn-finish {
+      background: linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-primary-dark) 100%);
+      color: var(--clr-white);
+    }
+    
+    .btn-next:hover, .btn-finish:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(26, 58, 92, 0.3);
+    }
+    
+    .estimate-card {
+      background: linear-gradient(135deg, #FFF8E1 0%, var(--clr-secondary-light) 100%);
+      border: 2px solid var(--clr-secondary);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .estimate-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--clr-primary);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    
+    .estimate-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(26, 58, 92, 0.1);
+    }
+    
+    .estimate-row:last-child {
+      border-bottom: none;
+    }
+    
+    .estimate-total {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--clr-primary-dark);
+      text-align: center;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 2px solid var(--clr-primary);
+    }
+    
+    .complete-card {
+      background: linear-gradient(135deg, var(--clr-primary-light) 0%, #FCE4EC 100%);
+      border: 2px solid var(--clr-primary);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .complete-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+    
+    .complete-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: var(--clr-primary-dark);
+      margin-bottom: 16px;
+    }
+    
+    .complete-text {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--clr-text);
+      margin-bottom: 20px;
+    }
+    
+    .complete-phone {
+      display: inline-block;
+      background: var(--clr-primary);
+      color: var(--clr-white);
+      padding: 12px 24px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .complete-phone:hover {
+      background: var(--clr-primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(26, 58, 92, 0.3);
+    }
+    
+    .info-box {
+      background: #FFF3E0;
+      border: 1px solid var(--clr-secondary);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    
+    .error-msg {
+      color: var(--clr-error);
+      font-size: 0.85rem;
+      margin-top: 4px;
+      display: none;
+    }
+    
+    .required {
+      color: var(--clr-error);
+    }
+    
+    .member-badge {
+      background: var(--clr-secondary);
+      color: var(--clr-text);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+    
+    .btn-restart {
+      background: #FF9800;
+      color: var(--clr-white);
+      padding: 8px 16px;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      position: absolute;
+      top: 16px;
+      right: 16px;
+    }
+    
+    @media (max-width: 480px) {
+      .app-container {
+        max-width: 100%;
+      }
+      
+      .step {
+        padding: 20px 16px;
+      }
+    }
+  
+    /* ===== 共有ボタン（STEP8完了画面） ===== */
+    .share-buttons-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px 20px 20px;
+    }
+    .btn-pdf {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #5d4037;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      box-shadow: 0 3px 10px rgba(26,58,92,0.25);
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-pdf:active { transform: scale(0.97); }
+    .btn-pdf:hover { background: #0d2340; }
+
+    .btn-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #06C755;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      box-shadow: 0 3px 10px rgba(6,199,85,0.25);
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-line:active { transform: scale(0.97); }
+    .btn-line:hover { background: #05a547; }
+
+  
+    /* ========== 全プランUI追加CSS ========== */
+    .plan-category-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .plan-tab-btn {
+      flex: 1 1 calc(50% - 8px);
+      min-width: 120px;
+      padding: 12px 8px;
+      border: 2px solid var(--clr-primary-light);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--clr-text);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .plan-tab-btn .tab-icon { font-size: 1.4rem; }
+    .plan-tab-btn .tab-label { font-size: 0.8rem; }
+    .plan-tab-btn .tab-price { font-size: 0.72rem; color: var(--clr-secondary); }
+    .plan-tab-btn:hover { border-color: var(--clr-primary); background: var(--clr-primary-light); }
+    .plan-tab-btn.selected {
+      background: var(--clr-primary);
+      color: #fff;
+      border-color: var(--clr-primary);
+    }
+    .plan-tab-btn.selected .tab-price { color: #f0d89a; }
+    
+    .plan-category-desc {
+      background: linear-gradient(135deg, var(--clr-primary-light), #fff);
+      border-left: 4px solid var(--clr-primary);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 0.88rem;
+      color: var(--clr-text);
+    }
+    .plan-category-desc .cat-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--clr-primary);
+      margin-bottom: 4px;
+    }
+    
+    .sub-plan-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .sub-plan-card {
+      border: 2px solid #e0e8f0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .sub-plan-card:hover { border-color: var(--clr-primary); box-shadow: 0 4px 12px rgba(26,58,92,0.1); }
+    .sub-plan-card.selected {
+      border-color: var(--clr-primary);
+      background: var(--clr-primary-light);
+      box-shadow: 0 4px 16px rgba(26,58,92,0.2);
+    }
+    .sub-plan-card.selected::after {
+      content: '✓ 選択中';
+      position: absolute;
+      top: 10px; right: 12px;
+      background: var(--clr-primary);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+    .sub-plan-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--clr-primary-dark);
+      margin-bottom: 2px;
+    }
+    .sub-plan-subtitle {
+      font-size: 0.78rem;
+      color: var(--clr-text-light);
+      margin-bottom: 6px;
+    }
+    .sub-plan-price {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--clr-secondary);
+      margin-bottom: 8px;
+    }
+    .sub-plan-price span { font-size: 0.8rem; font-weight: 400; color: var(--clr-text-light); }
+    .sub-plan-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .sub-plan-feature-tag {
+      background: var(--clr-primary-light);
+      color: var(--clr-primary);
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .sub-plan-note {
+      font-size: 0.78rem;
+      color: var(--clr-text-light);
+      font-style: italic;
+    }
+    
+    /* 全プラン比較テーブル */
+    .plan-table-toggle { margin-top: 8px; }
+    .btn-table-toggle {
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      border: 1px dashed var(--clr-primary);
+      border-radius: 8px;
+      color: var(--clr-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-table-toggle:hover { background: var(--clr-primary-light); }
+    .plan-table-wrap {
+      margin-top: 10px;
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid #e0e8f0;
+    }
+    .plan-compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+    .plan-compare-table th {
+      background: var(--clr-primary);
+      color: #fff;
+      padding: 8px 10px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .plan-compare-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #e0e8f0;
+      white-space: nowrap;
+    }
+    .plan-compare-table tr:nth-child(even) td { background: #f8fafc; }
+    .plan-compare-table tr:hover td { background: var(--clr-primary-light); cursor: pointer; }
+    .plan-compare-table .price-cell {
+      font-weight: 700;
+      color: var(--clr-secondary);
+    }
+    .cat-header-row td {
+      background: var(--clr-primary-dark) !important;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+
+    /* ========== 葬儀の流れ タイムライン CSS ========== */
+    .flow-section {
+      margin-top: 24px;
+      padding: 0 4px;
+    }
+    .flow-section-title {
+      text-align: center;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--clr-primary);
+      margin-bottom: 20px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, var(--clr-primary-light), #fff);
+      border-radius: 10px;
+      border-left: 4px solid var(--clr-secondary);
+      letter-spacing: 0.05em;
+    }
+    .flow-timeline {
+      position: relative;
+      padding-left: 56px;
+    }
+    .flow-timeline::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--clr-primary), var(--clr-secondary), var(--clr-primary));
+      border-radius: 2px;
+    }
+    .flow-item {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .flow-item:last-child { margin-bottom: 0; }
+    .flow-badge {
+      position: absolute;
+      left: -48px;
+      top: 8px;
+      width: 36px;
+      height: 36px;
+      background: var(--clr-primary);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 800;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(26,58,92,0.3);
+      z-index: 1;
+      flex-direction: column;
+      line-height: 1;
+    }
+    .flow-badge .badge-num { font-size: 0.65rem; opacity: 0.8; }
+    .flow-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px 14px;
+      border: 1px solid #e0e8f0;
+      box-shadow: 0 2px 8px rgba(26,58,92,0.06);
+      transition: all 0.2s;
+    }
+    .flow-card:hover {
+      border-color: var(--clr-primary);
+      box-shadow: 0 4px 16px rgba(26,58,92,0.12);
+    }
+    .flow-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .flow-icon { font-size: 1.3rem; }
+    .flow-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--clr-primary-dark);
+    }
+    .flow-timing {
+      margin-left: auto;
+      font-size: 0.68rem;
+      background: var(--clr-secondary);
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+    .flow-desc {
+      font-size: 0.8rem;
+      color: var(--clr-text);
+      line-height: 1.6;
+    }
+    .flow-desc .flow-note {
+      margin-top: 6px;
+      padding: 6px 10px;
+      background: var(--clr-primary-light);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      color: var(--clr-primary);
+      font-weight: 600;
+    }
+    .flow-desc ul {
+      margin: 4px 0 0 0;
+      padding-left: 16px;
+    }
+    .flow-desc ul li { font-size: 0.78rem; color: var(--clr-text-light); }
+    .flow-after-section {
+      margin-top: 16px;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--clr-primary), #0d2340);
+      border-radius: 12px;
+      color: #fff;
+      text-align: center;
+    }
+    .flow-after-section .after-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #f0d89a;
+    }
+    .flow-after-section .after-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+    .flow-after-tag {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+    .flow-phone-cta {
+      margin-top: 20px;
+      background: linear-gradient(135deg, var(--clr-secondary), #c8a060);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(184,150,90,0.3);
+    }
+    .flow-phone-cta .cta-text {
+      font-size: 0.82rem;
+      color: #fff;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .flow-phone-cta a {
+      display: inline-block;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+    .flow-phase-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 16px 0 12px -8px;
+    }
+    .flow-phase-badge {
+      background: var(--clr-primary);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 12px;
+      letter-spacing: 0.08em;
+    }
+    .flow-phase-line {
+      flex: 1;
+      height: 1px;
+      background: var(--clr-primary-light);
+    }
+
+  /* ===== 朝日屋の特徴セクション ===== */
+  .asahiya-features {
+    background: linear-gradient(135deg, #f5f5f0 0%, #fff 100%);
+    border-radius: 16px;
+    padding: 24px 20px;
+    margin: 20px 0;
+    box-shadow: 0 2px 12px rgba(93, 64, 55, 0.08);
+  }
+  
+  .asahiya-features-title {
+    font-size: 1.15rem;
+    font-weight: bold;
+    color: #5d4037;
+    text-align: center;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .asahiya-features-title::before,
+  .asahiya-features-title::after {
+    content: '';
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(to right, transparent, #d4af37, transparent);
+  }
+  
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 16px;
+  }
+  
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: white;
+    padding: 14px;
+    border-radius: 10px;
+    border-left: 4px solid #d4af37;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+  }
+  
+  .feature-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(93, 64, 55, 0.12);
+  }
+  
+  .feature-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  
+  .feature-content {
+    flex: 1;
+  }
+  
+  .feature-title {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #5d4037;
+    margin-bottom: 4px;
+  }
+  
+  .feature-desc {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.5;
+  }
+  
+  .asahiya-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #8d6e63, #5d4037);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-top: 12px;
+    box-shadow: 0 2px 4px rgba(93, 64, 55, 0.2);
+  }
+
+
+  /* ===== モバイル最適化 ===== */
+  
+    
+    .app-header {
+      padding: 16px 12px;
+      margin: -12px -8px 16px;
+    }
+    
+    .app-title {
+      font-size: 1.6rem;
+    }
+    
+    .app-subtitle {
+      font-size: 0.8rem;
+    }
+    
+    /* 進捗バー */
+    .progress-container {
+      margin: 0 -8px 20px;
+      padding: 0 8px;
+    }
+    
+    .progress-dot {
+      width: 28px;
+      height: 28px;
+      font-size: 0.75rem;
+    }
+    
+    /* ステップタイトル */
+    .step-title {
+      font-size: 1.15rem;
+      padding: 12px;
+      margin: 0 -8px 16px;
+    }
+    
+    /* 朝日屋の特徴セクション */
+    .asahiya-features {
+      margin: 20px -8px;
+      padding: 20px 12px;
+      border-radius: 12px;
+    }
+    
+    .asahiya-features-title {
+      font-size: 1.05rem;
+    }
+    
+    .feature-item {
+      padding: 12px;
+      gap: 10px;
+    }
+    
+    .feature-icon {
+      font-size: 1.3rem;
+    }
+    
+    .feature-title {
+      font-size: 0.9rem;
+    }
+    
+    .feature-desc {
+      font-size: 0.8rem;
+      line-height: 1.4;
+    }
+    
+    /* プランカード */
+    .plan-card {
+      padding: 14px;
+    }
+    
+    .plan-name {
+      font-size: 1rem;
+    }
+    
+    .plan-price {
+      font-size: 1.1rem;
+    }
+    
+    .plan-details {
+      font-size: 0.8rem;
+    }
+    
+    /* ホールカード */
+    .hall-card {
+      padding: 14px;
+    }
+    
+    .hall-name {
+      font-size: 1rem;
+    }
+    
+    .hall-address {
+      font-size: 0.8rem;
+    }
+    
+    .hall-features {
+      font-size: 0.75rem;
+    }
+    
+    /* プラン選択タブ */
+    .plan-category-tabs {
+      gap: 6px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .plan-tab {
+      padding: 10px 12px;
+      font-size: 0.85rem;
+      min-width: auto;
+      flex: 1 1 calc(50% - 3px);
+    }
+    
+    .plan-tab .tab-icon {
+      font-size: 1rem;
+    }
+    
+    .plan-tab .tab-price {
+      font-size: 0.7rem;
+    }
+    
+    /* サブプランカード */
+    .sub-plan-card {
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    
+    .sub-plan-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    
+    .sub-plan-name {
+      font-size: 1rem;
+    }
+    
+    .sub-plan-price {
+      font-size: 1.2rem;
+      align-self: flex-start;
+    }
+    
+    .sub-plan-subtitle {
+      font-size: 0.8rem;
+    }
+    
+    .sub-plan-features {
+      gap: 4px;
+    }
+    
+    .feature-tag {
+      padding: 4px 8px;
+      font-size: 0.7rem;
+    }
+    
+    /* 料金表ボタン */
+    .toggle-plan-table-btn {
+      padding: 10px 16px;
+      font-size: 0.85rem;
+      margin: 12px 0;
+    }
+    
+    /* 料金表 */
+    .plan-comparison-table {
+      margin: 16px -8px;
+      padding: 16px 12px;
+    }
+    
+    .comparison-table-title {
+      font-size: 1rem;
+      margin-bottom: 12px;
+    }
+    
+    .plan-comparison-scroll {
+      margin: 0 -12px;
+      padding: 0 12px;
+    }
+    
+    .plan-table {
+      font-size: 0.75rem;
+    }
+    
+    .plan-table th,
+    .plan-table td {
+      padding: 8px 6px;
+      min-width: 85px;
+    }
+    
+    .plan-table th:first-child,
+    .plan-table td:first-child {
+      min-width: 100px;
+      max-width: 100px;
+      font-size: 0.7rem;
+    }
+    
+    .plan-table-category {
+      font-size: 0.8rem;
+      padding: 8px 6px;
+    }
+    
+    .plan-table-price {
+      font-size: 0.9rem;
+    }
+    
+    /* タイムラインセクション */
+    .flow-section {
+      margin: 20px -8px;
+      padding: 20px 12px;
+    }
+    
+    .flow-section-title {
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      padding: 0 4px;
+    }
+    
+    .flow-phase-label {
+      margin-bottom: 12px;
+    }
+    
+    .flow-phase-badge {
+      font-size: 0.9rem;
+      padding: 6px 14px;
+    }
+    
+    .flow-timeline {
+      padding-left: 20px;
+    }
+    
+    .flow-timeline::before {
+      left: 6px;
+    }
+    
+    .flow-item {
+      margin-bottom: 16px;
+      padding-left: 8px;
+    }
+    
+    .flow-badge {
+      width: 42px;
+      height: 42px;
+      left: -29px;
+      font-size: 0.65rem;
+    }
+    
+    .flow-badge .badge-num {
+      font-size: 1rem;
+    }
+    
+    .flow-card {
+      padding: 12px;
+    }
+    
+    .flow-header {
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    
+    .flow-icon {
+      font-size: 1.2rem;
+    }
+    
+    .flow-title {
+      font-size: 1rem;
+    }
+    
+    .flow-timing {
+      font-size: 0.75rem;
+      padding: 3px 8px;
+    }
+    
+    .flow-desc {
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    
+    .flow-note {
+      font-size: 0.75rem;
+      padding: 8px 10px;
+      margin-top: 8px;
+    }
+    
+    /* 見積もり画面 */
+    .estimate-card {
+      padding: 16px;
+    }
+    
+    .estimate-title {
+      font-size: 1.1rem;
+    }
+    
+    .estimate-row {
+      font-size: 0.85rem;
+      padding: 10px 0;
+    }
+    
+    .estimate-label {
+      font-size: 0.8rem;
+    }
+    
+    .estimate-value {
+      font-size: 0.9rem;
+    }
+    
+    .price-breakdown {
+      padding: 12px;
+    }
+    
+    .breakdown-row {
+      font-size: 0.85rem;
+      padding: 8px 0;
+    }
+    
+    .total-price {
+      font-size: 1.3rem;
+      padding: 14px 0;
+    }
+    
+    /* ボタン */
+    .btn-next,
+    .btn-prev {
+      padding: 14px 24px;
+      font-size: 0.95rem;
+    }
+    
+    .btn-restart {
+      top: 8px;
+      right: 8px;
+      padding: 6px 12px;
+      font-size: 0.75rem;
+    }
+    
+    /* 完了画面 */
+    .completion-card {
+      padding: 20px 16px;
+    }
+    
+    .completion-title {
+      font-size: 1.2rem;
+    }
+    
+    .completion-message {
+      font-size: 0.9rem;
+    }
+    
+    .contact-box {
+      padding: 16px;
+    }
+    
+    .contact-phone {
+      font-size: 1.4rem;
+    }
+    
+    .action-buttons {
+      gap: 10px;
+    }
+    
+    .action-btn {
+      padding: 12px 16px;
+      font-size: 0.85rem;
+    }
+    
+    /* フォーム */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-label {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+    
+    .form-input {
+      padding: 10px 12px;
+      font-size: 0.9rem;
+    }
+    
+    textarea.form-input {
+      min-height: 80px;
+    }
+  }
+  
+  /* 極小画面（iPhone SE等） */
+  @media (max-width: 375px) {
+    .app-container {
+      padding: 10px 6px;
+    }
+    
+    .app-title {
+      font-size: 1.4rem;
+    }
+    
+    .step-title {
+      font-size: 1.05rem;
+      padding: 10px;
+    }
+    
+    .flow-section-title {
+      font-size: 1rem;
+    }
+    
+    .plan-tab {
+      font-size: 0.8rem;
+      padding: 8px 10px;
+    }
+    
+    .plan-table th,
+    .plan-table td {
+      padding: 6px 4px;
+      font-size: 0.7rem;
+      min-width: 75px;
+    }
+    
+    .plan-table th:first-child,
+    .plan-table td:first-child {
+      min-width: 90px;
+      max-width: 90px;
+    }
+  }
+  
+  /* 横画面対応 */
+  @media (max-width: 900px) and (orientation: landscape) {
+    .flow-timeline {
+      padding-left: 30px;
+    }
+    
+    .flow-item {
+      padding-left: 12px;
+    }
+    
+    .plan-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+  }
+
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- ヘッダー -->
+    <header class="app-header">
+      <h1 class="app-title">朝日屋</h1>
+      <p class="app-subtitle">このたびはご依頼ありがとうございます。<br>本打ち合わせ前の事前情報入力アプリ</p>
+    </header>
+    
+    <!-- 進捗バー -->
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-dot active" id="dot1">1</div>
+        <div class="progress-connector" id="con1"></div>
+        <div class="progress-dot" id="dot2">2</div>
+        <div class="progress-connector" id="con2"></div>
+        <div class="progress-dot" id="dot3">3</div>
+        <div class="progress-connector" id="con3"></div>
+        <div class="progress-dot" id="dot4">4</div>
+        <div class="progress-connector" id="con4"></div>
+        <div class="progress-dot" id="dot5">5</div>
+        <div class="progress-connector" id="con5"></div>
+        <div class="progress-dot" id="dot6">6</div>
+        <div class="progress-connector" id="con6"></div>
+        <div class="progress-dot" id="dot7">7</div>
+        <div class="progress-connector" id="con7"></div>
+        <div class="progress-dot" id="dot8">8</div>
+      </div>
+    </div>
+    
+    <!-- 朝日屋の特徴 -->
+    <div class="asahiya-features">
+      <div class="asahiya-features-title">
+        ⚘ 朝日屋の特徴
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-icon">🏠</div>
+          <div class="feature-content">
+            <div class="feature-title">昭和28年創業・地域密着70年</div>
+            <div class="feature-desc">尾道市で70年以上にわたり地域の皆様に寄り添い続けてまいりました。地元を知り尽くした信頼と実績があります。</div>
+          </div>
+        </div>
+        
+        <div class="feature-item">
+          <div class="feature-icon">👨‍👩‍👧</div>
+          <div class="feature-content">
+            <div class="feature-title">家族葬・小規模葬儀に対応</div>
+            <div class="feature-desc">ご家族様中心の温かいお葬式から一般葬まで、規模を問わず真心こめてサポートいたします。</div>
+          </div>
+        </div>
+        
+        <div class="feature-item">
+          <div class="feature-icon">🏛️</div>
+          <div class="feature-content">
+            <div class="feature-title">宿泊設備完備の自社会館</div>
+            <div class="feature-desc">朝日屋新浜会館にはユニットバス付き宿泊設備を完備。遠方のご親族も安心してご利用いただけます。</div>
+          </div>
+        </div>
+        
+        <div class="feature-item">
+          <div class="feature-icon">⏰</div>
+          <div class="feature-content">
+            <div class="feature-title">24時間365日対応</div>
+            <div class="feature-desc">深夜・早朝を問わず、いつでもお電話ください。経験豊富なスタッフが迅速に対応いたします。</div>
+          </div>
+        </div>
+        
+        <div class="feature-item">
+          <div class="feature-icon">🎗️</div>
+          <div class="feature-content">
+            <div class="feature-title">全葬連AAA評価取得</div>
+            <div class="feature-desc">経済産業大臣認可の全葬連による「葬祭サービス安心度調査2023」で最高ランクAAA評価を取得しています。</div>
+          </div>
+        </div>
+        
+        <div class="feature-item">
+          <div class="feature-icon">💰</div>
+          <div class="feature-content">
+            <div class="feature-title">if共済会加盟店</div>
+            <div class="feature-desc">全葬連if共済会取扱店。会員様には葬儀基本料金の10％弔慰金給付など、充実した特典をご用意しています。</div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="text-align:center;margin-top:16px;">
+        <span class="asahiya-badge">✨ 葬祭ディレクター・事前相談員が在籍</span>
+      </div>
+    </div>
+    
+
+    <!-- STEP 1: 基本情報 -->
+    <div class="step active" id="step1">
+      <button class="btn-restart" onclick="restartApp()">🔄 最初に戻る</button>
+      <h2 class="step-title">基本情報をお聞かせください</h2>
+      
+      <div class="form-group">
+        <label class="form-label">お名前 <span class="required">*</span></label>
+        <input type="text" class="form-input" id="customerName" placeholder="山田 太郎">
+        <div class="error-msg" id="nameError">お名前を入力してください</div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">故人との関係 <span class="required">*</span></label>
+        <select class="form-input form-select" id="relationship">
+          <option value="">選択してください</option>
+          <option value="spouse">配偶者</option>
+          <option value="child">お子様</option>
+          <option value="parent">ご両親</option>
+          <option value="sibling">ご兄弟姉妹</option>
+          <option value="relative">その他親族</option>
+          <option value="friend">友人・知人</option>
+        </select>
+        <div class="error-msg" id="relationError">関係を選択してください</div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">参列予定人数 <span class="required">*</span></label>
+        <select class="form-input form-select" id="attendance">
+          <option value="">選択してください</option>
+          <option value="under5">5名未満</option>
+          <option value="under15">5〜15名</option>
+          <option value="15to30">15〜30名</option>
+          <option value="30to50">30〜50名</option>
+          <option value="over50">50名以上</option>
+        </select>
+        <div class="error-msg" id="attendanceError">参列予定人数を選択してください</div>
+      </div>
+    </div>
+    
+    <!-- STEP 2: 葬儀の種別 -->
+    <div class="step" id="step2">
+      <button class="btn-restart" onclick="restartApp()">🔄 最初に戻る</button>
+      <h2 class="step-title">ご希望の葬儀形式をお選びください</h2>
+      
+      <div class="plan-grid">
+        <div class="plan-card" data-type="direct" onclick="selectFuneralType('direct')">
+          <div class="plan-name">直葬パック</div>
+          <div class="plan-price">198,000円〜<span style="font-size:0.8rem">（税別）</span></div>
+          <div class="plan-details">
+            • 10名程度<br>
+            • 火葬式のみ<br>
+            • 通夜・告別式なし<br>
+            • 通常価格
+          </div>
+        </div>
+        
+        <div class="plan-card" data-type="family" onclick="selectFuneralType('family')">
+          <div class="plan-name">家族葬</div>
+          <div class="plan-price">395,000円〜<span style="font-size:0.8rem">（税別）</span><span class="member-badge">会員価格</span></div>
+          <div class="plan-details">
+            • 20名程度<br>
+            • 通夜・告別式・火葬<br>
+            • ご家族中心の温かい葬儀<br>
+            • 朝日屋if共済会員価格
+          </div>
+        </div>
+        
+        <div class="plan-card" data-type="general" onclick="selectFuneralType('general')">
+          <div class="plan-name">一般葬</div>
+          <div class="plan-price">597,500円〜<span style="font-size:0.8rem">（税別）</span><span class="member-badge">会員価格</span></div>
+          <div class="plan-details">
+            • 30名程度<br>
+            • 通夜・告別式・火葬<br>
+            • 一般参列者もお迎えする<br>
+            • 朝日屋if共済会員価格
+          </div>
+        </div>
+      </div>
+      
+      <div class="info-box">
+        💡 <strong>朝日屋if共済会員について</strong><br>
+        詳細はお問い合わせください。月掛金・年会費は一切不要です。ご葬儀料金が割引になります。-30%お安くなります。
+      </div>
+    </div>
+    
+    <!-- STEP 3: ホール選択 -->
+    <div class="step" id="step3">
+      <button class="btn-restart" onclick="restartApp()">🔄 最初に戻る</button>
+      <h2 class="step-title">ご希望のホールをお選びください</h2>
+      
+      <div class="hall-grid" id="hallList">
+        <!-- JavaScript で動的生成 -->
+      </div>
+      
+      <div class="info-box">
+        🏢 朝日屋は自宅・寺院・公営斎場など、あらゆる形式のご葬儀に対応。宗派・宗旨を問わず、ご希望に合った会場をご提案いたします。
+      </div>
+    </div>
+    
+    <!-- STEP 4: 祭壇・コース選択 -->
+<!-- STEP 4: ご葬儀プラン選択（全プラン対応リニューアル版） -->
+    <div class="step" id="step4">
+      <button class="btn-restart" onclick="restartApp()">🔄 最初に戻る</button>
+      <h2 class="step-title">ご葬儀プランをお選びください</h2>
+      
+      <!-- カテゴリ選択タブ -->
+      <div class="plan-category-tabs" id="planCategoryTabs">
+        <!-- JavaScript で生成 -->
+      </div>
+      
+      <!-- 選択中カテゴリの説明 -->
+      <div class="plan-category-desc" id="planCategoryDesc" style="display:none;">
+        <!-- JavaScript で生成 -->
+      </div>
+      
+      <!-- プラン一覧（サブプラン） -->
+      <div class="sub-plan-list" id="subPlanList">
+        <!-- JavaScript で生成 -->
+      </div>
+      
+      <!-- 全プラン比較テーブル（折りたたみ） -->
+      <div class="plan-table-toggle">
+        <button class="btn-table-toggle" onclick="togglePlanTable()">
+          📊 全プラン料金表を見る ▼
+        </button>
+        <div class="plan-table-wrap" id="planTableWrap" style="display:none;">
+          <div id="planTableContent"><!-- JavaScript で生成 --></div>
+        </div>
+      </div>
+      
+      <div class="info-box">
+        ※ 宗派・宗旨を問わず、どのようなご葬儀にも対応いたします。<br>
+        ※ プラン番号は税抜価格（万円）を示しています（例：プラン20＝税抜20万円＝税込22万円）。<br>
+        ※ ご不明な点はお気軽にご相談ください。
+      </div>
+    </div>
+    
+    <!-- STEP 5: 会員登録 -->
+    <div class="step" id="step5">
+      <button class="btn-restart" onclick="restartApp()">🔄 最初に戻る</button>
+      <h2 class="step-title">朝日屋if共済会員についてお聞かせください</h2>
+      
+      <div class="plan-grid">
+        <div class="plan-card" data-type="existing" onclick="selectMembership('existing')">
+          <div class="plan-name">既に朝日屋if共済会員です</div>
+          <div class="plan-details">
+            • 会員価格でご利用いただけます<br>
+            • 会員割引（約5%）が適用されます
+          </div>
+        </div>
+        
+        <div class="plan-card" data-type="join" onclick="selectMembership('join')">
+          <div class="plan-name">この機会に朝日屋if共済会に入会します</div>
+          <div class="plan-price">入会費用はお問い合わせください</div>
+          <div class="plan-details">
+            • 今回のご葬儀から会員価格を適用<br>
+            • 月掛金・年会費は一切不要<br>
+            • ご葬儀1回限り有効
+          </div>
+        </div>
+        
+        <div class="plan-card" data-type="general" onclick="selectMembership('general')">
+          <div class="plan-name">一般価格で利用します</div>
+          <div class="plan-details">
+            • 通常価格でのご利用<br>
+            • 入会金等は不要
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- STEP 6: 連絡先入力 -->
+    <div class="step" id="step6">
+      <button class="btn-restart" onclick="restartApp()">🔄 最初に戻る</button>
+      <h2 class="step-title">ご連絡先をお聞かせください</h2>
+      
+      <div class="form-group">
+        <label class="form-label">お電話番号 <span class="required">*</span></label>
+        <input type="tel" class="form-input" id="phone" placeholder="086-123-4567">
+        <div class="error-msg" id="phoneError">お電話番号を入力してください</div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">メールアドレス</label>
+        <input type="email" class="form-input" id="email" placeholder="example@email.com">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">ご住所</label>
+        <input type="text" class="form-input" id="address" placeholder="尾道市北区">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">ご質問・ご要望</label>
+        <textarea class="form-input" id="notes" rows="3" placeholder="何かご質問やご要望がございましたら、お気軽にお聞かせください"></textarea>
+      </div>
+    </div>
+    
+    <!-- STEP 7: お見積もり確認 -->
+    <div class="step" id="step7">
+      <button class="btn-restart" onclick="restartApp()">🔄 最初に戻る</button>
+      <h2 class="step-title">お見積もりをご確認ください</h2>
+      
+      <div class="estimate-card" id="estimateCard">
+        <!-- JavaScript で動的生成 -->
+      </div>
+      
+      <div class="info-box">
+        ⚠️ 上記はお見積もりの目安です。実際の費用は選択内容や参列者数により変動する場合があります。詳しくは担当者にご確認ください。
+      </div>
+    </div>
+    
+    <!-- STEP 8: 完了画面 -->
+    <div class="step" id="step8">
+      <div class="complete-card">
+        <div class="complete-icon">⚑</div>
+        <div class="complete-title">事前情報の入力が完了しました</div>
+        <div class="complete-text">
+          お約束のお時間に担当者が参ります。<br>
+          心を込めてお打ち合わせの内容を確認させていただきます。<br><br>
+          お急ぎの場合はお電話ください。<br>
+          24時間365日、いつでもお受けします。
+        </div>
+        <a href="tel:0848246333" class="complete-phone">
+          📞 0848-24-6333
+        </a>
+        <a href="https://asahiya-sogi.jp/" target="_blank" style="display:block;margin-top:10px;color:#5d4037;font-size:0.85em;text-decoration:none;">
+          🌐 朝日屋 公式ホームページ
+        </a>
+      </div>
+      
+
+      <!-- 葬儀の流れ タイムライン -->
+      <div class="flow-section">
+        <div class="flow-section-title">📋 ご葬儀の流れ（一般的な家族葬の場合）</div>
+        
+        <!-- フェーズ1: 申込・準備 -->
+        <div class="flow-phase-label">
+          <span class="flow-phase-badge">📞 申込・準備</span>
+          <span class="flow-phase-line"></span>
+        </div>
+        
+        <div class="flow-timeline">
+          
+          <!-- STEP1 -->
+          <div class="flow-item">
+            <div class="flow-badge">
+              <span>STEP</span>
+              <span class="badge-num">1</span>
+            </div>
+            <div class="flow-card">
+              <div class="flow-header">
+                <span class="flow-icon">📞</span>
+                <span class="flow-title">お電話・ご連絡</span>
+                <span class="flow-timing">ご逝去直後</span>
+              </div>
+              <div class="flow-desc">
+                まず朝日屋へお電話ください。24時間365日、専門スタッフが対応。最短30分で寝台車がお迎えに伺います。
+                <div class="flow-note">📱 0848-24-6333（24時間・無料）<br>お伝えいただくこと：故人様のお名前 / お迎え場所 / お送り先</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- STEP2 -->
+          <div class="flow-item">
+            <div class="flow-badge">
+              <span>STEP</span>
+              <span class="badge-num">2</span>
+            </div>
+            <div class="flow-card">
+              <div class="flow-header">
+                <span class="flow-icon">🚐</span>
+                <span class="flow-title">ご搬送・ご安置</span>
+                <span class="flow-timing">当日〜翌日</span>
+              </div>
+              <div class="flow-desc">
+                病院等のご逝去場所から、自宅または安置所へ搬送。医師より死亡診断書を受け取ります。枕飾り・ドライアイスは弊社でご用意します。
+              </div>
+            </div>
+          </div>
+          
+          <!-- STEP3 -->
+          <div class="flow-item">
+            <div class="flow-badge">
+              <span>STEP</span>
+              <span class="badge-num">3</span>
+            </div>
+            <div class="flow-card">
+              <div class="flow-header">
+                <span class="flow-icon">📋</span>
+                <span class="flow-title">打ち合わせ・ご準備・ご納棺</span>
+                <span class="flow-timing">1日目</span>
+              </div>
+              <div class="flow-desc">
+                スタッフと日程・場所・内容・費用を打ち合わせ。ご予算に応じたプランをご提案します。ご家族参加型の納棺を推奨しています。
+                <div class="flow-note">📄 ご準備いただくもの：死亡診断書 / お写真 / 印鑑（認印）<br>※火葬許可申請は弊社が無料で代行します</div>
+              </div>
+            </div>
+          </div>
+        
+        </div><!-- /flow-timeline 申込準備 -->
+        
+        <!-- フェーズ2: 葬儀当日 -->
+        <div class="flow-phase-label">
+          <span class="flow-phase-badge">⛩️ 葬儀当日</span>
+          <span class="flow-phase-line"></span>
+        </div>
+        
+        <div class="flow-timeline">
+          
+          <!-- STEP4 -->
+          <div class="flow-item">
+            <div class="flow-badge">
+              <span>STEP</span>
+              <span class="badge-num">4</span>
+            </div>
+            <div class="flow-card">
+              <div class="flow-header">
+                <span class="flow-icon">🕯️</span>
+                <span class="flow-title">お通夜</span>
+                <span class="flow-timing">2日目夕方</span>
+              </div>
+              <div class="flow-desc">
+                僧侶のご読経のもと、遺族→親族→弔問者の順でご焼香。受付・接待方法など事前に丁寧にアドバイスします。
+                <div class="flow-note">⏱️ 通夜式：約1時間</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- STEP5 -->
+          <div class="flow-item">
+            <div class="flow-badge">
+              <span>STEP</span>
+              <span class="badge-num">5</span>
+            </div>
+            <div class="flow-card">
+              <div class="flow-header">
+                <span class="flow-icon">⛩️</span>
+                <span class="flow-title">葬儀・告別式・火葬</span>
+                <span class="flow-timing">3日目</span>
+              </div>
+              <div class="flow-desc">
+                告別式（約1時間）→お別れの儀→出棺→火葬場へ。弊社スタッフが火葬場まで同行します。火葬後はお骨上げ。
+                <div class="flow-note">⏱️ 告別式：約1時間 / 火葬：約1時間15〜30分</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- STEP6 -->
+          <div class="flow-item">
+            <div class="flow-badge">
+              <span>STEP</span>
+              <span class="badge-num">6</span>
+            </div>
+            <div class="flow-card">
+              <div class="flow-header">
+                <span class="flow-icon">🙏</span>
+                <span class="flow-title">初七日法要・精進落とし</span>
+                <span class="flow-timing">3日目 午後</span>
+              </div>
+              <div class="flow-desc">
+                ご帰宅後、初七日法要を執り行い、精進落とし（会席）でご散会。お礼のご挨拶と労いの場となります。
+              </div>
+            </div>
+          </div>
+        
+        </div><!-- /flow-timeline 葬儀当日 -->
+        
+        <!-- フェーズ3: 葬儀後サポート -->
+        <div class="flow-phase-label">
+          <span class="flow-phase-badge">🤝 葬儀後サポート</span>
+          <span class="flow-phase-line"></span>
+        </div>
+        
+        <div class="flow-timeline">
+          <div class="flow-item">
+            <div class="flow-badge">
+              <span>STEP</span>
+              <span class="badge-num">7</span>
+            </div>
+            <div class="flow-card">
+              <div class="flow-header">
+                <span class="flow-icon">🤝</span>
+                <span class="flow-title">葬儀後サポート</span>
+                <span class="flow-timing">葬儀後〜</span>
+              </div>
+              <div class="flow-desc">
+                専任スタッフが無料でアドバイス。四十九日・年忌法要まで継続してサポートします。
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 葬儀後に必要なこと -->
+        <div class="flow-after-section">
+          <div class="after-title">📝 葬儀後に必要なこと（全て無料サポート）</div>
+          <div class="after-items">
+            <span class="flow-after-tag">お寺様へのお礼</span>
+            <span class="flow-after-tag">香典返しの手配</span>
+            <span class="flow-after-tag">お位牌・仏壇の準備</span>
+            <span class="flow-after-tag">納骨・お墓の準備</span>
+            <span class="flow-after-tag">役所への各種届出</span>
+            <span class="flow-after-tag">四十九日法要のご案内</span>
+            <span class="flow-after-tag">年忌法要のご相談</span>
+          </div>
+        </div>
+        
+        <!-- CTA電話 -->
+        <div class="flow-phone-cta">
+          <div class="cta-text">🕐 24時間365日・ご相談・ご依頼はいつでも</div>
+          <a href="tel:0848246333">📞 0848-24-6333</a>
+          <div style="font-size:0.72rem;color:rgba(255,255,255,0.8);margin-top:4px;">有限会社朝日屋（創業70余年（昭和28年創業））</div>
+        </div>
+        
+      </div>
+      <!-- /葬儀の流れ タイムライン -->
+      
+      <!-- PDF・LINE共有ボタン -->
+      <div class="share-buttons-container">
+        <button class="btn btn-pdf" onclick="downloadPDF()">
+          📄 PDFで保存する
+        </button>
+        <button class="btn btn-line" onclick="shareToLINE()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:6px"><path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.036 9.608.391.084.922.258 1.057.592.121.303.079.778.039 1.085l-.171 1.027c-.053.303-.242 1.186 1.039.647 1.281-.54 6.911-4.069 9.428-6.967 1.739-1.907 2.572-3.843 2.572-5.992z"/></svg>
+          LINEで共有する
+        </button>
+        <button class="btn btn-back" onclick="restartApp()" style="margin-top:8px;">
+          🔄 最初に戻る
+        </button>
+      </div>
+    </div>
+    
+    <!-- ナビゲーションボタン -->
+    <div class="nav-buttons" id="navButtons">
+      <button class="btn btn-back" id="backBtn" onclick="goToPrevStep()">← 戻る</button>
+      <button class="btn btn-next" id="nextBtn" onclick="goToNextStep()">次へ →</button>
+    </div>
+  </div>
+  
+  <script>
+    // アプリの状態管理
+    const appState = {
+      currentStep: 1,
+      customerName: '',
+      relationship: '',
+      attendance: '',
+      funeralType: '',
+      selectedHall: null,
+      selectedCourse: null,
+      membership: '',
+      phone: '',
+      email: '',
+      address: '',
+      notes: ''
+    };
+    
+    // ホールデータ
+    const halls = [
+      {
+        id: 'shinhama',
+        name: '朝日屋新浜会館（本社）',
+        address: '広島県尾道市新浜1-6-21',
+        access: 'JR尾道駅より車で約5分、山陽自動車道尾道ICより車で約15分',
+        parking: '駐車場完備（約30台）',
+        features: ['宿泊設備完備', 'ユニットバス付', '大小2つの式場', '控室・会食室あり', '24時間対応']
+      },
+      {
+        id: 'memorial',
+        name: 'メモリアルホール尾道',
+        address: '広島県尾道市長者原2-165-11',
+        access: '尾道バイパス長者原ICより車で約3分',
+        parking: '駐車場完備',
+        features: ['提携会館', '広々とした式場', '駐車場完備']
+      },
+      {
+        id: 'saijo',
+        name: '尾道市斎場',
+        address: '広島県尾道市長者原2-76-11',
+        access: '尾道バイパス長者原ICより車で約3分',
+        parking: '駐車場完備',
+        features: ['公営斎場', '火葬場併設', '尾道市公営施設']
+      },
+      {
+        id: 'home',
+        name: 'ご自宅でのご葬儀',
+        address: 'ご自宅',
+        access: 'ご自宅へお伺い',
+        parking: '',
+        features: ['住み慣れた場所で', '故人様との最後の時間', '自宅葬対応可能']
+      },
+      {
+        id: 'temple',
+        name: '寺院でのご葬儀',
+        address: 'ご希望の寺院',
+        access: '宗派・宗旨を問わず対応',
+        parking: '寺院により異なります',
+        features: ['菩提寺での葬儀', '伝統的な形式', '寺院葬対応可能']
+      }
+    ];
+    
+    // ============================================================
+    // 朝日屋 全プランデータ
+    // ============================================================
+    const PLAN_CATEGORIES = [
+      {
+        id: 'chokuso',
+        type: 'chokuso',
+        label: '直葬（火葬式）',
+        icon: '🕊️',
+        startPrice: 200000,
+        tagline: '通夜・告別式を行わず、火葬のみのシンプルなお別れ',
+        color: '#5d4037',
+        plans: [
+          {
+            id: 'chokuso_a',
+            name: '直葬プランA',
+            price: 200000,
+            subtitle: 'お別れ・火葬のみ',
+            features: ['搬送', '安置', '棺', 'ドライアイス', '火葬', '骨壺'],
+            note: '通夜・告別式を行わず火葬のみのシンプルなプラン'
+          },
+          {
+            id: 'chokuso_b',
+            name: '直葬プランB',
+            price: 300000,
+            subtitle: '自宅・会館安置対応',
+            features: ['搬送', '安置（自宅・会館）', '棺', 'ドライアイス', '枕飾り', '火葬', '骨壺', '白木位牌'],
+            note: '一旦ご自宅または会館にご安置してからお別れするプラン'
+          }
+        ]
+      },
+      {
+        id: 'ichinichiso',
+        type: 'ichinichiso',
+        label: '一日葬',
+        icon: '🌸',
+        startPrice: 450000,
+        tagline: '通夜を省き、告別式と火葬を1日で',
+        color: '#6d4c41',
+        plans: [
+          {
+            id: 'ichi_standard',
+            name: '一日葬スタンダード',
+            price: 450000,
+            subtitle: '告別式から火葬まで',
+            features: ['搬送', '安置', '納棺', '祭壇', '棺', 'ドライアイス', '焼香用具', '火葬', '骨壺', '白木位牌'],
+            note: '通夜を行わず1日で葬儀を完結させるプラン'
+          },
+          {
+            id: 'ichi_premium',
+            name: '一日葬プレミアム',
+            price: 600000,
+            subtitle: '充実の設備とサービス',
+            features: ['搬送', '安置', '納棺', '祭壇（上位）', '生花装飾', '棺（上位）', 'ドライアイス', '焼香用具', '火葬', '骨壺', '白木位牌', '遺影写真'],
+            note: 'より充実した内容の一日葬プラン'
+          }
+        ]
+      },
+      {
+        id: 'kazokuso',
+        type: 'kazokuso',
+        label: '家族葬',
+        icon: '🏠',
+        startPrice: 550000,
+        tagline: 'ご家族・親族中心の温かいお葬式',
+        color: '#795548',
+        plans: [
+          {
+            id: 'kazoku_compact',
+            name: '家族葬コンパクト',
+            price: 550000,
+            subtitle: '10名程度まで',
+            features: ['搬送', '安置', '納棺', '通夜式', '告別式', '祭壇', '棺', 'ドライアイス', '焼香用具', '火葬', '骨壺', '白木位牌'],
+            note: '10名程度までの小規模な家族葬プラン'
+          },
+          {
+            id: 'kazoku_standard',
+            name: '家族葬スタンダード',
+            price: 699600,
+            subtitle: '20名程度まで（if共済会プラン参考価格）',
+            features: ['搬送', '安置', '納棺', '通夜式', '告別式', '祭壇（中位）', '生花装飾', '棺', 'ドライアイス2日分', '焼香用具', '火葬', '骨壺', '白木位牌', '遺影写真', '会館使用料'],
+            note: 'if共済会参考プラン。ご親族20名程度の家族葬に最適'
+          },
+          {
+            id: 'kazoku_premium',
+            name: '家族葬プレミアム',
+            price: 850000,
+            subtitle: '30名程度まで',
+            features: ['搬送', '安置', '納棺', '通夜式', '告別式', '祭壇（上位）', '生花装飾', '棺（上位）', 'ドライアイス2日分', '焼香用具', '火葬', '骨壺', '白木位牌', '遺影写真', '会館使用料', '接待室使用'],
+            note: '30名程度までのゆとりある家族葬プラン'
+          }
+        ]
+      },
+      {
+        id: 'ippanso',
+        type: 'ippanso',
+        label: '一般葬',
+        icon: '⛩️',
+        startPrice: 850000,
+        tagline: 'ご親族・ご会葬者を広くお迎えする伝統的な葬儀',
+        color: '#8d6e63',
+        plans: [
+          {
+            id: 'ippan_standard',
+            name: '一般葬スタンダード',
+            price: 850000,
+            subtitle: '50名程度まで',
+            features: ['搬送', '安置', '納棺', '通夜式', '告別式', '祭壇（中位）', '生花装飾', '棺', 'ドライアイス2日分', '焼香用具', '火葬', '骨壺', '白木位牌', '遺影写真', '会館使用料', '受付用品'],
+            note: '50名程度までの一般葬プラン'
+          },
+          {
+            id: 'ippan_if',
+            name: '一般葬if共済会プラン',
+            price: 955600,
+            subtitle: '100名程度まで（if共済会参考価格）',
+            features: ['搬送', '安置', '納棺', '通夜式', '告別式', '祭壇（上位）', '生花装飾', '棺（上位）', 'ドライアイス2日分', '焼香用具', '火葬', '骨壺', '白木位牌', '遺影写真', '会館使用料', '受付用品', '会葬礼品100個', 'お料理（通夜・精進落とし）'],
+            note: 'if共済会参考プラン。ご親族20名＋ご会葬者80名程度'
+          },
+          {
+            id: 'ippan_premium',
+            name: '一般葬プレミアム',
+            price: 1200000,
+            subtitle: '100名以上',
+            features: ['搬送', '安置', '納棺', '通夜式', '告別式', '祭壇（最上位）', '生花装飾（豪華）', '棺（最上位）', 'ドライアイス2日分', '焼香用具', '火葬', '骨壺', '白木位牌', '遺影写真', '会館使用料', '受付用品一式', '会葬礼品', 'お料理一式', '返礼品'],
+            note: '100名以上の大規模な一般葬プラン'
+          }
+        ]
+      }
+    ];
+    
+    // 後方互換のため courses も定義
+    const courses = PLAN_CATEGORIES.flatMap(cat => 
+      cat.plans.map(p => ({...p, funeralType: cat.type, categoryLabel: cat.label}))
+    );
+    
+    // バリデーション
+    function validateStep(step) {
+      let isValid = true;
+      
+      // エラーメッセージをクリア
+      document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+      
+      switch(step) {
+        case 1:
+          const name = document.getElementById('customerName').value.trim();
+          const relationship = document.getElementById('relationship').value;
+          const attendance = document.getElementById('attendance').value;
+          
+          if (!name) {
+            document.getElementById('nameError').style.display = 'block';
+            isValid = false;
+          }
+          if (!relationship) {
+            document.getElementById('relationError').style.display = 'block';
+            isValid = false;
+          }
+          if (!attendance) {
+            document.getElementById('attendanceError').style.display = 'block';
+            isValid = false;
+          }
+          
+          if (isValid) {
+            appState.customerName = name;
+            appState.relationship = relationship;
+            appState.attendance = attendance;
+          }
+          break;
+          
+        case 2:
+          if (!appState.funeralType) {
+            alert('葬儀形式を選択してください');
+            isValid = false;
+          }
+          break;
+          
+        case 3:
+          if (!appState.selectedHall) {
+            alert('ホールを選択してください');
+            isValid = false;
+          }
+          break;
+          
+        case 4:
+          if (!appState.selectedCourse) {
+            alert('祭壇・コースを選択してください');
+            isValid = false;
+          }
+          break;
+          
+        case 5:
+          if (!appState.membership) {
+            alert('会員区分を選択してください');
+            isValid = false;
+          }
+          break;
+          
+        case 6:
+          const phone = document.getElementById('phone').value.trim();
+          
+          if (!phone) {
+            document.getElementById('phoneError').style.display = 'block';
+            isValid = false;
+          }
+          
+          if (isValid) {
+            appState.phone = phone;
+            appState.email = document.getElementById('email').value.trim();
+            appState.address = document.getElementById('address').value.trim();
+            appState.notes = document.getElementById('notes').value.trim();
+          }
+          break;
+      }
+      
+      return isValid;
+    }
+    
+    // ステップ遷移
+    function goToStep(stepNumber) {
+      // 現在のステップを非表示
+      document.getElementById(`step${appState.currentStep}`).classList.remove('active');
+      document.getElementById(`dot${appState.currentStep}`).classList.remove('active');
+      
+      // 完了したステップをマーク
+      if (stepNumber > appState.currentStep) {
+        document.getElementById(`dot${appState.currentStep}`).classList.add('done');
+        if (appState.currentStep > 1) {
+          document.getElementById(`con${appState.currentStep - 1}`).classList.add('done');
+        }
+      }
+      
+      appState.currentStep = stepNumber;
+      
+      // 新しいステップを表示
+      document.getElementById(`step${stepNumber}`).classList.add('active');
+      document.getElementById(`dot${stepNumber}`).classList.add('active');
+      document.getElementById(`dot${stepNumber}`).classList.remove('done');
+      
+      // ナビゲーションボタンの制御
+      const navButtons = document.getElementById('navButtons');
+      const backBtn = document.getElementById('backBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      
+      if (stepNumber === 8) {
+        navButtons.style.display = 'none';
+      } else {
+        navButtons.style.display = 'flex';
+        backBtn.style.display = stepNumber === 1 ? 'none' : 'block';
+        
+        if (stepNumber === 7) {
+          nextBtn.textContent = '送信して完了';
+          nextBtn.className = 'btn btn-finish';
+        } else {
+          nextBtn.textContent = '次へ →';
+          nextBtn.className = 'btn btn-next';
+        }
+      }
+      
+      // ステップ固有の初期化処理
+      if (stepNumber === 3) {
+        renderHalls();
+      } else if (stepNumber === 4) {
+        renderCourses();
+      } else if (stepNumber === 7) {
+        renderEstimate();
+      }
+      
+      // ページトップにスクロール
+      window.scrollTo(0, 0);
+    }
+    
+    function goToNextStep() {
+      if (validateStep(appState.currentStep)) {
+        if (appState.currentStep === 7) {
+          // 送信処理
+          submitEstimate();
+        } else {
+          goToStep(appState.currentStep + 1);
+        }
+      }
+    }
+    
+    function goToPrevStep() {
+      if (appState.currentStep > 1) {
+        goToStep(appState.currentStep - 1);
+      }
+    }
+    
+    // 選択関数
+    function selectFuneralType(type) {
+      appState.funeralType = type;
+      // 全カードの選択状態をクリア
+      document.querySelectorAll('.plan-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      // 選択されたカードをハイライト（data属性で特定）
+      document.querySelectorAll('.plan-card').forEach(card => {
+        if (card.getAttribute('data-type') === type) {
+          card.classList.add('selected');
+        }
+      });
+    }
+    
+    function selectHall(hallId) {
+      appState.selectedHall = halls.find(h => h.id === hallId);
+      // 全カードの選択状態をクリア
+      document.querySelectorAll('.hall-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      // 選択されたカードをハイライト（data属性で特定）
+      document.querySelectorAll('.hall-card').forEach(card => {
+        if (card.getAttribute('data-id') === hallId) {
+          card.classList.add('selected');
+        }
+      });
+    }
+    
+    function selectCourse(courseId) { /* deprecated */ }
+    
+    function selectMembership(type) {
+      appState.membership = type;
+      // 全カードの選択状態をクリア
+      document.querySelectorAll('.plan-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      // 選択されたカードをハイライト（data属性で特定）
+      document.querySelectorAll('.plan-card').forEach(card => {
+        if (card.getAttribute('data-type') === type) {
+          card.classList.add('selected');
+        }
+      });
+    }
+    
+    // ホール一覧の描画
+    function renderHalls() {
+      const hallList = document.getElementById('hallList');
+      hallList.innerHTML = '';
+      
+      halls.forEach(hall => {
+        const hallCard = document.createElement('div');
+        hallCard.className = 'hall-card';
+        hallCard.setAttribute('data-id', hall.id);
+        hallCard.onclick = () => selectHall(hall.id);
+        
+        hallCard.innerHTML = `
+          <div class="hall-name">${hall.name}</div>
+          <div class="hall-details">
+            📍 ${hall.address}<br>
+            🚗 ${hall.access}<br>
+            🅿️ 駐車場${hall.parking}<br>
+            ✨ ${hall.features.join('・')}
+          </div>
+        `;
+        
+        hallList.appendChild(hallCard);
+      });
+    }
+    
+    // ============================================================
+    // 全プラン対応 STEP4 描画関数
+    // ============================================================
+    let selectedPlanCategory = null;
+    
+    function renderCourses() {
+      renderPlanCategoryTabs();
+      renderPlanTable();
+      // デフォルトで最初のカテゴリを選択
+      if (!selectedPlanCategory) {
+        selectPlanCategory('chokuso');
+      }
+    }
+    
+    function renderPlanCategoryTabs() {
+      const tabsEl = document.getElementById('planCategoryTabs');
+      if (!tabsEl) return;
+      tabsEl.innerHTML = '';
+      PLAN_CATEGORIES.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'plan-tab-btn' + (selectedPlanCategory === cat.id ? ' selected' : '');
+        btn.onclick = () => selectPlanCategory(cat.id);
+        btn.innerHTML = `
+          <span class="tab-icon">${cat.icon}</span>
+          <span class="tab-label">${cat.label}</span>
+          <span class="tab-price">${cat.startPrice.toLocaleString()}円〜</span>`;
+        tabsEl.appendChild(btn);
+      });
+    }
+    
+    function selectPlanCategory(catId) {
+      selectedPlanCategory = catId;
+      // タブ再描画
+      document.querySelectorAll('.plan-tab-btn').forEach(btn => btn.classList.remove('selected'));
+      renderPlanCategoryTabs();
+      
+      const cat = PLAN_CATEGORIES.find(c => c.id === catId);
+      if (!cat) return;
+      
+      // カテゴリ説明
+      const descEl = document.getElementById('planCategoryDesc');
+      descEl.style.display = 'block';
+      descEl.innerHTML = `
+        <div class="cat-title">${cat.icon} ${cat.label}</div>
+        <div>${cat.tagline}</div>
+        <div style="margin-top:4px;font-size:0.78rem;color:var(--clr-secondary);font-weight:600;">
+          ${cat.plans.length}プラン｜税込 ${cat.startPrice.toLocaleString()}円〜
+        </div>`;
+      
+      // サブプラン描画
+      const listEl = document.getElementById('subPlanList');
+      listEl.innerHTML = '';
+      cat.plans.forEach(plan => {
+        const card = document.createElement('div');
+        const isSelected = appState.selectedCourse && appState.selectedCourse.id === plan.id;
+        card.className = 'sub-plan-card' + (isSelected ? ' selected' : '');
+        card.onclick = (e) => selectSubPlan(plan, e.currentTarget);
+        
+        const featureTags = plan.features.map(f =>
+          `<span class="sub-plan-feature-tag">✓ ${f}</span>`).join('');
+        
+        card.innerHTML = `
+          <div class="sub-plan-name">${plan.name}</div>
+          <div class="sub-plan-subtitle">${plan.subtitle}</div>
+          <div class="sub-plan-price">${plan.price.toLocaleString()}<span>円（税込）</span></div>
+          <div class="sub-plan-features">${featureTags}</div>
+          <div class="sub-plan-note">${plan.note}</div>`;
+        listEl.appendChild(card);
+      });
+    }
+    
+    function selectSubPlan(plan, cardEl) {
+      appState.selectedCourse = plan;
+      // 全カードの選択状態をクリア
+      document.querySelectorAll('.sub-plan-card').forEach(el => el.classList.remove('selected'));
+      // クリックされたカードをハイライト
+      if (cardEl) cardEl.classList.add('selected');
+    }
+    
+    function renderPlanTable() {
+      const tableDiv = document.getElementById('planTableContent');
+      if (!tableDiv) return;
+      
+      let html = '<table class="plan-compare-table"><thead><tr>';
+      html += '<th>スタイル</th><th>プラン名</th><th>税込価格</th><th>税抜価格</th></tr></thead><tbody>';
+      
+      PLAN_CATEGORIES.forEach(cat => {
+        html += `<tr class="cat-header-row"><td colspan="4">${cat.icon} ${cat.label}</td></tr>`;
+        cat.plans.forEach(plan => {
+          const taxExcl = Math.round(plan.price / 1.1);
+          const isSelected = appState.selectedCourse && appState.selectedCourse.id === plan.id;
+          html += `<tr onclick="selectFromTable('${cat.id}','${plan.id}')" 
+            style="${isSelected ? 'background:var(--clr-primary-light);font-weight:700;' : ''}">
+            <td>${cat.label}</td>
+            <td>${plan.name}${isSelected ? ' ✓' : ''}</td>
+            <td class="price-cell">${plan.price.toLocaleString()}円</td>
+            <td>${taxExcl.toLocaleString()}円</td>
+          </tr>`;
+        });
+      });
+      
+      html += '</tbody></table>';
+      tableDiv.innerHTML = html;
+    }
+    
+    function selectFromTable(catId, planId) {
+      const cat = PLAN_CATEGORIES.find(c => c.id === catId);
+      if (!cat) return;
+      const plan = cat.plans.find(p => p.id === planId);
+      if (!plan) return;
+      appState.selectedCourse = plan;
+      selectPlanCategory(catId);
+      renderPlanTable();
+      // テーブルを閉じてサブプランにスクロール
+      document.getElementById('planTableWrap').style.display = 'none';
+      document.getElementById('subPlanList').scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+    
+    function togglePlanTable() {
+      const wrap = document.getElementById('planTableWrap');
+      const btn = document.querySelector('.btn-table-toggle');
+      if (wrap.style.display === 'none') {
+        wrap.style.display = 'block';
+        renderPlanTable();
+        btn.textContent = '📊 全プラン料金表を閉じる ▲';
+      } else {
+        wrap.style.display = 'none';
+        btn.textContent = '📊 全プラン料金表を見る ▼';
+      }
+    }
+    
+    // 見積もりの描画
+    function renderEstimate() {
+      const estimateCard = document.getElementById('estimateCard');
+      
+      let basePrice = 0;
+      let hospitalityPrice = 0;
+      let memberDiscount = 0;
+      
+      // 基本料金の計算（朝日屋プラン価格）
+      if (appState.selectedCourse && appState.selectedCourse.price) {
+        basePrice = appState.selectedCourse.price;
+        // 会員割引（5%引き）
+        const isMember = appState.membership === 'existing' || appState.membership === 'join';
+        if (isMember) {
+          memberDiscount = Math.floor(basePrice * 0.05);
+        }
+      }
+      
+      // おもてなし費用の計算
+      const hospitalityMap = {
+        under5: 25000,
+        under15: 40000,
+        '15to30': 70000,
+        '30to50': 120000,
+        over50: 180000
+      };
+      hospitalityPrice = hospitalityMap[appState.attendance] || 50000;
+      
+      // 会員入会費
+      let membershipFee = 0;
+      if (appState.membership === 'join') {
+        membershipFee = 5000;
+      }
+      
+      const totalPrice = basePrice + hospitalityPrice + membershipFee;
+      
+      estimateCard.innerHTML = `
+        <div class="estimate-title">お見積もり内容</div>
+        
+        <div class="estimate-row">
+          <span>お客様名</span>
+          <span>${appState.customerName} 様</span>
+        </div>
+        
+        <div class="estimate-row">
+          <span>葬儀形式</span>
+          <span>${getFuneralTypeName(appState.funeralType)}</span>
+        </div>
+        
+        <div class="estimate-row">
+          <span>ホール</span>
+          <span>${appState.selectedHall ? appState.selectedHall.name : '未選択'}</span>
+        </div>
+        
+        <div class="estimate-row">
+          <span>祭壇・コース</span>
+          <span>${appState.selectedCourse ? appState.selectedCourse.name : '未選択'}</span>
+        </div>
+        
+        <div class="estimate-row">
+          <span>会員区分</span>
+          <span>${getMembershipName(appState.membership)}</span>
+        </div>
+        
+        <div class="estimate-row">
+          <span>基本料金</span>
+          <span>${basePrice.toLocaleString()}円</span>
+        </div>
+        
+        <div class="estimate-row">
+          <span>おもてなし費用目安</span>
+          <span>${hospitalityPrice.toLocaleString()}円</span>
+        </div>
+        
+        ${membershipFee > 0 ? `
+        <div class="estimate-row">
+          <span>朝日屋if共済会員入会費</span>
+          <span>${membershipFee.toLocaleString()}円</span>
+        </div>
+        ` : ''}
+        
+        <div class="estimate-total">
+          合計目安: ${totalPrice.toLocaleString()}円（税別）
+        </div>
+      `;
+    }
+    
+    // 見積もり送信
+    function submitEstimate() {
+      // 実際のプロジェクトでは、ここでサーバーに送信
+      console.log('見積もり情報:', appState);
+      
+      // 完了画面へ
+      goToStep(8);
+    }
+    
+    // アプリリセット
+    function restartApp() {
+      if (confirm('最初に戻ります。入力内容はクリアされますがよろしいですか？')) {
+        // 状態をリセット
+        Object.keys(appState).forEach(key => {
+          if (key !== 'currentStep') {
+            appState[key] = key.includes('selected') ? null : '';
+          }
+        });
+        
+        // UI をリセット
+        document.querySelectorAll('.progress-dot').forEach(dot => {
+          dot.classList.remove('active', 'done');
+        });
+        document.querySelectorAll('.progress-connector').forEach(con => {
+          con.classList.remove('done');
+        });
+        document.querySelectorAll('.plan-card, .hall-card, .course-card').forEach(card => {
+          card.classList.remove('selected');
+        });
+        document.querySelectorAll('.form-input').forEach(input => {
+          input.value = '';
+        });
+        document.querySelectorAll('.error-msg').forEach(msg => {
+          msg.style.display = 'none';
+        });
+        
+        // 最初のステップへ
+        goToStep(1);
+      }
+    }
+    
+    // ヘルパー関数
+    function getFuneralTypeName(type) {
+      const names = {
+        direct: '直葬パック',
+        family: '家族葬',
+        general: '一般葬'
+      };
+      return names[type] || '未選択';
+    }
+    
+    function getMembershipName(type) {
+      const names = {
+        existing: '朝日屋if共済会員',
+        join: '新規入会',
+        general: '一般'
+      };
+      return names[type] || '未選択';
+    }
+    
+    // 初期化
+    document.addEventListener('DOMContentLoaded', function() {
+      goToStep(1);
+    });
+  
+    // ===== PDF保存 =====
+    function downloadPDF() {
+      // 印刷ダイアログ（ブラウザのPDF保存機能を利用）
+      // 完了カードのみ印刷対象にする
+      const style = document.createElement('style');
+      style.id = 'printOnlyStep8';
+      style.textContent = `
+        @media print {
+          body * { visibility: hidden !important; }
+          #step8, #step8 * { visibility: visible !important; }
+          #step8 { position: fixed; top: 0; left: 0; width: 100%; }
+          .btn-pdf, .btn-line, .btn-back { display: none !important; }
+          .share-buttons-container { display: none !important; }
+        }
+      `;
+      document.head.appendChild(style);
+      window.print();
+      setTimeout(() => {
+        const el = document.getElementById('printOnlyStep8');
+        if (el) el.remove();
+      }, 2000);
+    }
+
+    // ===== LINE共有 =====
+    function shareToLINE() {
+      const name = appState.customerName || '（未入力）';
+      const hall = appState.selectedHall ? appState.selectedHall.name : '未選択';
+      const course = appState.selectedCourse ? appState.selectedCourse.name : '未選択';
+      const price = appState.selectedCourse ? appState.selectedCourse.price.toLocaleString() : '0';
+      const phone = appState.phone || '（未入力）';
+
+      const MAX_LEN = 2000;
+      let msg = `【朝日屋 事前情報】
+`;
+      msg += `━━━━━━━━━━━━
+`;
+      msg += `お名前：${name}
+`;
+      msg += `ご葬儀プラン：${course}
+`;
+      msg += `ご利用会場：${hall}
+`;
+      msg += `費用目安：${price}円〜（税込）
+`;
+      msg += `ご連絡先：${phone}
+`;
+      msg += `━━━━━━━━━━━━
+`;
+      msg += `📞 0848-24-6333（24時間365日）
+`;
+      msg += `🌐 https://asahiya-sogi.jp/`;
+
+      if (msg.length > MAX_LEN) {
+        msg = msg.substring(0, MAX_LEN - 3) + '...';
+      }
+
+      const encoded = encodeURIComponent(msg);
+      const lineURL = `https://line.me/R/msg/text/?${encoded}`;
+
+      // LINE アプリへ遷移
+      const win = window.open(lineURL, '_blank');
+      if (!win) {
+        // ポップアップブロック時はクリップボードへ
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(msg).then(() => {
+            alert('LINEアプリが開けませんでした。\nテキストをクリップボードにコピーしました。LINEに貼り付けてご利用ください。');
+          });
+        } else {
+          alert('LINEアプリを開いてください。\n' + msg);
+        }
+      }
+    }
+
+  </script>
+</body>
+</html>
