@@ -1,0 +1,3842 @@
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>佐伯葬祭 葬礼支援服务</title>
+<style>
+  /* ===================================================
+     颜色调色板（CSS变量）
+     primary  : 莱姆绿 #7CB342
+     secondary: 浅粉色   #F48FB1
+  =================================================== */
+  :root {
+    --clr-primary:     #7CB342;
+    --clr-primary-d:   #558B2F;
+    --clr-primary-l:   #9CCC65;
+    --clr-primary-bg:  #F1F8E9;
+    --clr-primary-lt:  #DCEDC8;
+    --clr-pink:        #F48FB1;
+    --clr-pink-d:      #E91E63;
+    --clr-pink-bg:     #FCE4EC;
+    --clr-pink-lt:     #F8BBD0;
+    --clr-bg:          #F4FBF0;
+    --clr-text:        #2E3A1F;
+    --clr-text-sub:    #5A6A3A;
+    --clr-border:      #C5E1A5;
+    --clr-white:       #FFFFFF;
+    --radius:          12px;
+    --shadow:          0 4px 14px rgba(124,179,66,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--clr-bg);
+    color: var(--clr-text);
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* ===== 页眉 ===== */
+  .app-header {
+    background: linear-gradient(135deg, var(--clr-primary-d) 0%, var(--clr-primary) 60%, #A5D66A 100%);
+    color: #fff;
+    padding: 18px 20px;
+    text-align: center;
+    box-shadow: 0 3px 12px rgba(85,139,47,0.35);
+    position: relative;
+    overflow: hidden;
+  }
+  .app-header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='20' cy='20' r='8'/%3E%3C/g%3E%3C/svg%3E");
+  }
+  .app-header h1 {
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  .app-header p { font-size: 0.8rem; opacity: 0.9; margin-top: 4px; position: relative; }
+
+  /* ===== 语音输入引导横幅 ===== */
+  .voice-notice {
+    background: linear-gradient(135deg, var(--clr-primary-bg), var(--clr-primary-lt));
+    border: 2px solid var(--clr-primary);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 12px 16px;
+    line-height: 1.7;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .voice-notice .icon { font-size: 1.8rem; }
+  .voice-notice .text { font-size: 0.85rem; color: var(--clr-primary-d); font-weight: bold; line-height: 1.5; }
+
+  /* ===== 进度条 ===== */
+  .progress-bar {
+    background: var(--clr-primary-lt);
+    padding: 12px 16px;
+    display: flex; gap: 6px; justify-content: flex-start; align-items: center;
+    overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+  }
+  .step-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #C8E6C9; color: #fff; font-size: 0.7rem;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; flex-shrink: 0; transition: all 0.3s;
+  }
+  .step-dot.active {
+    background: var(--clr-primary);
+    box-shadow: 0 0 0 3px var(--clr-primary-lt), 0 0 0 5px var(--clr-primary);
+    transform: scale(1.18);
+  }
+  .step-dot.done { background: var(--clr-primary-d); }
+  .step-connector { width: 20px; height: 2px; background: #C8E6C9; flex-shrink: 0; transition: background 0.3s; }
+  .step-connector.done { background: var(--clr-primary-d); }
+
+  /* ===== 步骤内容 ===== */
+  .step { display: none; padding: 20px 18px; }
+  .step.active { display: block; }
+
+  .step-title {
+    font-size: 1.1rem; font-weight: bold; color: var(--clr-primary-d);
+    margin-bottom: 16px; padding-bottom: 8px;
+    border-bottom: 2.5px solid var(--clr-primary);
+    display: flex; align-items: center; gap: 8px;
+    position: relative;
+  }
+  .step-title .step-num {
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 0.85rem; flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(124,179,66,0.4);
+  }
+
+  /* ===== 表单元素 ===== */
+  .form-group { margin-bottom: 18px; }
+  .form-label { font-size: 0.9rem; font-weight: bold; color: var(--clr-primary-d); margin-bottom: 8px; display: block; }
+  .form-input {
+    width: 100%; padding: 12px; border: 2px solid var(--clr-border);
+    border-radius: 8px; font-size: 0.95rem;
+    background: #fff; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-input:focus { outline: none; border-color: var(--clr-primary); box-shadow: 0 0 0 3px rgba(124,179,66,0.15); }
+  .form-select {
+    width: 100%; padding: 12px; border: 2px solid var(--clr-border);
+    border-radius: 8px; font-size: 0.95rem;
+    background: #fff; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%237CB342'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+    cursor: pointer; transition: border-color 0.2s;
+  }
+  .form-select:focus { outline: none; border-color: var(--clr-primary); }
+
+  /* ===== 选择按钮组 ===== */
+  .btn-group { display: flex; flex-direction: column; gap: 8px; }
+  .btn-choice {
+    width: 100%; padding: 14px 16px; border: 2px solid var(--clr-border);
+    border-radius: 10px; background: #fff; cursor: pointer;
+    text-align: left; font-size: 0.95rem; color: #333;
+    transition: all 0.2s; display: flex; align-items: center; gap: 10px;
+  }
+  .btn-choice:hover { border-color: var(--clr-primary); background: var(--clr-primary-bg); }
+  .btn-choice.selected {
+    border-color: var(--clr-primary);
+    background: linear-gradient(135deg, var(--clr-primary-bg), #E8F5E9);
+    color: var(--clr-primary-d); font-weight: bold;
+    box-shadow: 0 2px 8px rgba(124,179,66,0.2);
+  }
+  .btn-choice .choice-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .btn-choice .choice-text { flex: 1; }
+  .btn-choice .choice-desc { font-size: 0.78rem; color: #888; margin-top: 2px; }
+  .btn-choice.selected .choice-desc { color: var(--clr-primary); }
+  .btn-choice .check-mark { display: none; color: var(--clr-primary); font-size: 1.2rem; }
+  .btn-choice.selected .check-mark { display: block; }
+
+  /* ===== 方案提案カード ===== */
+  .plan-cards { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+  .plan-card {
+    border-radius: var(--radius); overflow: hidden;
+    border: 2px solid var(--clr-border); background: #fff;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .plan-card:hover { border-color: var(--clr-primary); box-shadow: var(--shadow); }
+  .plan-card.selected {
+    border-color: var(--clr-primary);
+    box-shadow: 0 4px 16px rgba(124,179,66,0.3);
+  }
+  .plan-card-badge {
+    padding: 6px 14px; font-size: 0.78rem; font-weight: bold;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .badge-small { background: var(--clr-primary-bg); color: var(--clr-primary-d); }
+  .badge-rec { background: linear-gradient(135deg, var(--clr-pink-lt), var(--clr-pink)); color: #880e4f; }
+  .badge-large { background: var(--clr-pink-bg); color: #880e4f; }
+  .plan-card-body { padding: 14px; }
+  .plan-card-title { font-size: 1.05rem; font-weight: bold; color: #333; margin-bottom: 4px; }
+  .plan-card-sub { font-size: 0.82rem; color: #888; margin-bottom: 8px; }
+  .plan-card-desc { font-size: 0.85rem; color: #555; line-height: 1.6; }
+
+  /* ===== 礼堂カード ===== */
+  .hall-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 400px) { .hall-cards { grid-template-columns: 1fr; } }
+  .hall-card {
+    border-radius: var(--radius); overflow: hidden;
+    border: 2px solid var(--clr-border); background: #fff;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .hall-card:hover { border-color: var(--clr-primary); box-shadow: var(--shadow); }
+  .hall-card.selected {
+    border-color: var(--clr-primary);
+    box-shadow: 0 4px 16px rgba(124,179,66,0.3);
+  }
+  .hall-card-img { width: 100%; height: 110px; object-fit: cover; }
+  .hall-card-body { padding: 10px; }
+  .hall-card-name { font-size: 0.85rem; font-weight: bold; color: #333; margin-bottom: 4px; }
+  .hall-card-cap { font-size: 0.73rem; color: #888; margin-bottom: 3px; }
+  .hall-card-addr { font-size: 0.7rem; color: #aaa; }
+  .hall-recommended-badge {
+    position: absolute; top: 6px; right: 6px;
+    background: linear-gradient(135deg, var(--clr-pink), var(--clr-pink-d));
+    color: #fff; font-size: 0.65rem;
+    padding: 2px 6px; border-radius: 10px; font-weight: bold;
+  }
+  .hall-card-wrapper { position: relative; }
+  .hall-selected-check {
+    position: absolute; top: 6px; left: 6px; display: none;
+    background: var(--clr-primary); color: #fff; width: 24px; height: 24px;
+    border-radius: 50%; align-items: center; justify-content: center; font-size: 0.9rem;
+  }
+  .hall-card.selected .hall-selected-check { display: flex; }
+
+  /* ===== 套餐カード ===== */
+  .course-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 400px) { .course-cards { grid-template-columns: 1fr; } }
+  .course-card {
+    border-radius: var(--radius); overflow: hidden;
+    border: 2px solid var(--clr-border); background: #fff;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .course-card:hover { border-color: var(--clr-primary); box-shadow: var(--shadow); }
+  .course-card.selected {
+    border-color: var(--clr-pink);
+    box-shadow: 0 4px 16px rgba(244,143,177,0.35);
+  }
+  .course-card-img { width: 100%; height: 130px; object-fit: cover; }
+  .course-card-body { padding: 12px; }
+  .course-card-name { font-size: 1rem; font-weight: bold; color: var(--clr-primary-d); margin-bottom: 4px; }
+  .course-card-price { font-size: 0.82rem; color: #888; }
+  .course-card-price .member-price { font-size: 1rem; font-weight: bold; color: var(--clr-primary); }
+  .course-card-desc { font-size: 0.75rem; color: #888; margin-top: 4px; line-height: 1.5; }
+  .course-selected-mark {
+    display: none; text-align: center; padding: 4px;
+    background: linear-gradient(90deg, var(--clr-primary-bg), var(--clr-pink-bg));
+    font-size: 0.8rem; color: var(--clr-primary-d); font-weight: bold;
+  }
+  .course-card.selected .course-selected-mark { display: block; }
+
+  /* ===== 导航按钮 ===== */
+  .nav-buttons { display: flex; gap: 10px; margin-top: 20px; }
+  .btn-back {
+    flex: 1; padding: 14px; border: 2px solid var(--clr-border);
+    border-radius: 10px; background: #fff; color: var(--clr-primary-d);
+    font-size: 1rem; cursor: pointer; font-weight: bold;
+    transition: all 0.2s;
+  }
+  .btn-back:hover { background: var(--clr-primary-bg); border-color: var(--clr-primary); }
+  .btn-next {
+    flex: 2; padding: 14px; border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; font-size: 1rem; cursor: pointer;
+    font-weight: bold; transition: all 0.2s;
+    box-shadow: 0 3px 8px rgba(124,179,66,0.4);
+  }
+  .btn-next:hover {
+    background: linear-gradient(135deg, var(--clr-primary-l), var(--clr-primary));
+    transform: translateY(-1px);
+  }
+  .btn-next:disabled { background: #C8E6C9; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-finish {
+    flex: 2; padding: 14px; border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; font-size: 1rem; cursor: pointer;
+    font-weight: bold; transition: all 0.2s;
+    box-shadow: 0 3px 8px rgba(124,179,66,0.4);
+  }
+
+  /* ===== 文本区域 ===== */
+  .form-textarea {
+    width: 100%; padding: 12px; border: 2px solid var(--clr-border);
+    border-radius: 8px; font-size: 0.95rem; background: #fff;
+    resize: vertical; min-height: 100px; font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .form-textarea:focus { outline: none; border-color: var(--clr-primary); }
+
+  /* ===== 报价カード ===== */
+  .estimate-card {
+    background: #fff; border-radius: 14px;
+    border: 2px solid var(--clr-border); padding: 20px 18px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .estimate-section-title {
+    font-size: 1.05rem; font-weight: bold; color: var(--clr-primary-d);
+    margin-bottom: 12px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--clr-primary-lt);
+  }
+  .estimate-row {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; padding: 10px 0;
+    border-bottom: 1px solid var(--clr-primary-bg); font-size: 1rem;
+  }
+  .estimate-row:last-child { border-bottom: none; }
+  .estimate-label { color: #666; flex: 1; }
+  .estimate-value { color: #333; font-weight: bold; text-align: right; flex-shrink: 0; word-break: keep-all; max-width: 55%; }
+  .estimate-total {
+    background: linear-gradient(135deg, var(--clr-primary-bg), var(--clr-pink-bg));
+    border: 2px solid var(--clr-primary-lt);
+    border-radius: 10px; padding: 14px; margin-top: 12px;
+    text-align: center;
+  }
+  .estimate-total-label { font-size: 0.85rem; color: var(--clr-primary-d); margin-bottom: 4px; }
+  .estimate-total-price { font-size: 1.9rem; font-weight: bold; color: var(--clr-primary-d); }
+  .estimate-total-note { font-size: 0.73rem; color: #888; margin-top: 4px; }
+
+  /* ===== STEP8 完成画面 ===== */
+  /* 纸屑动画 */
+  @keyframes confettiFall {
+    0%   { transform: translateY(-20px) rotate(0deg);  opacity: 1; }
+    100% { transform: translateY(120px) rotate(360deg); opacity: 0; }
+  }
+  @keyframes confettiSway {
+    0%,100% { margin-left: 0; }
+    50%      { margin-left: 14px; }
+  }
+  @keyframes pulse-ring {
+    0%   { transform: scale(0.85); box-shadow: 0 0 0 0 rgba(124,179,66,0.5); }
+    70%  { transform: scale(1);    box-shadow: 0 0 0 16px rgba(124,179,66,0); }
+    100% { transform: scale(0.85); box-shadow: 0 0 0 0  rgba(124,179,66,0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    14%     { transform: scale(1.2); }
+    28%     { transform: scale(1); }
+    42%     { transform: scale(1.15); }
+    70%     { transform: scale(1); }
+  }
+
+  .confetti-wrap {
+    position: relative; height: 56px; overflow: hidden;
+    margin-bottom: 4px; pointer-events: none;
+  }
+  .confetti-piece {
+    position: absolute; top: -10px; width: 8px; height: 8px;
+    border-radius: 2px;
+    animation: confettiFall 1.8s ease-in infinite, confettiSway 1.2s ease-in-out infinite;
+  }
+
+  .complete-card {
+    background: linear-gradient(160deg, var(--clr-primary-bg) 0%, #fff 40%, var(--clr-pink-bg) 100%);
+    border-radius: 20px;
+    border: 2.5px solid var(--clr-primary);
+    padding: 28px 22px 22px;
+    text-align: center; margin-bottom: 18px;
+    box-shadow: 0 8px 32px rgba(124,179,66,0.18), 0 2px 8px rgba(244,143,177,0.15);
+    animation: fadeInUp 0.6s ease both;
+  }
+  .complete-icon {
+    font-size: 3.6rem; margin-bottom: 10px;
+    display: inline-block;
+    animation: heartbeat 2.4s ease-in-out infinite;
+  }
+  .complete-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; font-size: 0.72rem; font-weight: bold;
+    padding: 4px 14px; border-radius: 20px; letter-spacing: 1px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(124,179,66,0.3);
+  }
+  .complete-title {
+    font-size: 1.45rem; font-weight: bold;
+    background: linear-gradient(135deg, var(--clr-primary-d), var(--clr-pink-d));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px; line-height: 1.4;
+  }
+  .complete-subtitle {
+    font-size: 0.9rem; color: var(--clr-primary-d); font-weight: bold;
+    margin-bottom: 14px; opacity: 0.85;
+  }
+  .complete-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--clr-primary-lt), var(--clr-pink-lt), transparent);
+    margin: 14px 0;
+    border-radius: 1px;
+  }
+  .complete-text {
+    font-size: 0.9rem; color: #555; line-height: 1.9;
+    background: rgba(255,255,255,0.7); border-radius: 10px;
+    padding: 14px; margin-top: 4px;
+  }
+  .complete-phone {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; font-size: 1.15rem; font-weight: bold;
+    padding: 10px 22px; border-radius: 30px; margin: 10px 0;
+    box-shadow: 0 4px 12px rgba(124,179,66,0.35);
+    text-decoration: none;
+  }
+  .complete-hours { font-size: 0.78rem; color: var(--clr-primary-d); margin-top: 4px; opacity: 0.8; }
+
+  /* STEP8 操作按钮 */
+  .step8-actions {
+    display: flex; flex-direction: column; gap: 12px;
+    margin: 20px 0 10px;
+    animation: fadeInUp 0.8s ease 0.3s both;
+  }
+  .step8-actions-title {
+    text-align: center; font-size: 0.88rem; font-weight: bold;
+    color: var(--clr-primary-d); margin-bottom: 4px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-s8 {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 16px 20px; border: none; border-radius: 14px;
+    font-size: 1.05rem; font-weight: bold; letter-spacing: 0.04em;
+    cursor: pointer; width: 100%; min-height: 58px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.14);
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-decoration: none;
+  }
+  .btn-s8:active { transform: scale(0.97); box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+  .btn-s8 .s8-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .btn-s8 .s8-label { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.3; }
+  .btn-s8 .s8-main { font-size: 1.05rem; font-weight: bold; }
+  .btn-s8 .s8-sub  { font-size: 0.78rem; opacity: 0.88; font-weight: normal; }
+
+  .btn-s8-line  { background: linear-gradient(135deg, #00B900, #008000); color: #fff; }
+  .btn-s8-sms   { background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d)); color: #fff; }
+  .btn-s8-pdf   { background: linear-gradient(135deg, #EF5350, #B71C1C); color: #fff; }
+  .btn-s8-restart {
+    background: linear-gradient(135deg, var(--clr-pink-lt), var(--clr-pink));
+    color: #4a148c; border: none;
+  }
+
+  /* ===== 信息框 ===== */
+  .info-box {
+    background: linear-gradient(135deg, var(--clr-primary-bg), var(--clr-pink-bg));
+    border: 1px solid var(--clr-primary-lt);
+    border-radius: 8px; padding: 14px; margin-top: 12px;
+    font-size: 0.92rem; color: #666; line-height: 1.8;
+  }
+
+  /* ===== 礼堂详情 ===== */
+  .selected-hall-detail {
+    background: var(--clr-primary-bg); border-radius: 8px;
+    padding: 12px; margin-top: 12px;
+    border: 1px solid var(--clr-border); font-size: 0.83rem;
+    color: #666; line-height: 1.7;
+  }
+
+  /* ===== 错误显示 ===== */
+  .error-msg { color: #E53935; font-size: 0.8rem; margin-top: 4px; display: none; }
+  .required  { color: #E53935; margin-left: 4px; }
+
+  /* ===== 选择摘要 ===== */
+  .selection-summary {
+    background: var(--clr-primary-bg); border-radius: 8px; padding: 10px 14px;
+    margin-bottom: 14px; font-size: 0.82rem; color: var(--clr-primary-d);
+    border-left: 3px solid var(--clr-primary);
+  }
+
+  /* ===== 安心客厅特別バッジ ===== */
+  .living-badge {
+    display: inline-block; background: var(--clr-primary-bg); color: var(--clr-primary-d);
+    font-size: 0.7rem; padding: 2px 8px; border-radius: 10px;
+    font-weight: bold; margin-top: 4px;
+  }
+
+  .hall-all-btn {
+    width: 100%; padding: 12px; border: 2px dashed var(--clr-border);
+    border-radius: 10px; background: #fafafa; cursor: pointer;
+    text-align: center; font-size: 0.9rem; color: var(--clr-primary-d);
+    transition: all 0.2s; margin-top: 8px; font-weight: bold;
+  }
+  .hall-all-btn:hover { background: var(--clr-primary-bg); border-color: var(--clr-primary); }
+
+  /* ===== 方案タイプラベル ===== */
+  .plan-type-tag {
+    display: inline-block; font-size: 0.7rem; padding: 2px 8px;
+    border-radius: 10px; font-weight: bold; margin-left: 6px;
+  }
+  .tag-compact { background: var(--clr-primary-bg);  color: var(--clr-primary-d); }
+  .tag-living  { background: #E8F5E9; color: #2E7D32; }
+  .tag-family  { background: #FFF3E0; color: #E65100; }
+  .tag-normal  { background: var(--clr-pink-bg);     color: #880E4F; }
+
+  /* ===== 聊天机器人 ===== */
+  .chat-window {
+    background: var(--clr-primary-bg); border-radius: 14px; overflow: hidden;
+    border: 2px solid var(--clr-border); margin-bottom: 14px;
+    display: flex; flex-direction: column; height: 380px;
+  }
+  .chat-header {
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; padding: 10px 14px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.88rem; font-weight: bold; flex-shrink: 0;
+  }
+  .chat-header .bot-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: #fff; display: flex; align-items: center;
+    justify-content: center; font-size: 1rem;
+  }
+  .chat-messages {
+    flex: 1; overflow-y: auto; padding: 12px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .chat-msg { display: flex; gap: 8px; align-items: flex-end; max-width: 88%; }
+  .chat-msg.bot  { align-self: flex-start; }
+  .chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+  .msg-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--clr-primary); color: #fff; font-size: 0.8rem;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .msg-avatar.user-av { background: var(--clr-primary-d); }
+  .msg-bubble {
+    padding: 10px 13px; border-radius: 16px;
+    font-size: 0.88rem; line-height: 1.6; max-width: 100%;
+  }
+  .bot  .msg-bubble {
+    background: #fff; color: #333;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  .user .msg-bubble {
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; border-bottom-right-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .chat-typing {
+    display: none; align-self: flex-start;
+    padding: 8px 14px; background: #fff; border-radius: 16px;
+    border-bottom-left-radius: 4px; font-size: 0.82rem; color: #999;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  .chat-typing.show { display: block; }
+  .typing-dots { display: inline-flex; gap: 3px; }
+  .typing-dots span {
+    width: 6px; height: 6px; background: #bbb; border-radius: 50%;
+    animation: typingBounce 1.2s infinite;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typingBounce {
+    0%,60%,100% { transform: translateY(0); }
+    30%          { transform: translateY(-5px); }
+  }
+  /* 快速回复 */
+  .quick-replies {
+    padding: 8px 12px; display: flex; flex-wrap: wrap;
+    gap: 6px; background: #fff; border-top: 1px solid var(--clr-primary-lt);
+    flex-shrink: 0;
+  }
+  .quick-reply-btn {
+    padding: 6px 12px; border: 1.5px solid var(--clr-primary);
+    border-radius: 20px; background: #fff; color: var(--clr-primary-d);
+    font-size: 0.78rem; cursor: pointer; font-weight: bold;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .quick-reply-btn:hover { background: var(--clr-primary-bg); }
+  /* 聊天输入区 */
+  .chat-input-area {
+    display: flex; gap: 6px; padding: 8px 12px;
+    background: #fff; border-top: 2px solid var(--clr-primary-lt);
+    flex-shrink: 0; align-items: center;
+  }
+  .chat-input {
+    flex: 1; padding: 8px 12px; border: 2px solid var(--clr-border);
+    border-radius: 20px; font-size: 0.9rem;
+    outline: none; font-family: inherit; resize: none;
+    max-height: 80px; line-height: 1.4;
+  }
+  .chat-input:focus { border-color: var(--clr-primary); }
+  .chat-send-btn {
+    width: 36px; height: 36px; border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; font-size: 1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.2s;
+  }
+  .chat-send-btn:hover { transform: scale(1.08); }
+  .chat-send-btn:disabled { background: #C8E6C9; cursor: not-allowed; }
+  /* チャット完成バナー */
+  .chat-done-banner {
+    display: none; background: var(--clr-primary-bg); border: 2px solid var(--clr-primary);
+    border-radius: 10px; padding: 10px 14px; margin-bottom: 10px;
+    font-size: 0.85rem; color: var(--clr-primary-d); font-weight: bold;
+  }
+  .chat-done-banner.show { display: block; }
+
+  /* ===== 图片说明注记 ===== */
+  .image-notice {
+    background: var(--clr-primary-bg); border: 1px solid var(--clr-primary-lt);
+    border-radius: 8px; padding: 8px 12px;
+    font-size: 0.78rem; color: var(--clr-primary-d);
+    margin-bottom: 10px; text-align: center; font-weight: bold;
+  }
+
+  /* ===== 当日入会徽章 ===== */
+  .join-badge {
+    display: inline-block; background: var(--clr-pink-bg); color: var(--clr-pink-d);
+    font-size: 0.68rem; padding: 1px 6px; border-radius: 8px;
+    font-weight: bold; margin-left: 4px; border: 1px solid var(--clr-pink-lt);
+  }
+
+  /* ===== 打印样式 ===== */
+  @media print {
+    body { background: #fff !important; }
+    .app-header, .voice-notice, .progress-bar, .nav-buttons,
+    .btn-finish, .step:not(#step8), .chat-window,
+    .chat-input-area, .quick-replies, #autoSaveBanner { display: none !important; }
+    #step8 { display: block !important; }
+    .print-header { display: block !important; }
+    .print-chat-log { display: block !important; }
+    .print-summary { display: block !important; }
+    .no-print { display: none !important; }
+    .complete-card { border: 1px solid #ccc !important; box-shadow: none !important;
+      background: #fff !important; }
+    .pdf-chat-bubble-bot  { background: #f5f5f5 !important; }
+    .pdf-chat-bubble-user { background: var(--clr-primary-lt) !important; }
+    @page { margin: 15mm; size: A4; }
+  }
+
+  /* ===== 打印専用页眉 ===== */
+  .print-header {
+    display: none; text-align: center; padding: 16px 0 10px;
+    border-bottom: 2px solid var(--clr-primary); margin-bottom: 14px;
+  }
+  .print-header h2 { font-size: 1.2rem; color: var(--clr-primary-d); letter-spacing: 2px; }
+  .print-header p  { font-size: 0.78rem; color: #888; margin-top: 4px; }
+
+  /* ===== 聊天记录PDF用 ===== */
+  .print-chat-log {
+    display: none;
+    background: var(--clr-primary-bg); border: 2px solid var(--clr-border);
+    border-radius: 12px; padding: 16px; margin-bottom: 14px;
+  }
+  .print-chat-log-title {
+    font-size: 0.95rem; font-weight: bold; color: var(--clr-primary-d);
+    margin-bottom: 12px; padding-bottom: 6px;
+    border-bottom: 2px solid var(--clr-primary);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pdf-chat-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: flex-start; }
+  .pdf-chat-row.user-row { flex-direction: row-reverse; }
+  .pdf-chat-label {
+    font-size: 0.72rem; font-weight: bold; white-space: nowrap;
+    padding-top: 3px; color: #888; flex-shrink: 0;
+  }
+  .pdf-chat-row.user-row .pdf-chat-label { color: var(--clr-primary-d); }
+  .pdf-chat-bubble-bot {
+    background: #fff; border: 1px solid var(--clr-border);
+    border-radius: 12px; border-bottom-left-radius: 3px;
+    padding: 8px 12px; font-size: 0.85rem; line-height: 1.65;
+    color: #333; max-width: 82%;
+  }
+  .pdf-chat-bubble-user {
+    background: var(--clr-primary-lt); border: 1px solid var(--clr-primary);
+    border-radius: 12px; border-bottom-right-radius: 3px;
+    padding: 8px 12px; font-size: 0.85rem; line-height: 1.65;
+    color: var(--clr-primary-d); font-weight: bold; max-width: 82%;
+  }
+  .pdf-chat-time { font-size: 0.68rem; color: #bbb; margin-top: 2px; text-align: right; }
+  .pdf-chat-row.user-row .pdf-chat-time { text-align: left; }
+
+  /* ===== FAQ面板 ===== */
+  .faq-panel {
+    background: #fff; border: 2px solid var(--clr-border);
+    border-radius: 14px; margin-bottom: 12px; overflow: hidden;
+  }
+  .faq-panel-header {
+    background: linear-gradient(135deg, var(--clr-primary-bg), var(--clr-primary-lt));
+    padding: 10px 14px; display: flex; align-items: center;
+    justify-content: space-between; cursor: pointer; user-select: none;
+  }
+  .faq-panel-header-left {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.88rem; font-weight: bold; color: var(--clr-primary-d);
+  }
+  .faq-toggle-icon { font-size: 0.75rem; color: var(--clr-primary); transition: transform 0.3s; }
+  .faq-toggle-icon.open { transform: rotate(180deg); }
+  .faq-body { display: none; padding: 10px 12px 12px; }
+  .faq-body.open { display: block; }
+  .faq-category { margin-bottom: 10px; }
+  .faq-category-label {
+    font-size: 0.75rem; font-weight: bold; color: var(--clr-primary-d);
+    margin-bottom: 6px; padding: 3px 8px;
+    background: var(--clr-primary-bg); border-radius: 6px; display: inline-block;
+  }
+  .faq-items { display: flex; flex-wrap: wrap; gap: 6px; }
+  .faq-btn {
+    padding: 7px 12px; border: 1.5px solid var(--clr-primary);
+    border-radius: 20px; background: #fff; color: var(--clr-primary-d);
+    font-size: 0.78rem; cursor: pointer; font-weight: bold;
+    transition: all 0.2s; display: flex; align-items: center; gap: 4px;
+  }
+  .faq-btn:hover {
+    background: var(--clr-primary-bg); border-color: var(--clr-primary-d);
+    transform: translateY(-1px); box-shadow: 0 2px 6px rgba(124,179,66,0.2);
+  }
+  .faq-btn .faq-icon { font-size: 0.9rem; }
+  .faq-btn.used { background: var(--clr-primary-bg); border-color: var(--clr-primary); color: var(--clr-primary-d); cursor: default; }
+  .faq-btn.used:hover { transform: none; box-shadow: none; }
+
+  /* FAQ建议横幅 */
+  .chat-faq-suggest {
+    background: linear-gradient(135deg, var(--clr-primary-bg), #fff);
+    border: 1.5px solid var(--clr-primary-lt);
+    border-radius: 10px; padding: 8px 10px;
+    margin: 6px 0 2px; font-size: 0.78rem; color: var(--clr-primary-d);
+  }
+  .chat-faq-suggest-title { font-weight: bold; margin-bottom: 5px; display: flex; align-items: center; gap: 4px; }
+  .chat-faq-suggest-btns { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chat-faq-suggest-btn {
+    padding: 5px 10px; border: 1.5px solid var(--clr-primary);
+    border-radius: 16px; background: #fff; color: var(--clr-primary-d);
+    font-size: 0.75rem; cursor: pointer; font-weight: bold; transition: all 0.18s;
+  }
+  .chat-faq-suggest-btn:hover { background: var(--clr-primary-bg); }
+
+  /* FAQ回答バブル */
+  .faq-answer-bubble {
+    background: #fffeff; border: 1px solid var(--clr-primary-lt);
+    border-radius: 12px; border-bottom-left-radius: 3px;
+    padding: 10px 13px; font-size: 0.85rem; line-height: 1.7;
+    color: #333; max-width: 100%;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .faq-answer-bubble strong { color: var(--clr-primary-d); }
+  .faq-answer-badge {
+    display: inline-block; font-size: 0.68rem;
+    background: var(--clr-primary-bg); color: var(--clr-primary-d);
+    border: 1px solid var(--clr-primary-lt); border-radius: 8px;
+    padding: 1px 6px; margin-bottom: 4px; font-weight: bold;
+  }
+
+  /* ===== 发送処理UI ===== */
+  .submit-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55); z-index: 9999;
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 14px;
+  }
+  .submit-overlay.show { display: flex; }
+  .submit-spinner {
+    width: 52px; height: 52px; border: 5px solid var(--clr-primary-lt);
+    border-top-color: var(--clr-primary); border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .submit-overlay-text { color: #fff; font-size: 1.05rem; font-weight: bold; }
+  .submit-result-banner {
+    display: none; margin: 12px 0; padding: 14px 16px;
+    border-radius: 10px; font-size: 0.9rem; line-height: 1.7; text-align: center;
+  }
+  .submit-result-banner.success { display: block; background: var(--clr-primary-bg); border: 2px solid var(--clr-primary); color: var(--clr-primary-d); }
+  .submit-result-banner.error   { display: block; background: #fce4ec; border: 2px solid #ef9a9a; color: #b71c1c; }
+
+  /* ===== 报价アクションボタン ===== */
+  .estimate-action-buttons { display: flex; flex-direction: column; gap: 12px; margin: 20px 0 10px; }
+  .btn-estimate-action {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 16px 20px; border: none; border-radius: 14px;
+    font-size: 1.05rem; font-weight: bold; letter-spacing: 0.05em;
+    cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+    transition: transform 0.15s, box-shadow 0.15s;
+    width: 100%; min-height: 56px; text-decoration: none;
+  }
+  .btn-estimate-action:active { transform: scale(0.97); box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+  .btn-pdf   { background: linear-gradient(135deg, #E53935, #B71C1C); color: #fff; }
+  .btn-line  { background: linear-gradient(135deg, #00C300, #008000); color: #fff; }
+  .btn-email { background: linear-gradient(135deg, #1565C0, #0D47A1); color: #fff; }
+  .btn-estimate-action .btn-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .btn-estimate-action .btn-label { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.3; }
+  .btn-estimate-action .btn-label-main { font-size: 1.05rem; font-weight: bold; }
+  .btn-estimate-action .btn-label-sub  { font-size: 0.80rem; opacity: 0.9; font-weight: normal; letter-spacing: 0.02em; }
+  #estimateEmailBanner { margin: 10px 0; padding: 12px 14px; border-radius: 10px; font-size: 0.88rem; text-align: center; display: none; }
+  .email-banner-success { background: var(--clr-primary-bg); color: var(--clr-primary-d); border: 1.5px solid var(--clr-primary); }
+  .email-banner-error   { background: #fff5f5; color: #c62828; border: 1.5px solid #e53935; }
+
+  /* ===== スマホ向け添加改善 ===== */
+  @media (max-width: 480px) {
+    .step { padding: 18px 14px; }
+    .estimate-card { padding: 16px 13px; margin-bottom: 14px; }
+    .estimate-row { padding: 10px 0; font-size: 0.97rem; }
+    .estimate-total-price { font-size: 1.85rem; }
+    .info-box { font-size: 0.88rem; padding: 14px 12px; line-height: 1.8; }
+    .btn-estimate-action { padding: 15px 16px; font-size: 1rem; min-height: 58px; }
+    .estimate-section-title { font-size: 1rem; margin: 16px 0 8px; }
+    .btn-s8 { padding: 14px 16px; font-size: 1rem; min-height: 56px; }
+    .complete-title { font-size: 1.25rem; }
+  }
+
+  /* ===== 返回首页重新开始ボタン ===== */
+  .restart-btn-wrap { text-align: center; margin-top: 10px; margin-bottom: 4px; }
+  .btn-restart-top {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 24px; background: transparent;
+    color: var(--clr-primary-d); border: 2px solid var(--clr-border);
+    border-radius: 20px; font-size: 0.88rem; font-weight: bold;
+    cursor: pointer; transition: background .15s, color .15s;
+  }
+  .btn-restart-top:hover { background: var(--clr-primary-bg); border-color: var(--clr-primary); }
+
+  /* ===== STEP3～7: 右上「返回首页重新开始」ボタン ===== */
+  .step-title { position: relative; }
+  .btn-restart-topright {
+    position: absolute; top: 50%; right: 0; transform: translateY(-50%);
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 10px; background: rgba(255,255,255,0.9);
+    color: var(--clr-primary-d); border: 1.5px solid var(--clr-border);
+    border-radius: 16px; font-size: 0.75rem; font-weight: bold;
+    cursor: pointer; white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(124,179,66,0.15);
+    transition: background .15s, color .15s, border-color .15s; z-index: 10;
+  }
+  .btn-restart-topright:active { background: var(--clr-primary-bg); border-color: var(--clr-primary); }
+  .step-title-text { display: inline-block; padding-right: 90px; }
+
+  /* ===== SMS button (STEP7) ===== */
+  .btn-sms { background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d)); color: #fff; }
+  .btn-sms:hover { background: linear-gradient(135deg, var(--clr-primary-l), var(--clr-primary)); transform: translateY(-2px); }
+
+  /* ===== 葬儀の流れ タイムライン (添加) ===== */
+  .flow-section {
+    margin-top: 24px;
+    padding: 0 4px;
+  }
+  .flow-section-title {
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--clr-primary-d);
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, var(--clr-primary-bg), #fff);
+    border-radius: 10px;
+    border-left: 4px solid var(--clr-primary);
+    letter-spacing: 0.05em;
+  }
+  .flow-phase-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0 12px -4px;
+  }
+  .flow-phase-badge {
+    background: var(--clr-primary-d);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 12px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+  .flow-phase-line {
+    flex: 1;
+    height: 1px;
+    background: var(--clr-primary-lt);
+  }
+  .flow-timeline {
+    position: relative;
+    padding-left: 52px;
+  }
+  .flow-timeline::before {
+    content: '';
+    position: absolute;
+    left: 18px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--clr-primary-d), var(--clr-primary), var(--clr-primary-l));
+    border-radius: 2px;
+  }
+  .flow-item {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .flow-item:last-child { margin-bottom: 0; }
+  .flow-badge {
+    position: absolute;
+    left: -44px;
+    top: 8px;
+    width: 34px;
+    height: 34px;
+    background: var(--clr-primary-d);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.62rem;
+    font-weight: 800;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(85,139,47,0.3);
+    z-index: 1;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .flow-badge .badge-num { font-size: 0.6rem; opacity: 0.85; }
+  .flow-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 11px 13px;
+    border: 1px solid var(--clr-primary-lt);
+    box-shadow: 0 2px 6px rgba(124,179,66,0.08);
+  }
+  .flow-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+  }
+  .flow-icon { font-size: 1.2rem; }
+  .flow-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--clr-primary-d);
+    flex: 1;
+  }
+  .flow-timing {
+    font-size: 0.68rem;
+    background: var(--clr-primary);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .flow-desc {
+    font-size: 0.79rem;
+    color: #444;
+    line-height: 1.6;
+  }
+  .flow-note {
+    margin-top: 5px;
+    padding: 5px 9px;
+    background: var(--clr-primary-bg);
+    border-radius: 6px;
+    font-size: 0.74rem;
+    color: var(--clr-primary-d);
+    font-weight: 600;
+  }
+  .flow-after-section {
+    margin-top: 14px;
+    padding: 13px;
+    background: linear-gradient(135deg, var(--clr-primary-d), #3d6b1c);
+    border-radius: 12px;
+    color: #fff;
+    text-align: center;
+  }
+  .flow-after-section .after-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #d4f0a0;
+  }
+  .flow-after-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+  }
+  .flow-after-tag {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    font-size: 0.72rem;
+    padding: 3px 9px;
+    border-radius: 10px;
+  }
+  .flow-phone-cta {
+    margin-top: 18px;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    border-radius: 13px;
+    padding: 14px;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(124,179,66,0.3);
+  }
+  .flow-phone-cta .cta-text {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .flow-phone-cta a {
+    display: inline-block;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+  }
+  .flow-phone-cta .cta-sub {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.75);
+    margin-top: 3px;
+  }
+</style>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <!-- Google Analytics GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX', {
+      send_page_view: true,
+      page_title: '佐伯葬祭 葬礼支援服务',
+      page_path: '/funeral-support'
+    });
+
+    // ============================================================
+    // GA4 カスタムイベント发送ヘルパー
+    // ============================================================
+    const STEP_LABELS = {
+      1: '基本信息填写',
+      2: '人数·葬礼形式',
+      3: '方案选择',
+      4: '仪式场地选择',
+      5: '套餐选择',
+      6: 'AIチャット咨询',
+      7: '报价确认',
+      8: '发送完成'
+    };
+
+    function gaTrack(eventName, params = {}) {
+      if (typeof gtag === 'undefined') return;
+      gtag('event', eventName, {
+        app_name: 'saiki_funeral_support',
+        ...params
+      });
+    }
+
+    // ステップ表示イベント（仮想ページビュー）
+    function gaStepView(stepNum) {
+      const label = STEP_LABELS[stepNum] || 'ステップ' + stepNum;
+      gaTrack('step_view', {
+        step_number: stepNum,
+        step_label: label,
+        page_path: '/funeral-support/step' + stepNum,
+        page_title: 'STEP' + stepNum + ': ' + label
+      });
+      // GA4 の仮想ページビューとしても发送
+      gtag('config', 'G-XXXXXXXXXX', {
+        page_path: '/funeral-support/step' + stepNum,
+        page_title: 'STEP' + stepNum + ': ' + label
+      });
+    }
+
+    // 離脱イベント（visibilitychange + beforeunload）
+    let _gaExitSent = false;
+    function gaSendExit() {
+      if (_gaExitSent) return;
+      _gaExitSent = true;
+      if (typeof state === 'undefined') return;
+      const step = state.currentStep || 1;
+      const label = STEP_LABELS[step] || 'ステップ' + step;
+      // sendBeacon で確実に发送
+      if (navigator.sendBeacon) {
+        const body = JSON.stringify({
+          event: 'step_exit',
+          step_number: step,
+          step_label: label
+        });
+        // GA4 Measurement Protocol へ发送（スタンドアロン）
+        gaTrack('step_exit', {
+          step_number: step,
+          step_label: label,
+          engagement_time_msec: Date.now() - _gaPageStart
+        });
+      }
+    }
+    const _gaPageStart = Date.now();
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') gaSendExit();
+    });
+    window.addEventListener('pagehide', gaSendExit);
+    window.addEventListener('beforeunload', gaSendExit);
+  </script>
+</head>
+<body>
+
+
+<!-- ===== 发送中オーバーレイ ===== -->
+<div class="submit-overlay" id="submitOverlay">
+  <div class="submit-spinner"></div>
+  <div class="submit-overlay-text">发送中，请稍候…</div>
+</div>
+<div class="app-header">
+  <h1>⚘ 佐伯葬祭 葬礼支援服务</h1>
+  <p>感谢您的委托。<br>正式商谈前的信息预填写应用</p>
+</div>
+
+<!-- 语音输入引导横幅 -->
+<div class="voice-notice">
+  <div class="icon">🎙️</div>
+  <div class="text">
+    关于语音输入的使用说明：<br>
+    即使有少许错字或输入错误也没关系。<br>
+    负责人确认后将为您细心处理。
+  </div>
+</div>
+
+<!-- 途中保存バナー -->
+<div id="autoSaveBanner" style="display:none; background:linear-gradient(135deg,#e8f5e9,#c8e6c9); border-bottom:2px solid #4caf50; padding:8px 18px; font-size:0.88rem; color:#2e7d32; display:flex; align-items:center; justify-content:space-between; gap:8px;">
+  <span id="autoSaveMsg">💾 已自动保存填写内容</span>
+  <button onclick="clearSavedData()" style="background:none; border:1px solid #4caf50; color:#2e7d32; border-radius:6px; padding:3px 10px; font-size:0.8rem; cursor:pointer;">清除</button>
+</div>
+
+<!-- 进度条 -->
+<div class="progress-bar" id="progressBar">
+  <div class="step-dot active" id="dot1">1</div>
+  <div class="step-connector" id="con1"></div>
+  <div class="step-dot" id="dot2">2</div>
+  <div class="step-connector" id="con2"></div>
+  <div class="step-dot" id="dot3">3</div>
+  <div class="step-connector" id="con3"></div>
+  <div class="step-dot" id="dot4">4</div>
+  <div class="step-connector" id="con4"></div>
+  <div class="step-dot" id="dot5">5</div>
+  <div class="step-connector" id="con5"></div>
+  <div class="step-dot" id="dot6">6</div>
+  <div class="step-connector" id="con6"></div>
+  <div class="step-dot" id="dot7">7</div>
+  <div class="step-connector" id="con7"></div>
+  <div class="step-dot" id="dot8">8</div>
+</div>
+
+<!-- ===== STEP 1: 基本信息 ===== -->
+<div class="step active" id="step1">
+  <div class="step-title"><span class="step-title-text"><span class="step-num">1</span>请告知我们您的基本信息</span><button class="btn-restart-topright no-print" onclick="restartApp()">🔄 重新开始</button></div>
+  
+  <div class="form-group">
+    <label class="form-label">您的姓人<span class="required">*</span></label>
+    <input type="text" class="form-input" id="name" placeholder="例：山田 太郎">
+    <div class="error-msg" id="nameError">请输入您的姓人</div>
+  </div>
+  
+  <div class="form-group">
+    <label class="form-label">与逝者的关系<span class="required">*</span></label>
+    <select class="form-select" id="relation">
+      <option value="">--- 请选择 ---</option>
+      <option value="spouse">配偶（丈夫·妻子）</option>
+      <option value="parent">父母</option>
+      <option value="child">子女</option>
+      <option value="sibling">兄弟姐妹</option>
+      <option value="grandparent">祖父母</option>
+      <option value="inlaw">岳父母/公婆</option>
+      <option value="relative">其他亲属</option>
+      <option value="other">其他</option>
+    </select>
+    <div class="error-msg" id="relationError">请选择与逝者的关系</div>
+  </div>
+  
+  <div class="form-group">
+    <label class="form-label">联系电话（选填）</label>
+    <input type="tel" class="form-input" id="phone" placeholder="例：0120-315-312">
+  </div>
+  
+  <div class="info-box">
+    📋 您填写的信息仅用于制作报价。<br>
+    个人信息将严格保密。
+  </div>
+  
+  <div class="nav-buttons">
+    <button class="btn-next" onclick="goToStep(2)">下一步 → 人数·葬礼形式</button>
+  </div>
+</div>
+
+<!-- ===== STEP 2: 参列人数·葬礼形式 ===== -->
+<div class="step" id="step2">
+  <div class="step-title"><span class="step-title-text"><span class="step-num">2</span>参列人数·葬礼形式</span><button class="btn-restart-topright no-print" onclick="restartApp()">🔄 重新开始</button></div>
+  
+  <div class="form-group">
+    <label class="form-label">请告知预计参列人数<span class="required">*</span></label>
+    <div class="btn-group" id="attendanceGroup">
+      <button class="btn-choice" onclick="selectAttendance(this,'under5')" data-value="under5">
+        <span class="choice-icon">👤</span>
+        <span class="choice-text">
+          <strong>5人以下</strong>
+          <div class="choice-desc">仅最亲近的家庭成员（适合直葬·密葬）</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectAttendance(this,'under15')" data-value="under15">
+        <span class="choice-icon">👥</span>
+        <span class="choice-text">
+          <strong>15人以下</strong>
+          <div class="choice-desc">以近亲为中心的小型家庭葬</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectAttendance(this,'15to30')" data-value="15to30">
+        <span class="choice-icon">👨‍👩‍👧‍👦</span>
+        <span class="choice-text">
+          <strong>15人起30人</strong>
+          <div class="choice-desc">包含亲属及亲密友人的家庭葬</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectAttendance(this,'30to50')" data-value="30to50">
+        <span class="choice-icon">🏢</span>
+        <span class="choice-text">
+          <strong>30人起50人</strong>
+          <div class="choice-desc">普通葬礼·含熟人·工作关系</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectAttendance(this,'over50')" data-value="over50">
+        <span class="choice-icon">🏛️</span>
+        <span class="choice-text">
+          <strong>50人以上</strong>
+          <div class="choice-desc">大规模普通葬礼·含大量公司·团体关系</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+    </div>
+    <div class="error-msg" id="attendanceError">请选择预计参列人数</div>
+  </div>
+  
+  <div class="form-group" style="margin-top:20px">
+    <label class="form-label">希望的葬礼形式<span class="required">*</span></label>
+    <div class="btn-group" id="funeralTypeGroup">
+      <button class="btn-choice" onclick="selectFuneralType(this,'family')" data-value="family">
+        <span class="choice-icon">🌸</span>
+        <span class="choice-text">
+          <strong>家庭葬</strong>
+          <div class="choice-desc">仅家属·近亲静静送别</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectFuneralType(this,'family_friends')" data-value="family_friends">
+        <span class="choice-icon">🌼</span>
+        <span class="choice-text">
+          <strong>家庭葬但有部分友人参列</strong>
+          <div class="choice-desc">以家庭为中心，但也有数人友人·熟人参列</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectFuneralType(this,'general')" data-value="general">
+        <span class="choice-icon">🌿</span>
+        <span class="choice-text">
+          <strong>普通葬礼（亲属·熟人·工作关系等）</strong>
+          <div class="choice-desc">广泛迎接参列者的普通葬礼</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectFuneralType(this,'general_company')" data-value="general_company">
+        <span class="choice-icon">🏢</span>
+        <span class="choice-text">
+          <strong>普通葬礼且邀请公司·团体关系</strong>
+          <div class="choice-desc">公司·团体·工会等大量参列的大规模葬礼</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectFuneralType(this,'chokuso')" data-value="chokuso">
+        <span class="choice-icon">🕊️</span>
+        <span class="choice-text">
+          <strong>直葬·火葬式</strong>
+          <div class="choice-desc">无守夜·告别式。仅火葬，或最简单的告别</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectFuneralType(this,'kasouonly')" data-value="kasouonly">
+        <span class="choice-icon">⛩️</span>
+        <span class="choice-text">
+          <strong>仅火葬（最简单）</strong>
+          <div class="choice-desc">仅遗体运送和火葬。以最低限度的费用送别</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+    </div>
+    <div class="error-msg" id="funeralTypeError">请选择葬礼形式</div>
+  </div>
+  
+  <div class="nav-buttons">
+    <button class="btn-back" onclick="goToStep(1)">← 返回</button>
+    <button class="btn-next" onclick="goToStep(3)">下一步 → 方案建议</button>
+  </div>
+</div>
+
+<!-- ===== STEP 3: 方案提案（3種類） ===== -->
+<div class="step" id="step3">
+  <div class="step-title"><span class="step-title-text"><span class="step-num">3</span>请选择推荐方案</span><button class="btn-restart-topright no-print" onclick="restartApp()">🔄 重新开始</button></div>
+  <div class="selection-summary" id="step3Summary"></div>
+  
+  <div class="plan-cards" id="planCards">
+    <!-- JavaScriptで動的生成 -->
+  </div>
+  
+  <div class="error-msg" id="planError" style="display:block">请选择方案</div>
+  
+  <div class="nav-buttons">
+    <button class="btn-back" onclick="goToStep(2)">← 返回</button>
+    <button class="btn-next" onclick="goToStep(4)">下一步 → 礼堂选择</button>
+  </div>
+</div>
+
+<!-- ===== STEP 4: 礼堂选择 ===== -->
+<div class="step" id="step4">
+  <div class="step-title"><span class="step-title-text"><span class="step-num">4</span>请选择仪式场地（礼堂）</span><button class="btn-restart-topright no-print" onclick="restartApp()">🔄 重新开始</button></div>
+  <div class="selection-summary" id="step4Summary"></div>
+  
+  <div class="hall-cards" id="hallCards">
+    <!-- JavaScriptで動的生成 -->
+  </div>
+  
+  <button class="hall-all-btn" id="showAllHallsBtn" onclick="showAllHalls()" style="display:none">
+    ▽ 显示所有礼堂
+  </button>
+  
+  <div class="error-msg" id="hallError" style="display:block">请选择礼堂</div>
+  
+  <div class="nav-buttons">
+    <button class="btn-back" onclick="goToStep(3)">← 返回</button>
+    <button class="btn-next" onclick="goToStep(5)">下一步 → 祭坛套餐选择</button>
+  </div>
+</div>
+
+<!-- ===== STEP 5: 套餐选择 ===== -->
+<div class="step" id="step5">
+  <div class="step-title"><span class="step-title-text"><span class="step-num">5</span>请选择祭坛套餐</span><button class="btn-restart-topright no-print" onclick="restartApp()">🔄 重新开始</button></div>
+  <div class="selection-summary" id="step5Summary"></div>
+  
+  <!-- 图片说明注记 -->
+  <div class="image-notice">📷 刊载的祭坛照片仅供参考。关于实际祭坛的详情，请随时向负责人确认。</div>
+  
+  <div class="course-cards" id="courseCards">
+    <!-- JavaScriptで動的生成 -->
+  </div>
+  
+  <div class="info-box">
+    ✨ <strong>明朗会計</strong>的承诺：除事前报价以外，绝无额外收费。<br>
+    如发生人数超过等情况，必定在与主丧家属确认后再进行处理。
+  </div>
+  
+  <div class="error-msg" id="courseError" style="display:block">请选择套餐</div>
+  
+  <div class="nav-buttons">
+    <button class="btn-back" onclick="goToStep(4)">← 返回</button>
+    <button class="btn-next" onclick="goToStep(6)">下一步 → 需求与疑虑</button>
+  </div>
+</div>
+
+<!-- ===== STEP 6: ご希望・ご不安（聊天机器人） ===== -->
+<div class="step" id="step6">
+  <div class="step-title"><span class="step-title-text"><span class="step-num">6</span>请告诉我们您的需求与疑虑</span><button class="btn-restart-topright no-print" onclick="restartApp()">🔄 重新开始</button></div>
+  
+  <!-- よくある質問 FAQ面板 -->
+  <div class="faq-panel" id="faqPanel">
+    <div class="faq-panel-header" onclick="toggleFaq()">
+      <div class="faq-panel-header-left">
+        <span>💡</span>
+        <span>常见问题列表（点击即可在聊天中提问）</span>
+        <span id="faqUsedCount" style="font-size:0.72rem; background:#4caf50; color:#fff; padding:1px 7px; border-radius:10px; display:none;">0件已提问</span>
+      </div>
+      <span class="faq-toggle-icon" id="faqToggleIcon">▼</span>
+    </div>
+    <div class="faq-body" id="faqBody">
+
+      <div class="faq-category">
+        <span class="faq-category-label">💰 费用·付款</span>
+        <div class="faq-items">
+          <button class="faq-btn" onclick="faqClick(this,'请告诉我关于费用的信息')"><span class="faq-icon">❓</span>请告诉我关于费用的信息</button>
+          <button class="faq-btn" onclick="faqClick(this,'会有额外费用吗？')"><span class="faq-icon">❓</span>会有额外费用吗？</button>
+          <button class="faq-btn" onclick="faqClick(this,'可以分期付款吗？')"><span class="faq-icon">❓</span>可以分期付款吗？</button>
+          <button class="faq-btn" onclick="faqClick(this,'请告诉我会员折扣的详情')"><span class="faq-icon">❓</span>请告诉我会员折扣的详情</button>
+          <button class="faq-btn" onclick="faqClick(this,'关于葬礼费补助金·还礼')"><span class="faq-icon">❓</span>关于葬礼费补助金·还礼</button>
+        </div>
+      </div>
+
+      <div class="faq-category">
+        <span class="faq-category-label">📋 手续·流程</span>
+        <div class="faq-items">
+          <button class="faq-btn" onclick="faqClick(this,'请告诉我葬礼的流程')"><span class="faq-icon">❓</span>请告诉我葬礼的流程</button>
+          <button class="faq-btn" onclick="faqClick(this,'死亡后政府部门的手续是什么？')"><span class="faq-icon">❓</span>死亡后政府部门的手续是什么？</button>
+          <button class="faq-btn" onclick="faqClick(this,'请告诉我关于死亡诊断书的信息')"><span class="faq-icon">❓</span>请告诉我关于死亡诊断书的信息</button>
+          <button class="faq-btn" onclick="faqClick(this,'需要联系的范围有哪些？')"><span class="faq-icon">❓</span>需要联系的范围有哪些？</button>
+          <button class="faq-btn" onclick="faqClick(this,'请告诉我守夜和告别式的区别')"><span class="faq-icon">❓</span>请告诉我守夜和告别式的区别</button>
+        </div>
+      </div>
+
+      <div class="faq-category">
+        <span class="faq-category-label">🏷️ 宗教·供奉</span>
+        <div class="faq-items">
+          <button class="faq-btn" onclick="faqClick(this,'供奉费的大致标准是多少？')"><span class="faq-icon">❓</span>供奉费的大致标准是多少？</button>
+          <button class="faq-btn" onclick="faqClick(this,'可以举行无宗教·无宗派葬礼吗？')"><span class="faq-icon">❓</span>可以举行无宗教·无宗派葬礼吗？</button>
+          <button class="faq-btn" onclick="faqClick(this,'可以接受其他宗派吗？')"><span class="faq-icon">❓</span>可以接受其他宗派吗？</button>
+          <button class="faq-btn" onclick="faqClick(this,'骨灰盒的种类有哪些区别？')"><span class="faq-icon">❓</span>骨灰盒的种类有哪些区别？</button>
+        </div>
+      </div>
+
+      <div class="faq-category">
+        <span class="faq-category-label">👶 关于子女参列</span>
+        <div class="faq-items">
+          <button class="faq-btn" onclick="faqClick(this,'小孩子也可以参列吗？')"><span class="faq-icon">❓</span>小孩子也可以参列吗？</button>
+          <button class="faq-btn" onclick="faqClick(this,'有儿童区吗？')"><span class="faq-icon">❓</span>有儿童区吗？</button>
+          <button class="faq-btn" onclick="faqClick(this,'有哺乳室和换尿布的地方吗？')"><span class="faq-icon">❓</span>有哺乳室和换尿布的地方吗？</button>
+        </div>
+      </div>
+
+      <div class="faq-category">
+        <span class="faq-category-label">🌸 告别·演出</span>
+        <div class="faq-items">
+          <button class="faq-btn" onclick="faqClick(this,'想摆放很多鲜花')"><span class="faq-icon">❓</span>想摆放很多鲜花</button>
+          <button class="faq-btn" onclick="faqClick(this,'想播放音乐·影像')"><span class="faq-icon">❓</span>想播放音乐·影像</button>
+          <button class="faq-btn" onclick="faqClick(this,'想和宠物一起告别')"><span class="faq-icon">❓</span>想和宠物一起告别</button>
+          <button class="faq-btn" onclick="faqClick(this,'想制作带照片的牌位')"><span class="faq-icon">❓</span>想制作带照片的牌位</button>
+        </div>
+      </div>
+
+      <div class="faq-category">
+        <span class="faq-category-label">😷 感染症·健康对应</span>
+        <div class="faq-items">
+          <button class="faq-btn" onclick="faqClick(this,'因感染症去世时的应对方式是什么？')"><span class="faq-icon">❓</span>因感染症去世时的应对方式是什么？</button>
+          <button class="faq-btn" onclick="faqClick(this,'想限制参列者人数时怎么办？')"><span class="faq-icon">❓</span>想限制参列者人数时怎么办？</button>
+        </div>
+      </div>
+
+    </div><!-- /faq-body -->
+  </div><!-- /faq-panel -->
+
+  <!-- 聊天机器人UI -->
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <div class="bot-avatar">🤝</div>
+      <div>
+        <div>佐伯葬祭 咨询支援</div>
+        <div style="font-size:0.72rem; opacity:0.85;">关于任何需求与疑虑，请随时告知</div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <!-- メッセージはJSで添加 -->
+    </div>
+    <div class="typing-dots" id="typingIndicator" style="display:none; padding:8px 14px; background:#fff; border-radius:16px; margin:4px 12px; align-self:flex-start;">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="quick-replies" id="quickReplies" style="display:none;">
+      <!-- 快速回复はJSで添加 -->
+    </div>
+    <div class="chat-input-area">
+      <textarea class="chat-input" id="chatInput" rows="1" placeholder="请输入消息… ※音声填写の誤字も大丈夫" onkeydown="chatKeyDown(event)"></textarea>
+      <button class="chat-send-btn" id="chatSendBtn" onclick="sendChatMessage()" title="发送">➤</button>
+    </div>
+  </div>
+  
+  <!-- チャット完成バナー -->
+  <div class="chat-done-banner" id="chatDoneBanner">
+    ✅ 感谢您的填写。负责人确认内容后将为您细心处理。
+  </div>
+  
+  <!-- 会员确认 -->
+  <div class="form-group" style="margin-top:4px;">
+    <label class="form-label">您是安心会馆会员吗？</label>
+    <div class="btn-group" id="memberGroup">
+      <button class="btn-choice" onclick="selectMember(this,'yes')">
+        <span class="choice-icon">💳</span>
+        <span class="choice-text">
+          <strong>我是会员</strong>
+          <div class="choice-desc">将享受35%折扣的会员价格</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectMember(this,'join')">
+        <span class="choice-icon">🎉</span>
+        <span class="choice-text">
+          <strong>当日入会 <span class="join-badge">30%割引</span></strong>
+          <div class="choice-desc">当日入会也可享受30%折扣</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectMember(this,'no')">
+        <span class="choice-icon">📝</span>
+        <span class="choice-text">
+          <strong>我不是会员</strong>
+          <div class="choice-desc">将以一般价格提供服务</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectMember(this,'unknown')">
+        <span class="choice-icon">❓</span>
+        <span class="choice-text">
+          <strong>我不确定</strong>
+          <div class="choice-desc">负责人将为您确认</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+    </div>
+  </div>
+  
+  <div class="nav-buttons">
+    <button class="btn-back" onclick="goToStep(5)">← 返回</button>
+    <button class="btn-next" onclick="goToStep(7)">下一步 → 报价确认</button>
+  </div>
+</div>
+
+<!-- ===== STEP 7: 报价确认 ===== -->
+<div class="step" id="step7">
+  <div class="step-title"><span class="step-title-text"><span class="step-num">7</span>报价确认</span><button class="btn-restart-topright no-print" onclick="restartApp()">🔄 重新开始</button></div>
+  
+  <div class="estimate-card" id="estimateCard">
+    <!-- JavaScriptで動的生成 -->
+  </div>
+  
+  <div class="info-box">
+    ⚠️ 以上为报价参考。招待费用·可选项费用等将根据参列人数和内容有所变动。<br>
+    详情请向负责人确认。
+  </div>
+  
+  <!-- PDF・LINE・メール 分享ボタン（改善版） -->
+  <div class="estimate-action-buttons">
+    <button class="btn-estimate-action btn-pdf" onclick="gaTrack('pdf_download',{step:state.currentStep}); downloadEstimatePDF()">
+      <span class="btn-icon">📄</span>
+      <span class="btn-label">
+        <span class="btn-label-main">PDF保存</span>
+        <span class="btn-label-sub">将报价保存为PDF文件</span>
+      </span>
+    </button>
+    <button class="btn-estimate-action btn-line" onclick="gaTrack('line_share',{step:state.currentStep}); shareToLINE()">
+      <span class="btn-icon">💬</span>
+      <span class="btn-label">
+        <span class="btn-label-main">LINE分享</span>
+        <span class="btn-label-sub">将详细报价内容发送到LINE</span>
+      </span>
+    </button>
+    <button id="sendEstimateEmailBtn" class="btn-estimate-action btn-email" onclick="gaTrack('email_send_click',{step:state.currentStep}); sendEstimateEmail()">
+      <span class="btn-icon">✉️</span>
+      <span class="btn-label">
+        <span class="btn-label-main">邮件发送</span>
+        <span class="btn-label-sub">通过邮件将报价发送给负责人</span>
+      </span>
+    </button>
+    <button class="btn-estimate-action btn-sms" onclick="smsShare()">
+      <span class="btn-icon">📱</span>
+      <span class="btn-label">
+        <span class="btn-label-main">短信发送</span>
+        <span class="btn-label-sub">通过短信发送内容</span>
+      </span>
+    </button>
+  </div>
+
+  <!-- 邮件发送結果バナー（step7用） -->
+  <div id="estimateEmailBanner" style="display:none; margin-top:12px; padding:12px 16px; border-radius:10px; font-size:0.92rem; font-weight:bold; line-height:1.6;"></div>
+
+  <div class="nav-buttons">
+    <button class="btn-back" onclick="goToStep(6)">← 返回</button>
+    <button class="btn-finish" id="submitBtn" onclick="submitAndComplete()">✔ 发送并完成</button>
+  </div>
+</div>
+
+<!-- ===== STEP 8: 完成 ===== -->
+<div class="step" id="step8">
+
+  <!-- 紙吹雪 -->
+  <div class="confetti-wrap no-print" id="confettiWrap"></div>
+
+  <!-- 感謝メッセージカード -->
+  <div class="complete-card">
+    <div class="complete-icon">🌸</div>
+    <div class="complete-badge">✨ 填写完成 ✨</div>
+    <div class="complete-title">
+      感谢您的填写！<br>
+      衷心感谢
+    </div>
+    <div class="complete-subtitle">⚘ 佐伯葬祭全体工作人员</div>
+    <div class="complete-divider"></div>
+    <div class="complete-text">
+      负责人将在约定时间到达。<br>
+      我们将用心确认商谈内容。<br><br>
+      如有紧急情况，请致电联系。<br>
+      24小时365天，随时为您服务。
+      <br><br>
+      <a class="complete-phone no-print" href="tel:0120315312">
+        📞 0120-315-312
+      </a>
+      <div class="complete-hours">24時間 365日 年中無休</div>
+    </div>
+  </div>
+
+  <!-- 打印専用页眉 -->
+  <div class="print-header" id="printHeader">
+    <h2>⚘ 佐伯葬祭 葬礼支援服务 报价＆咨询记录</h2>
+    <p id="printDate"></p>
+  </div>
+
+  <div class="submit-result-banner" id="submitResultBanner"></div>
+
+  <div id="finalSummary" style="background:#fff; border-radius:12px; border:2px solid var(--clr-border); padding:16px; margin-bottom:16px; font-size:0.87rem; line-height:1.9;"></div>
+
+  <!-- チャット会話履歴（PDF打印用） -->
+  <div class="print-chat-log" id="printChatLog">
+    <div class="print-chat-log-title">💬 需求与疑虑 聊天记录</div>
+    <div id="printChatMessages"></div>
+  </div>
+
+  <!-- アクションボタン -->
+  <div class="step8-actions no-print">
+    <div class="step8-actions-title">💚 保存·分享报价</div>
+
+    <button class="btn-s8 btn-s8-line" onclick="shareToLINE()">
+      <span class="s8-icon">💬</span>
+      <span class="s8-label">
+        <span class="s8-main">LINE分享</span>
+        <span class="s8-sub">将报价详情发送到LINE</span>
+      </span>
+    </button>
+
+    <button class="btn-s8 btn-s8-sms" onclick="smsShare()">
+      <span class="s8-icon">📱</span>
+      <span class="s8-label">
+        <span class="s8-main">通过短信分享</span>
+        <span class="s8-sub">通过短信发送</span>
+      </span>
+    </button>
+
+    <button class="btn-s8 btn-s8-pdf" onclick="printPage()">
+      <span class="s8-icon">🖨️</span>
+      <span class="s8-label">
+        <span class="s8-main">打印·保存PDF</span>
+        <span class="s8-sub">将报价保存为PDF</span>
+      </span>
+    </button>
+
+    <div class="step8-actions-title" style="margin-top:8px;">🔄 重新开始</div>
+    <button class="btn-s8 btn-s8-restart" onclick="restartApp()">
+      <span class="s8-icon">🔄</span>
+      <span class="s8-label">
+        <span class="s8-main">返回首页重新开始</span>
+        <span class="s8-sub">⚘ 返回佐伯葬祭 葬礼支援服务首页</span>
+      </span>
+    </button>
+  </div>
+
+  <!-- ===== 葬儀の流れ タイムライン ===== -->
+  <div class="flow-section no-print">
+    <div class="flow-section-title">📋 葬礼流程（以一般家庭葬为例）</div>
+
+    <!-- フェーズ1: 申込・準備 -->
+    <div class="flow-phase-label">
+      <span class="flow-phase-badge">📞 申请·准备</span>
+      <span class="flow-phase-line"></span>
+    </div>
+    <div class="flow-timeline">
+
+      <div class="flow-item">
+        <div class="flow-badge"><span>STEP</span><span class="badge-num">1</span></div>
+        <div class="flow-card">
+          <div class="flow-header">
+            <span class="flow-icon">📞</span>
+            <span class="flow-title">电话联系</span>
+            <span class="flow-timing">逝世后立即</span>
+          </div>
+          <div class="flow-desc">
+            请首先致电佐伯葬祭。24小时365天，专业工作人员随时应对。最短30分钟内接送车将前往迎接。
+            <div class="flow-note">📱 0120-315-312（24小时·免费）<br>需告知事项：逝者姓名 / 接送地点 / 目的地</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-badge"><span>STEP</span><span class="badge-num">2</span></div>
+        <div class="flow-card">
+          <div class="flow-header">
+            <span class="flow-icon">🚐</span>
+            <span class="flow-title">遗体运送·安置</span>
+            <span class="flow-timing">当日～翌日</span>
+          </div>
+          <div class="flow-desc">
+            从医院等逝世地点运送至家中或停尸所。接收医师开具的死亡诊断书。枕边摆件和干冰由佐伯葬祭准备。
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-badge"><span>STEP</span><span class="badge-num">3</span></div>
+        <div class="flow-card">
+          <div class="flow-header">
+            <span class="flow-icon">📋</span>
+            <span class="flow-title">商谈·准备·入棺木</span>
+            <span class="flow-timing">1日目</span>
+          </div>
+          <div class="flow-desc">
+            与工作人员商谈日期·地点·内容·费用。根据您的预算提供方案建议。推荐家庭参与式入棺木仪式。
+            <div class="flow-note">📄 需准备的物品：死亡诊断书 / 照片 / 印章<br>※火葬许可申请由佐伯葬祭免费代办</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /flow-timeline 申込準備 -->
+
+    <!-- フェーズ2: 守夜 -->
+    <div class="flow-phase-label">
+      <span class="flow-phase-badge">🕯️ 守夜</span>
+      <span class="flow-phase-line"></span>
+    </div>
+    <div class="flow-timeline">
+
+      <div class="flow-item">
+        <div class="flow-badge"><span>STEP</span><span class="badge-num">4</span></div>
+        <div class="flow-card">
+          <div class="flow-header">
+            <span class="flow-icon">🕯️</span>
+            <span class="flow-title">守夜</span>
+            <span class="flow-timing">1～2日目 夕方（18:00～）</span>
+          </div>
+          <div class="flow-desc">
+            在僧侣诵经下，按家属→亲属→吊唁者的顺序焚香。关于接待方式等，事前将细心提供建议。<br>※在逝世当日至次日傍晚举行。根据运送和商谈时机，可能在第1天或第2天举行。
+            <div class="flow-note">
+              🕐 <strong>開式目安：18:00～</strong>（受理从30分钟前 17:30开始）<br>
+              🕡 <strong>終式目安：18:30～19:00</strong><br>
+              ⏱️ 通夜式：<strong>约30～60分</strong><br>
+              🌙 之后，家属与故人共度一夜（守夜招待）
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /flow-timeline 守夜 -->
+
+    <!-- フェーズ3: 葬儀当日 -->
+    <div class="flow-phase-label">
+      <span class="flow-phase-badge">⛩️ 葬儀当日</span>
+      <span class="flow-phase-line"></span>
+    </div>
+    <div class="flow-timeline">
+
+      <div class="flow-item">
+        <div class="flow-badge"><span>STEP</span><span class="badge-num">5</span></div>
+        <div class="flow-card">
+          <div class="flow-header">
+            <span class="flow-icon">⛩️</span>
+            <span class="flow-title">葬礼·告别式·火葬</span>
+            <span class="flow-timing">守夜翌日</span>
+          </div>
+          <div class="flow-desc">
+            告别式（约1小时）→ 告别仪式 → 出棺木 → 前往火葬场。工作人员陪同至火葬场。火葬后捡骨。
+            <div class="flow-note">⏱️ 告別式：约1時間 / 火葬：约1時間15～30分</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-badge"><span>STEP</span><span class="badge-num">6</span></div>
+        <div class="flow-card">
+          <div class="flow-header">
+            <span class="flow-icon">🙏</span>
+            <span class="flow-title">七七忌日法事·素食解除</span>
+            <span class="flow-timing">葬儀当日 午後</span>
+          </div>
+          <div class="flow-desc">
+            回家后举行七七忌日法事，在素食解除宴会（会席）后散会。这是致谢和慰劳的场合。
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /flow-timeline 葬儀当日（告別式・火葬） -->
+
+    <!-- フェーズ4: 葬礼后支援 -->
+    <div class="flow-phase-label">
+      <span class="flow-phase-badge">🤝 葬礼后支援</span>
+      <span class="flow-phase-line"></span>
+    </div>
+    <div class="flow-timeline">
+      <div class="flow-item">
+        <div class="flow-badge"><span>STEP</span><span class="badge-num">7</span></div>
+        <div class="flow-card">
+          <div class="flow-header">
+            <span class="flow-icon">🤝</span>
+            <span class="flow-title">葬礼后支援</span>
+            <span class="flow-timing">葬儀後～</span>
+          </div>
+          <div class="flow-desc">
+            专任工作人员免费提供建议。持续支援直至四十九日·周年忌法事。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 葬儀後に必要なこと -->
+    <div class="flow-after-section">
+      <div class="after-title">📝 葬礼后需要办理的事项（全部免费支援）</div>
+      <div class="flow-after-items">
+        <span class="flow-after-tag">对寺庙的答谢</span>
+        <span class="flow-after-tag">安排还礼</span>
+        <span class="flow-after-tag">准备牌位·佛坛</span>
+        <span class="flow-after-tag">准备纳骨·墓地</span>
+        <span class="flow-after-tag">向政府部门的各类申报</span>
+        <span class="flow-after-tag">四十九日法事说明</span>
+        <span class="flow-after-tag">周年忌法事咨询</span>
+      </div>
+    </div>
+
+    <!-- CTA電話 -->
+    <div class="flow-phone-cta">
+      <div class="cta-text">🕐 24小时365天 · 随时欢迎咨询和委托</div>
+      <a href="tel:0120315312">📞 0120-315-312</a>
+      <div class="cta-sub">⚘ 佐伯葬祭全体工作人员</div>
+    </div>
+
+  </div>
+  <!-- ===== /葬儀の流れ タイムライン ===== -->
+
+<script>
+// ========== データ定義 ==========
+
+const IMG = {
+  ai:   'https://sspark.genspark.ai/cfimages?u1=nT5quTOKQ7O6dN7%2FNZqDTumLphmArsXpAg%2FidVQwm9xnCQhDF9nD0K5Vj%2B3Ic9IiPSrjpsjx5xXkgq4y7DwnkHLTh%2Ba6HyQEHwJEx25n0YltONjDzioxzvWXdJ6ZCtqrTZRiCeC0F%2BrZHUMHJA2F9LMQWEXKwTA7ig%3D%3D&u2=GPKZhykKgNRdFIQs&width=1024',
+  hana: 'https://sspark.genspark.ai/cfimages?u1=FWRGlMdJPTl3PkI6X3H4m9beWqR1IwPAuodXFneVtcj77uRI1lhaGtGnjkW60XPe%2B50mc6%2B2l%2F8QCfmWlTTO6oGZq%2B%2BIRz9XcYLwpk2aH7tTksxRmwNH2RZqTOFP%2FBIs6675Ze1Wg4ofi%2BGsbq9GQsi1Q8MI02Pl2jnd&u2=UR%2Bcdja2fICIA7bS&width=1024',
+  kaori:'https://sspark.genspark.ai/cfimages?u1=8S5IE1Ne3ZILlI47bWm6xsbrfU4k54OwY7DeUh57bak1y4x4uiVhjYgl4oU6NVAYfK53x4d6K4aoLL2OeJyXli1wT%2Bj7OZ8Y0Gh9yCDdZJD%2F1lL65odcpj1IB%2BPf4wCFI5ewgDC5%2BVU3oRgMKtvf27wgSB0R1wkpRDdgRg%3D%3D&u2=p0bJTs%2FGuJ5EKbF%2B&width=1024',
+  kaga: 'https://sspark.genspark.ai/cfimages?u1=eLpG%2FgY9JBLEumdLrEdSh26WP5dQREM%2FhDIjvZj9XQcar2XLClGcgSrEoQDPOTNlQwfMWS594Z5XHefZjloMLGCPSG3FPAxsSTKMCYzvfQAs1ExspKqYbTqBBsb8SCr%2FuvUvIsxfixxGMmwpWDG7oW0V%2Bo9juresvwScK%2BDl5Q%3D%3D&u2=T6urtJBYLpuVuwF8&width=1024',
+  // リビング套餐専用祭壇
+  living_ai:   'https://sspark.genspark.ai/cfimages?u1=pQpKKeEit3T9d7xBH4%2FbkbxeT%2Bwy9%2BUb0jw%2BCfOiUELGvqH%2FTHjd7IpASiGd9m83Yuc34Z3VKf021c6SMgRkAMU5dC08CnBU5ZdDrNrfwyRryR6flCHsN9qjTULqPAGXIHCY5mSFQzy3QHEWy%2FRjBepfsCSlfpZGX95SOukidbNnkQ%3D%3D&u2=iFIWuiLz%2Bzm21Ze9&width=1024',
+  living_hana: 'https://sspark.genspark.ai/cfimages?u1=cU2vptQ%2FUqgCGxAKelTq72ns9gQVLQrr7wLhjskjn6vEOR641G7HRRDjdmy4XgnZVlWDmckp6F6pqE2G8V185ViXlNLPjAieO%2B8BEHeVhefCBgKtQo65nKzKWEQLRNCxMXWzTYHDb3q7KJdI0Vkl9zqEanElyc2i1RpqcWroUOB%2B%2BhYP&u2=xCwpakZRKWanbsIT&width=1024',
+  living_kaori:'https://sspark.genspark.ai/cfimages?u1=KUY6g73bfffIgq6C1jLH%2BNXDFuxm659dFSL8N%2Fzwu2PkpOT93sV9ne0x8iUh%2BxUsgtF8c3EW6%2BKo8cD6xfN1%2Bqj%2BnZhqeqdFL1gnnGU%2BgICZvbo5Z5Sv75Q6pdXVo%2FvJP9RRHzwzgLTECBF9X8Yb378VC5qho5JSFC%2BZvkcFJpjT46Rauw%3D%3D&u2=Ve6n9dmTfkAK1ghM&width=1024',
+  living_kaga: 'https://sspark.genspark.ai/cfimages?u1=AMAkgqbTLhc7%2FogDXeBRWO1e78FQWv7SBbnyBKZkl%2BYbvezlMwzmWA8QvM506lg%2FoE7tPal9S1SP43kpOy%2FNcz7q8UigB3GNcFd%2BnHEZmIpa2Dfs6jZ%2BSCqj0dFfZGQhq7tAdPuUZ56qIgKSjLkuC4mzSzPmngZOzlcS3r7ciVLqCBl2wqzrmQ%3D%3D&u2=YJiuuTwO0gdaMBeM&width=1024',
+  // 普通葬礼（普通葬礼・社葬）用祭壇套餐画像
+  normal_ai:   'https://sspark.genspark.ai/cfimages?u1=uMRcdm1xpP9GYchwtMAz%2BRAbf51Y3kI8JgeTOwoBpd9koXXX7hPqLXqDgQE1%2F3PaVAg4YncJ8k8G72PUiKzE9HaKZ5BlhsWBiECb7MhB%2FVxtfAWyveRLqdqbhYiBTvwGo0uM9iDewHUXWGqdjElStx74Ndg5Tcg%2Flg%3D%3D&u2=ISZiChn%2FHVtCqTYG&width=1024',
+  normal_hana: 'https://sspark.genspark.ai/cfimages?u1=etYilXsc3vfgPm%2B8f7fiKpLNqHZwwgJKvLOOD7QdCRDLymkDTKhBF0PgdTlcBPjLOBNGebzg6d0J4DeoW4mYwIq8mcUDV8IYNgnlFg88TrTIAQwkHc3aPmETDdEhvpXAWNuka4kcwp2TFFEEu9eyWHyW6qlbTj8HBWBO&u2=4l0f%2FXeCgDBIMUk2&width=1024',
+  normal_kaori:'https://sspark.genspark.ai/cfimages?u1=jOfhCOa1OBQ4eWdSgOliHfIikh99Tr9D9PWHof1pWOWAqVUYokBp0nkTCL8DB3r4gJmKY3%2BFp0mwHTTIPL%2F7KTbqf2Wwuy7Lgtfi9%2BLcgiYU6MJVz%2Bxqecy%2FBhIbMSKtmeMuiiuVFLGldiCaSPMXPigprq1WpKGJskmbzg%3D%3D&u2=UXKKjApTHPoFU0Aw&width=1024',
+  normal_kaga: 'https://sspark.genspark.ai/cfimages?u1=qBuQPaqQAofp%2BODq2Bae%2BCP%2BZhhDJ2ogcLNjXxH%2FI67HNSCmJFKWnDN%2BYONmbXMves8QF8JWcbcAJaX1O6q%2B1214%2BXd9VLILrqvp%2BAh%2Fx8Ap70MMHAyIjdcz%2B8m69gqylvfOvHJ45gFoUY8l8oOSajZZnVIwfKKGyCmMfnvzdA%3D%3D&u2=mLMLU1UrxzAkoGkL&width=1024',
+  // 礼堂外観
+  hall_forest:  'https://sspark.genspark.ai/cfimages?u1=ZxNYfsT0wXO2oedmP7dwJF6PmvAgl7isNVyCT41opAVERCNiFv0VRue21cC280CRvzmH4UASNkAi2zopOpI%2FcLmbcJ%2FitYNdQbWqx0xCLSdljxTsLdpN0uE%2FvwUwv1iiDlKHPbHYAJULpklqq3nGIT%2F3gZtyBhiU&u2=IFTFT7L6ttpDl6kq&width=1024',
+  hall_yasuragi:'https://sspark.genspark.ai/cfimages?u1=JD3sdHwCd9UguUNbtp83krdMZtBaCLQtAfw9S7P3EiwqC6W1Tw5swfUwQLlSJLO3iyqd8g5qY1Nqto15akUMjHfikrZzXs5uX4IjHMZ7UJ3Rx%2BoklWi%2FQqio0ZCscMydTANKjbqMemP6vgShBwrZpp%2Ff4wpeNbOrmJI%3D&u2=0QUHL4SigXbXR1nY&width=1024',
+  hall_tsutsuji:'https://sspark.genspark.ai/cfimages?u1=7rrDkyC3hIroxC2fluFwHEeksJ0bUNtUcN4C%2Fsg2zXlQ0K9nImnPv%2F0M37bIIXoUPJoNL0OdAoTzljUC6fBdMRkhF3Xe8uTq1u46I%2F6sNDVXpHh03akakvF1JJshqzXwAvUlxD%2BlZL9wdwNU%2BJ%2Bb18cyoYIDaJi6ZbJu3Ns3qNowtw%3D%3D&u2=Y1v%2B37q6FHQe%2Fial&width=1024',
+  hall_yasuura: 'https://sspark.genspark.ai/cfimages?u1=CafYEXSmhhbBOLttGKfJ4vF5JW0t6qd5VAxckRtblge0jogyp8%2BwLD6RlFm4%2FGCZhfJ7OMQ%2FyHjC7OUGt%2BJ9qZjIQddTCdZ4cahjsugE%2FL36XjkCAtGwpVxZlvZSGc62lyceTJrh7piUj38ooHFX6EMiSDfIC3x1J3gMaNRQS88Fb%2B0%3D&u2=Twb2gJDsaPErZw3A&width=1024',
+  hall_shion:   'https://sspark.genspark.ai/cfimages?u1=PXRKn%2BQzvKjS03FE5kPb5tMyTxdDU9zeSeuyCeMczzxWaDghQv%2BtjUxgCzytV5YZiegOcjOw%2FfO3ZIce5U267jm5kkrwRnxdAaYY0YYHPWR4f0j4%2FU1Nv6mJfoP%2FRvLHGP0nrSaK92WZMkjiAdGo0IOuLJa0ELebSEjbsXZIAA%3D%3D&u2=oaG1F%2FmyUvzfUzOP&width=1024',
+  hall_living:  'https://sspark.genspark.ai/cfimages?u1=pQpKKeEit3T9d7xBH4%2FbkbxeT%2Bwy9%2BUb0jw%2BCfOiUELGvqH%2FTHjd7IpASiGd9m83Yuc34Z3VKf021c6SMgRkAMU5dC08CnBU5ZdDrNrfwyRryR6flCHsN9qjTULqPAGXIHCY5mSFQzy3QHEWy%2FRjBepfsCSlfpZGX95SOukidbNnkQ%3D%3D&u2=iFIWuiLz%2Bzm21Ze9&width=1024',
+  hall_ai_chokuso: 'https://saiki-sousai.com/wp-content/themes/tsuqrea-child/assets/img/plan/ai-kaso/lead_pic.jpg',
+};
+
+// プライシング（会员价格・一般价格）
+const PRICING = {
+  compact: { ai:[393800,573800], hana:[471800,651800], kaori:[602800,782800], kaga:[767800,947800] },
+  living:  { ai:[547800,727800], hana:[625800,805800], kaori:[756800,936800], kaga:[921800,1101800] },
+  family:  { ai:[712800,992800], hana:[800800,1080800], kaori:[931800,1211800], kaga:[1096800,1376800] },
+  normal:  { ai:[877800,1157800], hana:[987800,1267800], kaori:[1140800,1420800], kaga:[1327800,1607800] },
+  chokuso: { single:[198000,248000] },  // 直葬·火葬式（套餐选择无）
+  kasou:   { single:[148000,198000] }   // 火葬のみ（最小限）
+};
+
+// 礼堂データ
+const HALLS = {
+  tsutsuji: {
+    id:'tsutsuji', name:'Aifit礼堂 杜鹃', short:'杜鹃',
+    address:'〒739-0006 東広島市西条上市町10-11',
+    access:'JR西条駅起タクシー4分', capacity:'家庭葬専用礼堂（～15人）',
+    image: IMG.hall_tsutsuji, pricingType:'compact',
+    url:'https://saiki-sousai.com/plan/premium-compact-funeral/access#itfit-tsutsuji',
+    maxPeople:15, planLabel:'プレミアム精简家庭葬',
+    badge:'小规模向き', special:''
+  },
+  yasuura: {
+    id:'yasuura', name:'ファミリー礼堂安浦', short:'安浦',
+    address:'〒737-2516 呉市安浦町中央5丁目3-5',
+    access:'JR安浦駅起タクシー2分（徒歩3分）', capacity:'家庭葬専用礼堂（～10人）',
+    image: IMG.hall_yasuura, pricingType:'compact',
+    url:'https://saiki-sousai.com/plan/premium-compact-funeral/access#family-yasuura',
+    maxPeople:10, planLabel:'プレミアム精简家庭葬',
+    badge:'', special:''
+  },
+  living: {
+    id:'living', name:'安心客厅', short:'リビング',
+    address:'〒739-0041 東広島市西条町寺家6282（安心会馆内）',
+    access:'JR西条駅起タクシー3分', capacity:'1組限定・最大20人',
+    image: IMG.hall_living, pricingType:'living',
+    url:'https://saiki-sousai.com/yasuragi-living',
+    maxPeople:20, planLabel:'安心客厅葬',
+    badge:'1日1組限定', special:'living'
+  },
+  yasuragi: {
+    id:'yasuragi', name:'安心会馆', short:'やすらぎ',
+    address:'〒739-0041 東広島市西条町寺家6282',
+    access:'JR西条駅起タクシー3分', capacity:'中・大礼堂（～300人）、小礼堂（～50人）',
+    image: IMG.hall_yasuragi, pricingType:'family',
+    url:'https://saiki-sousai.com/yasuragi',
+    maxPeople:300, planLabel:'家庭葬／普通のお葬式',
+    badge:'大规模対応可', special:''
+  },
+  forest: {
+    id:'forest', name:'森林礼堂', short:'フォレスト',
+    address:'〒739-0042 東広島市西条町西条東1050',
+    access:'JR西条駅起徒歩10分', capacity:'大礼堂（200人以上）、中礼堂（～150人）、小礼堂（～50人）',
+    image: IMG.hall_forest, pricingType:'family',
+    url:'https://saiki-sousai.com/forest-hall',
+    maxPeople:300, planLabel:'家庭葬／普通のお葬式',
+    badge:'大规模対応可', special:''
+  },
+  shion: {
+    id:'shion', name:'Aifitセレモニー礼堂紫苑', short:'紫苑',
+    address:'〒723-0052 広島県三原市皆実2丁目1-16',
+    access:'JR三原駅起タクシー6分', capacity:'中礼堂（～80人）家庭葬可',
+    image: IMG.hall_shion, pricingType:'normal',
+    url:'https://saiki-sousai.com/plan/normal/access#ifit-shion',
+    maxPeople:80, planLabel:'普通のお葬式／親族葬',
+    badge:'三原エリア', special:''
+  },
+  ai_chokuso: {
+    id:'ai_chokuso', name:'あい直葬礼堂', short:'あい直葬',
+    address:'〒739-0041 広島県東広島市西条町寺家6288',
+    access:'📞 0120-315-312（無料）', capacity:'直葬·火葬式専用（～10人）',
+    image: IMG.hall_ai_chokuso, pricingType:'chokuso',
+    url:'https://saiki-sousai.com/plan/ai-kaso/',
+    maxPeople:10, planLabel:'直葬·火葬式専用礼堂',
+    badge:'直葬専用', special:'chokuso'
+  }
+};
+
+// 套餐情報
+const COURSES = {
+  ai:    { name:'愛套餐', kanji:'愛', desc:'シンプルで温かみのある祭壇。落ち着いた雰囲気でお見送り。', color:'#e8f4f8' },
+  hana:  { name:'花套餐', kanji:'花', desc:'美しい花をふんだんに使った、華やかで明るい祭壇。', color:'#fce8f0' },
+  kaori: { name:'香套餐', kanji:'香', desc:'品格ある佇まいの祭壇。故人の尊厳を表現したグレードアップ方案。', color:'#f0f4e8' },
+  kaga:  { name:'輝套餐', kanji:'輝', desc:'最高グレードの豪華な祭壇。大切な方への最上のお別れを。', color:'#f8f4e0' }
+};
+
+// 方案定義（3方案）
+function getPlans(attendance, funeralType) {
+  const plans = [];
+  
+  if(attendance === 'under5') {
+    plans.push({
+      id:'nano', label:'small', name:'スマート方案', icon:'🌿',
+      desc:'ごく身近なご家族5人以下のシンプルなお見送り。最小限の費用で心のこもったお葬式。',
+      halls:['yasuura','tsutsuji'], priceType:'compact', sizeTag:'精简'
+    });
+    plans.push({
+      id:'compact', label:'rec', name:'プレミアム精简家庭葬', icon:'🌸',
+      desc:'少人数でも充実した内容の家庭葬。1日1組のプライベートな式もご用意。',
+      halls:['tsutsuji','living'], priceType:'compact', sizeTag:'推奨'
+    });
+    plans.push({
+      id:'living', label:'large', name:'安心客厅葬', icon:'🏡',
+      desc:'ホームライクな空間で最大20人以内お見送り。1日1組の完全プライベート空間。',
+      halls:['living'], priceType:'living', sizeTag:'ゆとり'
+    });
+  } else if(attendance === 'under15') {
+    plans.push({
+      id:'compact', label:'small', name:'プレミアム精简家庭葬', icon:'🌸',
+      desc:'家庭葬専用礼堂で15人以下のご葬儀。手頃な費用で充実した内容。',
+      halls:['tsutsuji','yasuura'], priceType:'compact', sizeTag:'精简'
+    });
+    plans.push({
+      id:'living', label:'rec', name:'安心客厅葬', icon:'🏡',
+      desc:'1日1組・最大20人。ホームライクなリビング空間でゆったりお見送り。',
+      halls:['living'], priceType:'living', sizeTag:'推奨'
+    });
+    plans.push({
+      id:'family', label:'large', name:'家庭葬', icon:'🌿',
+      desc:'大型礼堂の小礼堂を使用。将来の人数増加にも対応可能なゆとりの方案。',
+      halls:['yasuragi','forest'], priceType:'family', sizeTag:'ゆとり'
+    });
+  } else if(attendance === '15to30') {
+    plans.push({
+      id:'living', label:'small', name:'安心客厅葬', icon:'🏡',
+      desc:'最大20人の客厅葬。20人を超える場合は他礼堂への更改をご検討请。',
+      halls:['living'], priceType:'living', sizeTag:'小规模'
+    });
+    plans.push({
+      id:'family', label:'rec', name:'家庭葬', icon:'🌸',
+      desc:'30人程度まで対応の家庭葬的な式。安心会馆・森林礼堂で承り。',
+      halls:['yasuragi','forest'], priceType:'family', sizeTag:'推奨'
+    });
+    plans.push({
+      id:'normal', label:'large', name:'普通葬礼', icon:'🌿',
+      desc:'普通葬礼スタイル。知人・友人の方々も広くお招きできる充実の内容。',
+      halls:['yasuragi','forest','shion'], priceType:'normal', sizeTag:'ゆとり'
+    });
+  } else if(attendance === '30to50') {
+    plans.push({
+      id:'family', label:'small', name:'家庭葬', icon:'🌸',
+      desc:'費用を抑えながらも30～50人に対応。アットホームな雰囲気でお見送り。',
+      halls:['yasuragi','forest','shion'], priceType:'family', sizeTag:'精简'
+    });
+    plans.push({
+      id:'normal', label:'rec', name:'普通葬礼', icon:'🌿',
+      desc:'50人規模に最適な普通葬礼。通夜・告別式をしっかり執り行。',
+      halls:['yasuragi','forest','shion'], priceType:'normal', sizeTag:'推奨'
+    });
+    plans.push({
+      id:'grand', label:'large', name:'社葬・大型葬', icon:'🏛️',
+      desc:'会社・団体関係も多い大规模葬儀。専任工作人员が万全の体制でサポート。',
+      halls:['yasuragi','forest'], priceType:'normal', sizeTag:'大规模'
+    });
+  } else { // over50
+    plans.push({
+      id:'normal', label:'small', name:'普通葬礼', icon:'🌿',
+      desc:'50～100人規模の普通葬礼。大型礼堂で広くお招き可以。',
+      halls:['yasuragi','forest','shion'], priceType:'normal', sizeTag:'標準'
+    });
+    plans.push({
+      id:'large', label:'rec', name:'大型普通葬礼', icon:'🏛️',
+      desc:'100人以上の大规模葬儀。地域の方々・会社関係者も含めた大规模葬。',
+      halls:['yasuragi','forest'], priceType:'normal', sizeTag:'推奨'
+    });
+    plans.push({
+      id:'corp', label:'large', name:'公司葬/团体葬', icon:'🏢',
+      desc:'会社・団体主催の葬儀。専任チームが企画起運営まで全面サポート。',
+      halls:['yasuragi','forest'], priceType:'normal', sizeTag:'大规模'
+    });
+  }
+  // 直葬·火葬式の場合は専用方案を差し込む
+  if(funeralType === 'chokuso') {
+    return [
+      {
+        id:'chokuso_standard', label:'rec', name:'直葬·火葬式方案', icon:'🕊️',
+        desc:'通夜・告別式を行わず、火葬場でのお別れのみ。シンプルながら心のこもったお見送り。',
+        halls:['ai_chokuso','tsutsuji','yasuura'], priceType:'chokuso', sizeTag:'直葬',
+        isSimplePlan: true
+      },
+      {
+        id:'chokuso_with_farewell', label:'large', name:'直葬＋お別れの時間有', icon:'🌸',
+        desc:'火葬前に少しだけお別れの時間を設ける方案。ご家族がゆっくりお見送り可以。',
+        halls:['ai_chokuso','tsutsuji','living'], priceType:'chokuso', sizeTag:'直葬+お別れ',
+        isSimplePlan: true
+      }
+    ];
+  }
+  if(funeralType === 'kasouonly') {
+    return [
+      {
+        id:'kasou_only', label:'rec', name:'火葬のみ方案', icon:'⛩️',
+        desc:'最もシンプルな形式。ご遺体の运送・安置・火葬のみを行。費用を最小限に抑えたい方に。',
+        halls:['ai_chokuso','tsutsuji','yasuura'], priceType:'kasou', sizeTag:'火葬のみ',
+        isSimplePlan: true
+      }
+    ];
+  }
+  return plans;
+}
+
+// 礼堂フィルタリング
+function getRecommendedHalls(attendance, funeralType, selectedPlan) {
+  const allHallIds = ['tsutsuji','yasuura','living','yasuragi','forest','shion'];
+  
+  if(!selectedPlan) return allHallIds;
+  
+  // 选择した方案の対応礼堂を優先
+  const planHalls = selectedPlan.halls || allHallIds;
+  
+  // 添加で表示する可能性のある礼堂
+  let recommended = [...planHalls];
+  let others = allHallIds.filter(h => !recommended.includes(h));
+  
+  return { recommended, others };
+}
+
+// ========== 状態管理 ==========
+let state = {
+  currentStep: 1,
+  name: '', relation: '', phone: '',
+  attendance: '', funeralType: '',
+  selectedPlan: null, selectedHall: null, selectedCourse: null,
+  wishes: '', concerns: '', chatLog: [], isMember: null,
+  showingAllHalls: false
+};
+
+// ========== FAQ よくある質問 ==========
+
+// FAQ回答データベース
+const FAQ_ANSWERS = {
+  '请告诉我关于费用的信息': {
+    badge: '💰 费用',
+    text: `佐伯葬祭的葬礼费用大致分为三大类。\n\n① <strong>基本葬礼套餐</strong>（祭坛·棺木木·运送·遗像等）\n② <strong>接待费用</strong>（答谢礼品·餐饮·会馆使用费等）\n③ <strong>常见可选项目</strong>（鲜花·餐饮·其他需求）\n\n<strong>明朗收费</strong>的承诺：除事前报价以外，绝无额外收费。`
+  },
+  '会有额外费用吗？': {
+    badge: '💰 费用',
+    text: `除事前报价金额以外，绝无任何额外收费 🙏\n\n如发生人数增减等变更，必定在与主丧家属确认后处理。请放心。`
+  },
+  '可以分期付款吗？': {
+    badge: '💰 付款',
+    text: `是的，我们备有各种付款方式 😊\n\n・现金付款\n・信用卡付款\n・贷款·分期付款（请咨询）\n\n详情请随时向负责人咨询 😊`
+  },
+  '请告诉我会员折扣的详情': {
+    badge: '💳 会员',
+    text: `成为安心会馆会员后，葬礼费用可享受<strong>35%折扣</strong>。\n\n当日入会也可享受<strong>30%折扣</strong>。\n\n详情请联系负责人咨询。\n📞 0120-315-312`
+  },
+  '关于葬礼费补助金·还礼': {
+    badge: '💰 补助金',
+    text: `国民健康保险·后期高龄者医疗保险被保险人去世的情况下，<strong>葬祭费（补助金）</strong>可能由市区町村发放（参考：3～7万日元）。\n\n手续由负责人协助办理。也可咨询还礼相关事宜。`
+  },
+  '请告诉我葬礼的流程': {
+    badge: '📋 流程',
+    text: `一般葬礼的流程：\n\n1️⃣ 逝世·联络（24小时受理）\n2️⃣ 遗体运送·安置\n3️⃣ 商谈·报价\n4️⃣ 守夜式\n5️⃣ 告别式·出棺木\n6️⃣ 火葬·捡骨\n7️⃣ 七七忌日法事\n\n负责人将支援全程 🙏`
+  },
+  '死亡后政府部门的手续是什么？': {
+    badge: '📋 手续',
+    text: `主要的政府手续如下：\n\n・<strong>提交死亡申报</strong>（7日以内）\n・取得火葬许可证\n・健康保险·年金资格注销申报\n・户主变更申报（必要时）\n\n佐伯葬祭也提供<strong>政府手续代办</strong>服务。请随时咨询。`
+  },
+  '请告诉我关于死亡诊断书的信息': {
+    badge: '📋 文件',
+    text: `死亡诊断书是医师出具的官方文件。\n\n・在医院去世的情况：由主治医生出具\n・在家中去世的情况：由家庭医生或急救医生出具\n\n提交死亡申报时需要此文件。负责人将为您引导办理。`
+  },
+  '需要联系的范围有哪些？': {
+    badge: '📋 联络',
+    text: `逝世后联络顺序的参考：\n\n1️⃣ 直系家属·近亲\n2️⃣ 亲属·兄弟姐妹\n3️⃣ 故人的友人·熟人（家庭葬时选填）\n4️⃣ 工作单位·公司关系（根据需要）\n\n家庭葬的情况下，葬礼后再联络的情况也较多。`
+  },
+  '请告诉我守夜和告别式的区别': {
+    badge: '📋 仪式流程',
+    text: `<strong>守夜</strong>：在逝世次日傍晚举行的仪式。与故人共度最后一夜的时间。\n\n<strong>告别式（葬礼）</strong>：次日上午举行的正式仪式。参列者作最后告别的典礼。\n\n家庭葬中省略守夜的"一日葬"也很受欢迎。`
+  },
+  '供奉费的大致标准是多少？': {
+    badge: '🏷️ 供奉费',
+    text: `供奉费因宗旨·宗派·地区而有所不同。一般参考如下：\n\n・佛式：10～30万日元左右\n・神式：10～30万日元左右\n・基督教：5～20万日元左右\n\n※供奉费为"心意"之礼，详情请向菩提寺或负责人咨询。`
+  },
+  '可以举行无宗教·无宗派葬礼吗？': {
+    badge: '🏷️ 宗教',
+    text: `是的，当然可以 😊\n\n无宗教的"自由葬"或"音乐葬"等我们也可承办。将根据故人生前的意愿或家属希望，为您量身定制告别仪式。`
+  },
+  '可以接受其他宗派吗？': {
+    badge: '🏷️ 宗派',
+    text: `是的，我们可以应对各宗派·宗教。\n\n・佛式（净土宗·净土真宗·临济宗·曹洞宗等）\n・神式\n・基督教（天主教·新教）\n・其他宗教\n\n没有菩提寺的情况下，也可为您介绍合作寺院。`
+  },
+  '骨灰盒的种类有哪些区别？': {
+    badge: '🏷️ 骨灰盒',
+    text: `<strong>花型骨灰盒</strong>：以花为主题设计的骨灰盒。给人华丽温馨的印象。\n\n<strong>传统骨灰盒</strong>：传统设计的骨灰盒。给人格式沉稳的印象。\n\n两者都是承载对故人思念的重要器具。负责人将为您详细说明。`
+  },
+  '小孩子也可以参列吗？': {
+    badge: '👶 子女',
+    text: `是的，当然可以 😊\n\n小孩子也可以安心参列。各礼堂均配备了<strong>儿童区</strong>，为孩子们营造了安心舒适的环境。`
+  },
+  '有儿童区吗？': {
+    badge: '👶 设施',
+    text: `是的，以下礼堂均配备了儿童区：\n\n🏛️ 安心会馆\n🌲 森林礼堂\n🌺 Aifit礼堂杜鹃\n\n携带儿童的家庭也可安心参列。`
+  },
+  '有哺乳室和换尿布的地方吗？': {
+    badge: '👶 哺乳室',
+    text: `我们备有哺乳空间和换尿布台。\n\n请提前告知，工作人员将为您安排。请随时告知 😊`
+  },
+  '想摆放很多鲜花': {
+    badge: '🌸 演出',
+    text: `当然可以 🌸\n\n"花之套餐""香之套餐""辉煌套餐"均提供装饰华丽花朵的祭坛。\n\n此外，也可追加花艺装饰，或举行在棺木内放满鲜花的"花满葬礼"。请向负责人咨询。`
+  },
+  '想播放音乐·影像': {
+    badge: '🎵 演出',
+    text: `是的，可以承办 🎵\n\n・在仪式中播放故人喜爱的音乐\n・以幻灯片形式播放纪念照片·影像\n・制作纪念DVD\n\n均可应对。详情请向负责人咨询。`
+  },
+  '想和宠物一起告别': {
+    badge: '🐾 宠物',
+    text: `关于故人与爱宠的告别仪式，我们也可承办 🐾\n\n携带宠物参列，或将宠物照片和项圈放入棺木内均可。请随时咨询您的需求。`
+  },
+  '想制作带照片的牌位': {
+    badge: '🎋 牌位',
+    text: `是的，可以应对 📸\n\n可以准备带有故人照片的牌位或纪念展板。\n\n"香之套餐""辉煌套餐"中已标准配备纪念展板。`
+  },
+  '因感染症去世时的应对方式是什么？': {
+    badge: '😷 感染症',
+    text: `因感染症去世的情况，请放心咨询。\n\n・专业工作人员进行适当处理\n・采取感染对策的安置·运送\n・参列者的感染防控（消毒·口罩·换气等）\n\n以家属安全为最优先，细心处理。📞 0120-315-312`
+  },
+  '想限制参列者人数时怎么办？': {
+    badge: '😷 限制',
+    text: `想限制参列者人数的情况也可应对。\n\n・以<strong>家庭葬·一日葬</strong>进行少人数告别\n・限制入场人数·分散时间\n・在线参列（远程葬礼）指引\n\n将根据您的需求灵活应对。`
+  }
+};
+
+// FAQ使用済みセット
+const faqUsedSet = new Set();
+
+// FAQ面板開閉
+function toggleFaq() {
+  const body = document.getElementById('faqBody');
+  const icon = document.getElementById('faqToggleIcon');
+  const isOpen = body.classList.contains('open');
+  if (isOpen) {
+    body.classList.remove('open');
+    icon.classList.remove('open');
+  } else {
+    body.classList.add('open');
+    icon.classList.add('open');
+  }
+}
+
+// FAQボタンクリック
+function faqClick(btn, question) {
+  if (btn.classList.contains('used')) return; // 既に使用済み
+
+  // 使用済みにする
+  btn.classList.add('used');
+  btn.innerHTML = '<span class="faq-icon">✅</span>' + btn.textContent.trim();
+  faqUsedSet.add(question);
+
+  // 使用件数バッジ更新
+  const badge = document.getElementById('faqUsedCount');
+  badge.style.display = 'inline-block';
+  badge.textContent = faqUsedSet.size + '件已提问';
+
+  // チャット画面が開いていない場合もチャットに送る
+  // FAQ面板を一度关闭
+  const body = document.getElementById('faqBody');
+  const icon = document.getElementById('faqToggleIcon');
+  body.classList.remove('open');
+  icon.classList.remove('open');
+
+  // チャットにユーザーメッセージとして送る
+  sendFaqToChat(question);
+}
+
+// FAQをチャットに发送
+function sendFaqToChat(question) {
+  if (chatState.isDone) {
+    // チャット完成後でも追記
+    addUserMsg(question);
+    chatState.log.push({ role: 'user', msg: question });
+    state.chatLog = chatState.log.slice();
+    // FAQ回答を表示
+    setTimeout(() => showFaqAnswer(question), 700);
+    return;
+  }
+
+  // チャット填写中断してFAQ发送
+  const input = document.getElementById('chatInput');
+  if(input) input.value = '';
+  document.getElementById('quickReplies').style.display = 'none';
+  document.getElementById('quickReplies').innerHTML = '';
+
+  addUserMsg(question);
+  chatState.log.push({ role: 'user', msg: question });
+  state.chatLog = chatState.log.slice();
+
+  // FAQ専用回答を返す
+  setTimeout(() => showFaqAnswer(question), 700);
+}
+
+// FAQ専用回答バブルを表示
+function showFaqAnswer(question) {
+  const msgs = document.getElementById('chatMessages');
+  const answer = FAQ_ANSWERS[question];
+
+  // タイピング表示
+  const typing = document.createElement('div');
+  typing.className = 'chat-msg bot';
+  typing.id = 'faqTypingMsg';
+  typing.innerHTML = `<div class="msg-avatar">🤝</div><div class="msg-bubble" style="background:#eee; color:#999;"><span class="typing-dots"><span></span><span></span><span></span></span> 正在准备回答...</div>`;
+  msgs.appendChild(typing);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  setTimeout(() => {
+    const old = document.getElementById('faqTypingMsg');
+    if(old) old.remove();
+
+    if (answer) {
+      // FAQ専用バブル
+      const div = document.createElement('div');
+      div.className = 'chat-msg bot';
+      div.innerHTML = `<div class="msg-avatar">🤝</div>
+        <div class="faq-answer-bubble">
+          <div class="faq-answer-badge">${answer.badge}</div>
+          <div>${answer.text.replace(/\n/g,'<br>')}</div>
+          <div style="margin-top:8px; font-size:0.75rem; color:#558B2F; border-top:1px solid #C5E1A5; padding-top:6px;">
+            💬 如有其他问题，请随时提问
+          </div>
+        </div>`;
+      msgs.appendChild(div);
+
+      // 添加到聊天记录
+      chatState.log.push({ role: 'bot', msg: answer.badge + ' ' + answer.text.replace(/<[^>]+>/g,'') });
+    } else {
+      addBotMsg('有がとうござ。\n担当者が詳しくご説明处理。お気軽に添加でご質問请 🙏');
+    }
+
+    msgs.scrollTop = msgs.scrollHeight;
+
+    // チャットが完成していない場合、次のフローへの誘導を表示
+    if (!chatState.isDone) {
+      setTimeout(() => {
+        showChatFaqSuggest();
+      }, 800);
+    }
+  }, 900);
+}
+
+// FAQ後の関連質問サジェスト
+function showChatFaqSuggest() {
+  const msgs = document.getElementById('chatMessages');
+  const qr = document.getElementById('quickReplies');
+
+  // 未使用のFAQを最大3件提案
+  const allFaqs = Object.keys(FAQ_ANSWERS);
+  const unused = allFaqs.filter(q => !faqUsedSet.has(q));
+  const suggests = unused.slice(0, 3);
+
+  if (suggests.length === 0) return;
+
+  qr.innerHTML = '';
+  qr.style.display = 'flex';
+
+  // 「他の質問を見る」ボタン
+  const moreBtn = document.createElement('button');
+  moreBtn.className = 'quick-reply-btn';
+  moreBtn.textContent = '📋 他の質問を見る';
+  moreBtn.onclick = () => {
+    const body = document.getElementById('faqBody');
+    const icon = document.getElementById('faqToggleIcon');
+    body.classList.add('open');
+    icon.classList.add('open');
+    qr.style.display = 'none';
+    // スクロールしてFAQ面板へ
+    document.getElementById('faqPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  qr.appendChild(moreBtn);
+
+  // 関連質問サジェスト
+  suggests.forEach(q => {
+    const btn = document.createElement('button');
+    btn.className = 'quick-reply-btn';
+    btn.textContent = q.length > 18 ? q.substring(0,16) + '…' : q;
+    btn.title = q;
+    btn.onclick = () => {
+      qr.style.display = 'none';
+      qr.innerHTML = '';
+      // FAQ面板のボタンも使用済みに
+      document.querySelectorAll('.faq-btn').forEach(fb => {
+        if(fb.getAttribute('onclick') && fb.getAttribute('onclick').includes(q.replace(/'/g,"\'"))) {
+          if(!fb.classList.contains('used')) {
+            fb.classList.add('used');
+            faqUsedSet.add(q);
+            const badge = document.getElementById('faqUsedCount');
+            badge.style.display = 'inline-block';
+            badge.textContent = faqUsedSet.size + '件已提问';
+          }
+        }
+      });
+      sendFaqToChat(q);
+    };
+    qr.appendChild(btn);
+  });
+
+  // 完成ボタン
+  const doneBtn = document.createElement('button');
+  doneBtn.className = 'quick-reply-btn';
+  doneBtn.textContent = '✅ 完成する';
+  doneBtn.onclick = () => {
+    qr.style.display = 'none';
+    processUserInput('完成する');
+  };
+  qr.appendChild(doneBtn);
+}
+
+
+// ========== 聊天机器人 ==========
+const CHAT_FLOW = [
+  {
+    id: 'greeting',
+    botMsg: 'こんにちは 🙏\nご葬儀に関するご希望やご不安を、どうぞお気軽にお聞かせ请。\n\nまず、故人様のお見送りについて、何かご希望はござか？',
+    quickReplies: ['お花を多く飾りたい','音楽を流したい','費用をできるだけ抑えたい','宗教的なことを咨询したい','特に希望はない','其他'],
+    nextId: 'concerns'
+  },
+  {
+    id: 'concerns',
+    botMsg: '有がとうござ 🌸\n次に、ご不安な点やご質問はござか？\nどんな些細なことでも、遠慮なくお聞かせ请。',
+    quickReplies: ['費用・お支払いについて','关于宗教/宗派','手続き・書類について','初めてで何もわ起ない','参列者への対応','特に不安はない'],
+    nextId: 'free'
+  },
+  {
+    id: 'free',
+    botMsg: '明白了。担当者が心を込めてご対応处理 🕊️\n\n他に何かご要望・ご質問はござか？\n（なければ「完成」ボタンを押して请）',
+    quickReplies: ['他にもある','完成する'],
+    nextId: 'done'
+  }
+];
+
+let chatState = {
+  flowIndex: 0,
+  isWaiting: false,
+  isDone: false,
+  log: []
+};
+
+function initChat() {
+  const msgs = document.getElementById('chatMessages');
+  if(!msgs) return;
+  msgs.innerHTML = '';
+  chatState = { flowIndex: 0, isWaiting: false, isDone: false, log: [] };
+  document.getElementById('chatDoneBanner').classList.remove('show');
+  document.getElementById('chatInput').disabled = false;
+  document.getElementById('chatSendBtn').disabled = false;
+  showTypingThenBot(CHAT_FLOW[0].botMsg, CHAT_FLOW[0].quickReplies);
+}
+
+function showTypingThenBot(message, quickReplies) {
+  const msgs = document.getElementById('chatMessages');
+  const qr = document.getElementById('quickReplies');
+  qr.style.display = 'none';
+  qr.innerHTML = '';
+
+  // タイピングインジケーター
+  const typing = document.createElement('div');
+  typing.className = 'chat-msg bot';
+  typing.id = 'typingMsg';
+  typing.innerHTML = `<div class="msg-avatar">🤝</div><div class="msg-bubble" style="background:#eee; color:#999; font-style:italic;"><span class="typing-dots"><span></span><span></span><span></span></span> 填写中...</div>`;
+  msgs.appendChild(typing);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  setTimeout(() => {
+    // タイピング删除、メッセージ表示
+    const old = document.getElementById('typingMsg');
+    if(old) old.remove();
+    addBotMsg(message);
+    // 快速回复表示
+    if(quickReplies && quickReplies.length > 0) {
+      qr.style.display = 'flex';
+      quickReplies.forEach(r => {
+        const btn = document.createElement('button');
+        btn.className = 'quick-reply-btn';
+        btn.textContent = r;
+        btn.onclick = () => onQuickReply(r);
+        qr.appendChild(btn);
+      });
+    }
+  }, 800);
+}
+
+function addBotMsg(text) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg bot';
+  div.innerHTML = `<div class="msg-avatar">🤝</div><div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addUserMsg(text) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg user';
+  div.innerHTML = `<div class="msg-bubble">${escHtml(text)}</div><div class="msg-avatar user-av">👤</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function onQuickReply(text) {
+  document.getElementById('quickReplies').style.display = 'none';
+  document.getElementById('quickReplies').innerHTML = '';
+  processUserInput(text);
+}
+
+function chatKeyDown(e) {
+  if(e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendChatMessage();
+  }
+}
+
+function sendChatMessage() {
+  if(chatState.isDone) return;
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  document.getElementById('quickReplies').style.display = 'none';
+  document.getElementById('quickReplies').innerHTML = '';
+  processUserInput(text);
+}
+
+function processUserInput(text) {
+  addUserMsg(text);
+  chatState.log.push({ role: 'user', msg: text });
+  state.chatLog = chatState.log.slice();
+
+  const flow = CHAT_FLOW;
+  const fi = chatState.flowIndex;
+
+  // 「完成する」を选择
+  if(text === '完成する' || (fi >= flow.length)) {
+    finishChat();
+    return;
+  }
+
+  // 次のフローへ
+  const nextId = flow[fi]?.nextId;
+  const nextFlow = flow.find(f => f.id === nextId);
+  chatState.flowIndex = flow.indexOf(nextFlow);
+
+  if(nextFlow) {
+    if(nextFlow.id === 'done') {
+      finishChat();
+    } else if(text === '他にもある') {
+      // フリー填写を続ける
+      setTimeout(() => {
+        addBotMsg('当然可以。他にもご自由にお聞かせ请 😊');
+      }, 600);
+    } else {
+      showTypingThenBot(nextFlow.botMsg, nextFlow.quickReplies);
+    }
+  } else {
+    finishChat();
+  }
+}
+
+function finishChat() {
+  chatState.isDone = true;
+  setTimeout(() => {
+    addBotMsg('ご填写有がとうございました 🙏\n担当者が内容を确认し、心を込めてご対応处理。');
+    document.getElementById('chatDoneBanner').classList.add('show');
+    document.getElementById('chatInput').disabled = true;
+    document.getElementById('chatSendBtn').disabled = true;
+    document.getElementById('quickReplies').style.display = 'none';
+    // stateに保存
+    state.chatLog = chatState.log.slice();
+    state.wishes = chatState.log.filter(l=>l.role==='user').map(l=>l.msg).join(' / ');
+  }, 700);
+}
+
+// ========== ステップ遷移 ==========
+function goToStep(n) {
+  // バリデーション
+  if(n > state.currentStep) {
+    if(!validate(state.currentStep)) {
+      gaTrack('validation_error', {
+        step_number: state.currentStep,
+        step_label: (typeof STEP_LABELS !== 'undefined' ? STEP_LABELS[state.currentStep] : 'step'+state.currentStep)
+      });
+      return;
+    }
+  }
+  
+  // 現在のステップを非表示
+  document.getElementById('step' + state.currentStep).classList.remove('active');
+  document.getElementById('dot' + state.currentStep).classList.remove('active');
+  document.getElementById('dot' + state.currentStep).classList.add('done');
+  if(state.currentStep > 1) {
+    document.getElementById('con' + (state.currentStep-1)).classList.add('done');
+  }
+  
+  state.currentStep = n;
+  
+  // 新しいステップを表示
+  document.getElementById('step' + n).classList.add('active');
+  document.getElementById('dot' + n).classList.add('active');
+  document.getElementById('dot' + n).classList.remove('done');
+  
+  // ステップ固有の初期化
+  if(n === 3) renderPlans();
+  if(n === 4) renderHalls();
+  if(n === 5) renderCourses();
+  if(n === 6) { setTimeout(initChat, 100); }
+  if(n === 7) renderEstimate();
+  if(n === 8) {
+    renderFinalSummary();
+    gaTrack('form_complete', {
+      form_name: 'funeral_support',
+      funeral_type: state.funeralType || '',
+      plan_name: (state.selectedPlan && state.selectedPlan.name) || '',
+      hall_name: (state.selectedHall && state.selectedHall.name) || '',
+      attendance: state.attendance || '',
+      is_member: state.isMember ? 'member' : 'general'
+    });
+  }
+  
+  window.scrollTo(0, 0);
+  autoSaveDebounced(); // 自動保存
+
+  // GA4: ステップ表示イベント
+  gaStepView(n);
+  // STEP1 初回填写開始
+  if(n === 1) gaTrack('form_start', { form_name: 'funeral_support' });
+}
+
+// ========== バリデーション ==========
+function validate(step) {
+  if(step === 1) {
+    let ok = true;
+    const name = document.getElementById('name').value.trim();
+    const relation = document.getElementById('relation').value;
+    if(!name) { document.getElementById('nameError').style.display='block'; ok=false; }
+    else { document.getElementById('nameError').style.display='none'; }
+    if(!relation) { document.getElementById('relationError').style.display='block'; ok=false; }
+    else { document.getElementById('relationError').style.display='none'; }
+    if(ok) { state.name = name; state.relation = relation; state.phone = document.getElementById('phone').value.trim(); }
+    return ok;
+  }
+  if(step === 2) {
+    let ok = true;
+    if(!state.attendance) { document.getElementById('attendanceError').style.display='block'; ok=false; }
+    else document.getElementById('attendanceError').style.display='none';
+    if(!state.funeralType) { document.getElementById('funeralTypeError').style.display='block'; ok=false; }
+    else document.getElementById('funeralTypeError').style.display='none';
+    return ok;
+  }
+  if(step === 3) {
+    if(!state.selectedPlan) { document.getElementById('planError').style.display='block'; return false; }
+    document.getElementById('planError').style.display='none'; return true;
+  }
+  if(step === 4) {
+    if(!state.selectedHall) { document.getElementById('hallError').style.display='block'; return false; }
+    document.getElementById('hallError').style.display='none'; return true;
+  }
+  if(step === 5) {
+    if(!state.selectedCourse) { document.getElementById('courseError').style.display='block'; return false; }
+    document.getElementById('courseError').style.display='none'; return true;
+  }
+  return true;
+}
+
+// ========== 选择ハンドラー ==========
+function selectAttendance(btn, val) {
+  document.querySelectorAll('#attendanceGroup .btn-choice').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.attendance = val;
+  state.selectedPlan = null; state.selectedHall = null; state.selectedCourse = null;
+  document.getElementById('attendanceError').style.display='none';
+}
+
+function selectFuneralType(btn, val) {
+  document.querySelectorAll('#funeralTypeGroup .btn-choice').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.funeralType = val;
+  state.selectedPlan = null; state.selectedHall = null; state.selectedCourse = null;
+  document.getElementById('funeralTypeError').style.display='none';
+}
+
+function selectPlan(planId) {
+  state.selectedPlan = currentPlans.find(p => p.id === planId) || null;
+  if (state.selectedPlan) gaTrack('plan_select', { plan_id: planId, plan_name: state.selectedPlan.name || planId });
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById('plan_'+planId);
+  if(card) card.classList.add('selected');
+  state.selectedHall = null; state.selectedCourse = null;
+  document.getElementById('planError').style.display='none';
+  // 礼堂をリセット
+}
+
+function selectHall(hallId) {
+  state.selectedHall = HALLS[hallId] || null;
+  if (state.selectedHall) gaTrack('hall_select', { hall_id: hallId, hall_name: state.selectedHall.name || hallId });
+  document.querySelectorAll('.hall-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById('hall_'+hallId);
+  if(card) card.classList.add('selected');
+  state.selectedCourse = null;
+  document.getElementById('hallError').style.display='none';
+}
+
+function selectCourse(courseId) {
+  state.selectedCourse = courseId;
+  gaTrack('course_select', { course_id: courseId, course_name: (COURSES[courseId] && COURSES[courseId].name) || courseId });
+  document.querySelectorAll('.course-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById('course_'+courseId);
+  if(card) card.classList.add('selected');
+  document.getElementById('courseError').style.display='none';
+}
+
+function selectMember(btn, val) {
+  document.querySelectorAll('#memberGroup .btn-choice').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.isMember = val;
+}
+
+// ========== 方案描画 ==========
+let currentPlans = [];
+
+function renderPlans() {
+  const summary = document.getElementById('step3Summary');
+  summary.textContent = `参列予定：${getAttendanceLabel(state.attendance)}　葬礼形式：${getFuneralTypeLabel(state.funeralType)}`;
+  
+  currentPlans = getPlans(state.attendance, state.funeralType);
+  const container = document.getElementById('planCards');
+  container.innerHTML = '';
+  
+  currentPlans.forEach(plan => {
+    const badgeClass = plan.label === 'small' ? 'badge-small' : (plan.label === 'rec' ? 'badge-rec' : 'badge-large');
+    const badgeText = plan.label === 'small' ? '🔵 小规模' : (plan.label === 'rec' ? '⭐ 推荐' : '🔴 大规模');
+    
+    const card = document.createElement('div');
+    card.className = 'plan-card' + (state.selectedPlan && state.selectedPlan.id === plan.id ? ' selected' : '');
+    card.id = 'plan_' + plan.id;
+    card.onclick = () => selectPlan(plan.id);
+    card.innerHTML = `
+      <div class="plan-card-badge ${badgeClass}">${badgeText} <span class="plan-type-tag tag-${plan.priceType}">${plan.sizeTag}</span></div>
+      <div class="plan-card-body">
+        <div class="plan-card-title">${plan.icon} ${plan.name}</div>
+        <div class="plan-card-sub">对应礼堂：${plan.halls.map(h=>HALLS[h]?.short||h).join('·')}</div>
+        <div class="plan-card-desc">${plan.desc}</div>
+        <div style="margin-top:8px; font-size:0.8rem; color:#558B2F;">
+          目安価格（会员）：${formatPrice(getMinPrice(plan.priceType))}～
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+  
+  if(!state.selectedPlan) document.getElementById('planError').style.display='none';
+}
+
+function getMinPrice(priceType) {
+  // 直葬·火葬式は single キーのみ
+  if(priceType === 'chokuso' || priceType === 'kasou') {
+    const pc = PRICING[priceType];
+    return pc ? pc.single[0] : 148000;
+  }
+  const pc = PRICING[priceType] || PRICING.compact;
+  return pc.ai[0];
+}
+
+// ========== 礼堂描画 ==========
+function renderHalls() {
+  const summary = document.getElementById('step4Summary');
+  const planName = state.selectedPlan ? state.selectedPlan.name : '';
+  summary.textContent = `选择方案：${planName}`;
+  
+  const { recommended, others } = getRecommendedHalls(state.attendance, state.funeralType, state.selectedPlan);
+  state.showingAllHalls = false;
+  
+  const container = document.getElementById('hallCards');
+  container.innerHTML = '';
+  
+  renderHallCards(recommended, container, true);
+  
+  const showAllBtn = document.getElementById('showAllHallsBtn');
+  if(others.length > 0) {
+    showAllBtn.style.display = 'block';
+    showAllBtn._othersToAdd = others;
+  } else {
+    showAllBtn.style.display = 'none';
+  }
+  
+  if(!state.selectedHall) document.getElementById('hallError').style.display='none';
+}
+
+function renderHallCards(hallIds, container, isRecommended) {
+  hallIds.forEach(hallId => {
+    const hall = HALLS[hallId];
+    if(!hall) return;
+    
+    const card = document.createElement('div');
+    card.className = 'hall-card hall-card-wrapper' + (state.selectedHall && state.selectedHall.id === hallId ? ' selected' : '');
+    card.id = 'hall_' + hallId;
+    card.onclick = () => selectHall(hallId);
+    
+    const badge = hall.badge ? `<span class="hall-recommended-badge">${hall.badge}</span>` : '';
+    const livingBadge = hall.special === 'living' ? `<div class="living-badge">🏡 每日限一组 私人专属</div>` : '';
+    
+    card.innerHTML = `
+      <span class="hall-selected-check">✔</span>
+      <img class="hall-card-img" src="${hall.image}" alt="${hall.name}" loading="lazy" onerror="this.style.background='#e0d5c8';this.style.height='110px';">
+      ${badge}
+      <div class="hall-card-body">
+        <div class="hall-card-name">${hall.name}</div>
+        ${livingBadge}
+        <div class="hall-card-cap">${hall.capacity}</div>
+        <div class="hall-card-addr">${hall.address}</div>
+        <div class="hall-card-addr" style="color:#558B2F; margin-top:2px;">${hall.special === 'chokuso' ? '' : '🚃 '}${hall.access}</div>
+        ${hall.url && hall.url !== 'https://saiki-sousai.com/' ? `<div style="margin-top:6px;"><a href="${hall.url}" target="_blank" onclick="event.stopPropagation();" style="font-size:0.78rem;color:#558B2F;text-decoration:underline;">🔗 查看详情·方案</a></div>` : ''}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function showAllHalls() {
+  const btn = document.getElementById('showAllHallsBtn');
+  const others = btn._othersToAdd;
+  const container = document.getElementById('hallCards');
+  renderHallCards(others, container, false);
+  btn.style.display = 'none';
+}
+
+// ========== 套餐描画 ==========
+function renderCourses() {
+  const plan = state.selectedPlan;
+  const hall = state.selectedHall;
+
+  // 直葬·火葬式は套餐选择不要
+  if(plan && plan.isSimplePlan) {
+    // ★修正: DOMに依存せず先にstateをセット（validate通過のため）
+    state.selectedCourse = 'single';
+    const coursesContainer = document.getElementById('courseCards');
+    if(coursesContainer) {
+      coursesContainer.innerHTML = `
+        <div style="background:#f0f8f0;border:2px solid #a8d8a8;border-radius:12px;padding:20px;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:8px;">🕊️</div>
+          <div style="font-weight:bold;color:#4a7c59;font-size:1.05rem;margin:8px 0;">无需选择祭坛套餐</div>
+          <div style="font-size:0.85rem;color:#666;line-height:1.6;">直葬·火葬式方案无祭坛套餐。<br>请直接点击"下一步"按钮继续。</div>
+        </div>`;
+    }
+    // 更新step5标题
+    const step5Title = document.querySelector('#step5 .step-title');
+    if(step5Title) step5Title.innerHTML = '<span class="step-num">5</span>方案确认（无需选择套餐）';
+    // 隐藏courseError
+    const errEl = document.getElementById('courseError');
+    if(errEl) errEl.style.display = 'none';
+    return;
+  }
+  // hall/plan 未选择チェック（旧コードと同等）
+  if(!hall || !plan) return;
+  
+  // ★修正v6: priceType を先に確定（TDZ错误回避）
+  // リビング専用礼堂は living 固定、それ以外は方案の priceType を優先
+  const isLiving = hall.special === 'living';
+  const priceType = isLiving ? 'living' : (plan.priceType || hall.pricingType);
+  const pricing = PRICING[priceType] || PRICING.compact;
+  
+  const summary = document.getElementById('step5Summary');
+  const priceTypeLabel = {'compact':'精简家庭葬','living':'客厅葬','family':'家庭葬','normal':'普通葬礼／普通葬礼'};
+  summary.textContent = `礼堂：${hall.name}　方案：${plan.name}　【${priceTypeLabel[priceType] || priceType}】`;
+  
+  const courseIds = ['ai','hana','kaori','kaga'];
+  const priceKeys = ['ai','hana','kaori','kaga'];
+  
+  const container = document.getElementById('courseCards');
+  container.innerHTML = '';
+  
+  courseIds.forEach((cId, i) => {
+    const course = COURSES[cId];
+    const prices = pricing[priceKeys[i]];
+    const memberPrice = prices[0];
+    const normalPrice = prices[1];
+    
+    // 画像选择：普通葬礼は normal_ 画像、客厅葬は living_ 画像、それ以外は共通画像
+    let imgSrc;
+    if(isLiving) {
+      imgSrc = IMG['living_'+cId] || IMG[cId];
+    } else if(priceType === 'normal') {
+      imgSrc = IMG['normal_'+cId] || IMG[cId];
+    } else {
+      imgSrc = IMG[cId];
+    }
+    
+    const card = document.createElement('div');
+    card.className = 'course-card' + (state.selectedCourse === cId ? ' selected' : '');
+    card.id = 'course_' + cId;
+    card.onclick = () => selectCourse(cId);
+    card.innerHTML = `
+      <img class="course-card-img" src="${imgSrc}" alt="${course.name}祭壇" loading="lazy" onerror="this.style.background='#f5e6d0';this.style.height='130px';">
+      <div class="course-card-body" style="background:${course.color};">
+        <div class="course-card-name">⚘ ${course.name}</div>
+        <div class="course-card-price">
+          会员 <span class="member-price">${formatPrice(memberPrice)}</span><br>
+          <span style="font-size:0.75rem;">一般 ${formatPrice(normalPrice)}</span>
+        </div>
+        <div class="course-card-desc">${course.desc}</div>
+      </div>
+      <div class="course-selected-mark">✔ 已选择</div>
+    `;
+    container.appendChild(card);
+  });
+  
+  if(!state.selectedCourse) document.getElementById('courseError').style.display='none';
+}
+
+// ========== 报价描画 ==========
+function renderEstimate() {
+  const hall = state.selectedHall;
+  const plan = state.selectedPlan;
+  const course = state.selectedCourse;
+  
+  if(!hall || !plan || !course) return;
+  
+  // ★修正: リビング専用礼堂は living 固定、それ以外は方案の priceType を優先
+  const priceType = (hall.special === 'living') ? 'living' : (plan.priceType || hall.pricingType);
+  const pricing = PRICING[priceType] || PRICING.compact;
+  
+  // ★直葬·火葬式方案（isSimplePlan）の場合は single キーで価格取得
+  let prices;
+  if(plan.isSimplePlan || course === 'single') {
+    const simplePricing = PRICING[priceType] || PRICING.chokuso;
+    prices = simplePricing ? simplePricing.single : [198000, 248000];
+  } else {
+    const priceKey = course;
+    if(!pricing[priceKey]) {
+      console.error('[v8] renderEstimate: pricing not found for course=', priceKey, 'priceType=', priceType);
+      document.getElementById('estimateCard').innerHTML = '<div style="color:red;padding:12px;">⚠️ 价格数据加载错误。请重新从头开始。</div>';
+      return;
+    }
+    prices = pricing[priceKey];
+  }
+  const isMember = state.isMember === 'yes' || state.isMember === 'join';
+  const basePrice = isMember ? prices[0] : prices[1];
+  
+  // ★v10修正: おもて无費・オプション費は「套餐料金に加算」する別費用
+  // 参列者数に応じたおもて无目安を設定
+  // 直葬·火葬式の場合はおもて无費无、运送費のみ
+  const isSimple = plan.isSimplePlan || course === 'single';
+  // ★30%減（2026/02 調整）
+  const attendanceHospitality = {
+    'under5':    35000,   // 元10万→50%
+    'under15':   52500,   // 元15万→50%
+    '15to30':    87500,   // 元25万→50%
+    '30to50':   140000,   // 元40万→50%
+    'over50':   210000    // 元60万→50%
+  };
+  const hospitalityEstimate = isSimple ? 30000 : (attendanceHospitality[state.attendance] || 35000);
+  const optionEstimate = isSimple ? 0 : 200000; // 直葬は添加オプション无
+  const totalEstimate = basePrice + hospitalityEstimate;
+  
+  const courseInfo = COURSES[course];
+  const relationLabel = getRelationLabel(state.relation);
+  const memberNote = state.isMember === 'yes' ? '（会员价格適用）' : state.isMember === 'join' ? '（当日会员入会・30%割引予定）' : state.isMember === 'unknown' ? '（会员确认要）' : '（一般价格）';
+  
+  const card = document.getElementById('estimateCard');
+  card.innerHTML = `
+    <div class="estimate-section-title">📋 客户情報</div>
+    <div class="estimate-row"><span class="estimate-label">您的姓人</span><span class="estimate-value">${escHtml(state.name)} 様</span></div>
+    <div class="estimate-row"><span class="estimate-label">与故人的关系</span><span class="estimate-value">${relationLabel}</span></div>
+    <div class="estimate-row"><span class="estimate-label">参列予定人数</span><span class="estimate-value">${getAttendanceLabel(state.attendance)}</span></div>
+    <div class="estimate-row"><span class="estimate-label">葬礼形式</span><span class="estimate-value">${getFuneralTypeLabel(state.funeralType)}</span></div>
+    
+    <div class="estimate-section-title" style="margin-top:14px">🏛️ 选择内容</div>
+    <div class="estimate-row"><span class="estimate-label">方案</span><span class="estimate-value">${escHtml(plan.name)}</span></div>
+    <div class="estimate-row"><span class="estimate-label">礼堂</span><span class="estimate-value">${escHtml(hall.name)}</span></div>
+    <div class="estimate-row"><span class="estimate-label">祭壇套餐</span><span class="estimate-value">⚘ ${courseInfo.name}</span></div>
+    <div class="estimate-row"><span class="estimate-label" style="color:#888;font-size:0.78rem;">価格種別</span><span class="estimate-value" style="font-size:0.78rem;color:#558B2F;">${{'compact':'精简家庭葬','living':'客厅葬','family':'家庭葬','normal':'普通葬礼／普通葬礼'}[priceType] || priceType}</span></div>
+    <div class="estimate-row"><span class="estimate-label">礼堂住所</span><span class="estimate-value" style="font-size:0.78rem;">${hall.address}</span></div>
+    <div class="estimate-row"><span class="estimate-label">交通信息</span><span class="estimate-value" style="font-size:0.78rem;">${hall.access}</span></div>
+    
+    <div class="estimate-section-title" style="margin-top:14px">💰 費用目安</div>
+    <div class="estimate-row">
+      <span class="estimate-label">${isSimple ? '直葬·火葬费用' : '葬礼基本套餐'}</span>
+      <span class="estimate-value">${formatPrice(basePrice)}</span>
+    </div>
+    <div class="estimate-row" style="font-size:0.8rem;color:#888;">
+      <span class="estimate-label">${isSimple ? '└ 运送·安置·火葬陪同等' : '└ 祭坛·棺木木·运送·遗像等'}</span>
+      <span class="estimate-value">（${isSimple ? '方案料金' : '套餐料金'}）</span>
+    </div>
+    <div class="estimate-row">
+      <span class="estimate-label">${isSimple ? '运送費目安' : '接待费用（参考）'}</span>
+      <span class="estimate-value">${formatPrice(hospitalityEstimate)}</span>
+    </div>
+    <div class="estimate-row" style="font-size:0.8rem;color:#888;">
+      <span class="estimate-label">${isSimple ? '└ 遗体运送·干冰等' : '└ 回礼品·餐饮·会馆使用费等'}</span>
+      <span class="estimate-value">${isSimple ? '' : '（因参列人数变动）'}</span>
+    </div>
+    <div class="estimate-total">
+      <div class="estimate-total-label">総合计（参考）${memberNote}</div>
+      <div class="estimate-total-price">${formatPrice(totalEstimate)}</div>
+      <div class="estimate-total-note">※接待费用因参列人数而变动。详情请向负责人确认</div>
+    </div>
+    
+    <div style="margin-top:16px;padding:14px 16px;background:#fff5f5;border:2.5px solid #e53935;border-radius:10px;position:relative;">      <div style="position:absolute;top:-11px;left:14px;background:#e53935;color:#fff;font-size:0.72rem;font-weight:bold;padding:2px 10px;border-radius:20px;letter-spacing:0.05em;">⚠️ 请确认</div>      <p style="margin:6px 0 0 0;font-size:0.88rem;font-weight:bold;color:#c62828;line-height:1.7;">        此金额仅为<u>目安</u>，加上充分的"送别预算"后的数字。<br>        由客户自行选择，<strong>不需要的选项可以删除</strong>。<br>        <span style="font-size:0.85rem;color:#e53935;">请放心！</span>      </p>    </div>
+    
+    ${!isSimple ? `
+    <div style="margin-top:12px; padding:10px 12px; background:#fdf6ec; border:1px dashed #d4a76a; border-radius:8px;">
+      <div style="font-size:0.82rem; font-weight:bold; color:#558B2F; margin-bottom:4px;">💡 常见可选项目参考</div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:0.82rem; color:#666;">└ 鲜花·餐饮·巴士出租车等</span>
+        <span style="font-size:0.88rem; font-weight:bold; color:#558B2F;">${formatPrice(optionEstimate)} 前後</span>
+      </div>
+      <div style="font-size:0.75rem; color:#aaa; margin-top:4px;">※根据您的需求变动。不包含在以上合计中。</div>
+    </div>` : ''}
+  `;
+}
+
+// ========== 完成画面 ==========
+function renderFinalSummary() {
+  // chatLog起要望・不安をまとめる
+  if(chatState.log.length > 0) {
+    state.wishes = chatState.log.filter(l=>l.role==='user').map(l=>l.msg).join(' ／ ');
+  }
+  
+  const summary = document.getElementById('finalSummary');
+  const hall = state.selectedHall;
+  const plan = state.selectedPlan;
+  const course = state.selectedCourse;
+  const courseInfo = COURSES[course] || {};
+
+  // 报价価格再計算 (v10: 直葬·火葬式対応)
+  const priceType = hall ? ((hall.special === 'living') ? 'living' : (plan?.priceType || hall.pricingType)) : 'compact';
+  const pricing = PRICING[priceType] || PRICING.compact;
+  // 直葬·火葬式は single キー
+  let prices;
+  if(priceType === 'chokuso' || priceType === 'kasou') {
+    prices = PRICING[priceType] ? PRICING[priceType].single : [198000, 248000];
+  } else {
+    prices = course ? (pricing[course] || (() => { console.error('[v10] 套餐キー未発見:', course, 'priceType:', priceType); return pricing.kaga || pricing.ai; })()) : pricing.ai;
+  }
+  const isMember = state.isMember === 'yes' || state.isMember === 'join';
+  const basePrice = isMember ? prices[0] : prices[1];
+  const memberNote = state.isMember === 'yes' ? '（会员价格 35%割引）'
+    : state.isMember === 'join' ? '（当日入会 30%割引）'
+    : state.isMember === 'unknown' ? '（会员确认要）' : '（一般价格）';
+  
+  summary.innerHTML = `
+    <strong style="color:#33691E; display:block; margin-bottom:10px; font-size:0.95rem; border-bottom:2px solid #d4a76a; padding-bottom:6px;">📋 葬礼确认内容摘要</strong>
+    <table style="width:100%; border-collapse:collapse; font-size:0.86rem; line-height:1.9;">
+      <tr><td style="color:#888; width:42%; padding:3px 0;">👤 您的姓人</td><td><strong>${escHtml(state.name)}</strong> 様</td></tr>
+      <tr><td style="color:#888;">🔗 与故人的关系</td><td>${getRelationLabel(state.relation)}</td></tr>
+      <tr><td style="color:#888;">📞 联系电话</td><td>${escHtml(state.phone) || '未填写'}</td></tr>
+      <tr><td style="color:#888;">👥 参列予定人数</td><td><strong>${getAttendanceLabel(state.attendance)}</strong></td></tr>
+      <tr><td style="color:#888;">⚘ 葬礼形式</td><td><strong>${getFuneralTypeLabel(state.funeralType)}</strong></td></tr>
+      <tr><td colspan="2" style="padding-top:8px; border-top:1px solid #e0d5c8;"></td></tr>
+      <tr><td style="color:#888;">📋 选择方案</td><td><strong>${escHtml(plan?.name||'')}</strong></td></tr>
+      <tr><td style="color:#888;">🏛️ 仪式场地礼堂</td><td><strong>${escHtml(hall?.name||'')}</strong></td></tr>
+      <tr><td style="color:#888;">📍 住所</td><td style="font-size:0.78rem;">${hall?.address||''}</td></tr>
+      <tr><td style="color:#888;">🚃 交通信息</td><td style="font-size:0.78rem;">${hall?.access||''}</td></tr>
+      <tr><td style="color:#888;">🎋 祭壇套餐</td><td><strong>${courseInfo.name||''}</strong></td></tr>
+      <tr><td colspan="2" style="padding-top:8px; border-top:1px solid #e0d5c8;"></td></tr>
+      <tr><td style="color:#888;">💳 会员区分</td><td>${getMemberLabel(state.isMember)}</td></tr>
+      <tr><td style="color:#888;">💰 費用目安</td><td><strong style="color:#33691E; font-size:1rem;">${formatPrice(basePrice)}</strong> ${memberNote}</td></tr>
+    </table>
+  `;
+
+  // 聊天记录をPDF用に描画
+  renderPrintChatLog();
+}
+
+  // STEP8紙吹雪
+  function launchConfetti() {
+    var wrap = document.getElementById('confettiWrap');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    var colors = ['#7CB342','#9CCC65','#F48FB1','#F8BBD0','#DCEDC8','#FFF9C4','#FFE0B2','#E1BEE7'];
+    for (var ci = 0; ci < 22; ci++) {
+      var p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.left = (Math.random() * 100) + '%';
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+      p.style.animationDuration = (1.2 + Math.random() * 1.2) + 's';
+      p.style.animationDelay = (Math.random() * 1.0) + 's';
+      p.style.width = (6 + Math.random() * 6) + 'px';
+      p.style.height = (6 + Math.random() * 6) + 'px';
+      p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      wrap.appendChild(p);
+    }
+    // 2秒後に再度起動
+    setTimeout(launchConfetti, 2600);
+  }
+
+
+function renderPrintChatLog() {
+  const log = chatState.log;
+  const container = document.getElementById('printChatMessages');
+  const section = document.getElementById('printChatLog');
+  if(!container) return;
+  container.innerHTML = '';
+
+  if(!log || log.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  // ボットの最初の発言を先頭に添加
+  const firstBot = { role: 'bot', msg: 'こんにちは 🙏\nご葬儀に関するご希望やご不安を、どうぞお気軽にお聞かせ请。\nまず、故人様のお見送りについて、何かご希望はござか？' };
+  const fullLog = [firstBot, ...log];
+
+  fullLog.forEach((entry, idx) => {
+    const isBot = entry.role === 'bot';
+    const row = document.createElement('div');
+    row.className = 'pdf-chat-row' + (isBot ? '' : ' user-row');
+
+    const label = document.createElement('div');
+    label.className = 'pdf-chat-label';
+    label.textContent = isBot ? '🤝 担当' : '👤 客户';
+
+    const bubbleWrap = document.createElement('div');
+    bubbleWrap.style.display = 'flex'; bubbleWrap.style.flexDirection = 'column';
+    bubbleWrap.style.maxWidth = '82%';
+
+    const bubble = document.createElement('div');
+    bubble.className = isBot ? 'pdf-chat-bubble-bot' : 'pdf-chat-bubble-user';
+    bubble.innerHTML = escHtml(entry.msg).replace(/\n/g, '<br>');
+
+    bubbleWrap.appendChild(bubble);
+    if(isBot) { row.appendChild(label); row.appendChild(bubbleWrap); }
+    else       { row.appendChild(bubbleWrap); row.appendChild(label); }
+    container.appendChild(row);
+  });
+
+  // ボットの結びメッセージ
+  const closingRow = document.createElement('div');
+  closingRow.className = 'pdf-chat-row';
+  const closingLabel = document.createElement('div');
+  closingLabel.className = 'pdf-chat-label'; closingLabel.textContent = '🤝 担当';
+  const closingBubble = document.createElement('div');
+  closingBubble.className = 'pdf-chat-bubble-bot';
+  closingBubble.innerHTML = 'ご填写有がとうございました 🙏<br>担当者が内容を确认し、心を込めてご対応处理。';
+  closingRow.appendChild(closingLabel); closingRow.appendChild(closingBubble);
+  container.appendChild(closingRow);
+
+  section.style.display = 'block';
+}
+
+// ========== ユーティリティ ==========
+function formatPrice(n) {
+  return '￥' + n.toLocaleString('ja-JP');
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function getAttendanceLabel(v) {
+  const m = {under5:'5人以下',under15:'15人以下','15to30':'15～30人','30to50':'30～50人',over50:'50人以上'};
+  return m[v] || v;
+}
+
+function getFuneralTypeLabel(v) {
+  const m = {family:'家庭葬',family_friends:'家庭葬（友人少数参加）',general:'普通葬礼',general_company:'普通葬礼（会社・団体）',chokuso:'直葬·火葬式',kasouonly:'火葬のみ'};
+  return m[v] || v;
+}
+
+function getRelationLabel(v) {
+  const m = {spouse:'配偶',parent:'父母',child:'子女',sibling:'兄弟姐妹',grandparent:'祖父母',inlaw:'岳父母/公婆',relative:'其他亲属',other:'其他'};
+  return m[v] || v;
+}
+
+function getMemberLabel(v) {
+  const m = {yes:'会员（35%割引適用）',join:'当日会员入会希望（30%割引）',no:'非会员（一般价格）',unknown:'不明（要确认）'};
+  return m[v] || '未回答';
+}
+
+
+// ============================================================
+// ===== 发送処理（EmailJS + Google Apps Script）=====
+// ============================================================
+
+// ▼▼▼ 設定箇所 ▼▼▼ -----------------------------------------------
+// 【EmailJS設定手順】
+// 1. https://www.emailjs.com/ でアカウント作成（無料方案有）
+// 2. 「Add New Service」でGmail等を連携 → Service IDをコピー
+// 3. 「Email Templates」でテンプレート作成 → Template IDをコピー
+// 4. 「Account > API Keys」でPublic Keyをコピー
+// 5. 下記3行に貼り付けるだけで邮件发送が有効になり！
+const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // ← 手順2のService ID
+const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // ← 手順3のTemplate ID
+const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // ← 手順4のPublic Key
+const EMAILJS_TO_EMAIL    = 'info@saiki-sousai.com'; // ← 发送先メール（設定済）
+
+// 【GAS設定：スプレッドシートに記録したい場合のみ（省略可）】
+// 1. Googleスプレッドシートを作成
+// 2. 拡張機能 > Apps Script でGASスクリプトを作成・デプロイ
+// 3. デプロイで取得したURLを下記に貼り付け
+const GAS_WEBHOOK_URL = 'YOUR_GAS_WEBHOOK_URL';  // ← GAS WebアプリのURL（省略可）
+// ▲▲▲ 設定箇所ここまで ▲▲▲ ----------------------------------------
+
+function submitAndComplete() {
+  // バリデーション（STEP 7 通過チェック）
+  if(!state.selectedHall || !state.selectedCourse) {
+    alert('仪式场地・祭壇套餐が选择されていません。前の手順を请确认。');
+    return;
+  }
+
+  // 发送ボタン無効化
+  const btn = document.getElementById('submitBtn');
+  if(btn) btn.disabled = true;
+
+  // オーバーレイ表示
+  document.getElementById('submitOverlay').classList.add('show');
+
+  // 发送データ作成
+  const hall = state.selectedHall;
+  const plan = state.selectedPlan;
+  const course = state.selectedCourse;
+  const courseInfo = COURSES[course] || {};
+  const priceType = hall ? ((hall.special === 'living') ? 'living' : (plan?.priceType || hall.pricingType)) : 'compact';
+  const pricing   = PRICING[priceType] || PRICING.compact;
+  // ★v10修正: 直葬·火葬式対応。选择套餐キーで正確に参照
+  let prices;
+  if(priceType === 'chokuso' || priceType === 'kasou') {
+    prices = PRICING[priceType] ? PRICING[priceType].single : [198000, 248000];
+  } else {
+    prices = course ? (pricing[course] || (() => { console.error('[v10] submitAndComplete 套餐キー未発見:', course); return pricing.kaga || pricing.ai; })()) : pricing.ai;
+  }
+  const isMember  = state.isMember === 'yes' || state.isMember === 'join';
+  const basePrice = isMember ? prices[0] : prices[1];
+
+  const chatLog = chatState.log
+    .map(l => (l.role === 'bot' ? '[担当AI] ' : '[客户] ') + l.msg)
+    .join('\n');
+
+  const now = new Date();
+  const dateStr = now.getFullYear() + '/' +
+    String(now.getMonth()+1).padStart(2,'0') + '/' +
+    String(now.getDate()).padStart(2,'0') + ' ' +
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0');
+
+  const payload = {
+    submitted_at:    dateStr,
+    name:            state.name,
+    relation:        getRelationLabel(state.relation),
+    phone:           state.phone || '未填写',
+    attendance:      getAttendanceLabel(state.attendance),
+    funeral_type:    getFuneralTypeLabel(state.funeralType),
+    plan_name:       plan?.name || '',
+    hall_name:       hall?.name || '',
+    hall_address:    hall?.address || '',
+    hall_access:     hall?.access || '',
+    course_name:     courseInfo.name || '',
+    member_status:   getMemberLabel(state.isMember),
+    price_estimate:  formatPrice(basePrice),
+    price_type:      priceType,
+    wishes:          state.wishes || '（无）',
+    chat_log:        chatLog || '（无）',
+    to_email:        EMAILJS_TO_EMAIL
+  };
+
+  // 並行发送（EmailJS + GAS）
+  const emailPromise = sendViaEmailJS(payload);
+  const gasPromise   = sendViaGAS(payload);
+
+  Promise.allSettled([emailPromise, gasPromise]).then(results => {
+    // オーバーレイ非表示
+    document.getElementById('submitOverlay').classList.remove('show');
+
+    const emailOk = results[0].status === 'fulfilled';
+    const gasOk   = results[1].status === 'fulfilled';
+
+    // STEP 8 に遷移
+    goToStep(8);
+
+    // 結果バナー表示
+    setTimeout(() => {
+      const banner = document.getElementById('submitResultBanner');
+      if(!banner) return;
+      if(emailOk && gasOk) {
+        banner.className = 'submit-result-banner success';
+        banner.innerHTML = '✅ 发送完成！<br>已完成向负责人的邮件通知和表格记录。<br>负责人将在约定时间到达。我们将用心确认商谈内容。';
+      } else if(emailOk || gasOk) {
+        banner.className = 'submit-result-banner success';
+        const detail = emailOk ? 'メール通知は发送済み。' : 'スプレッドシートへの記録は完成しました。';
+        banner.innerHTML = '✅ 发送完成（一部）<br>' + detail;
+      } else {
+        banner.className = 'submit-result-banner error';
+        banner.innerHTML = '⚠️ 发送に失敗しました。<br>麻烦您 <strong>📞 0120-315-312</strong> まで联系电话いただくか、ページを再読み込みして再发送して请。';
+        if(btn) btn.disabled = false;
+      }
+    }, 400);
+
+    console.log('Email:', results[0].status, results[0].reason || '');
+    console.log('GAS:',   results[1].status, results[1].reason || '');
+  });
+}
+
+// ---------- EmailJS 发送 ----------
+function sendViaEmailJS(payload) {
+  return new Promise((resolve, reject) => {
+    // EmailJS未設定チェック
+    if(EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+      console.warn('EmailJS: 未設定のためスキップし');
+      return reject('EmailJS not configured');
+    }
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+    const templateParams = {
+      to_email:         payload.to_email,
+      submitted_at:     payload.submitted_at,
+      name:             payload.name,
+      relation:         payload.relation,
+      phone:            payload.phone,
+      attendance:       payload.attendance,
+      funeral_type:     payload.funeral_type,
+      plan_name:        payload.plan_name,
+      hall_name:        payload.hall_name,
+      hall_address:     payload.hall_address,
+      hall_access:      payload.hall_access,
+      course_name:      payload.course_name,
+      member_status:    payload.member_status,
+      price_estimate:   payload.price_estimate,
+      wishes:           payload.wishes,
+      chat_log:         payload.chat_log,
+      estimate_detail:  payload.estimate_detail || ''
+    };
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+      .then(() => resolve('email_ok'))
+      .catch(err => reject(err));
+  });
+}
+
+// ---------- Google Apps Script 发送 ----------
+function sendViaGAS(payload) {
+  return new Promise((resolve, reject) => {
+    // GAS未設定チェック
+    if(GAS_WEBHOOK_URL === 'YOUR_GAS_WEBHOOK_URL') {
+      console.warn('GAS: 未設定のためスキップし');
+      return reject('GAS not configured');
+    }
+    fetch(GAS_WEBHOOK_URL, {
+      method: 'POST',
+      mode: 'no-cors', // GASはno-corsで发送
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(() => resolve('gas_ok'))
+    .catch(err => reject(err));
+  });
+}
+
+function printPage() {
+  // 打印日時を页眉にセット
+  const now = new Date();
+  const dateStr = now.getFullYear() + '年' +
+    String(now.getMonth()+1).padStart(2,'0') + '月' +
+    String(now.getDate()).padStart(2,'0') + '日 ' +
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0') +
+    ' 作成';
+  const pd = document.getElementById('printDate');
+  if(pd) pd.textContent = dateStr + '　📞 0120-315-312';
+  window.print();
+}
+
+// ========== 报价メール自動发送 ==========
+async function sendEstimateEmail() {
+  const hall = state.selectedHall;
+  const plan = state.selectedPlan;
+  const course = state.selectedCourse;
+
+  // EmailJS未設定チェック
+  if(EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+    showEstimateEmailBanner('warning',
+      '⚠️ EmailJSが未設定。<br>' +
+      '请在HTML文件中设置 <code>EMAILJS_SERVICE_ID</code>・<code>EMAILJS_TEMPLATE_ID</code>・<code>EMAILJS_PUBLIC_KEY</code> 。<br>' +
+      '<a href="https://www.emailjs.com/" target="_blank" style="color:#1565c0;">▶ 前往EmailJS设置页面</a>'
+    );
+    return;
+  }
+  if(!hall || !plan || !course) {
+    gaTrack('email_send_error', { error_type: 'send_failed' });
+    showEstimateEmailBanner('error', '⚠️ 报价が完成していません。各ステップを完成して请。');
+    return;
+  }
+
+  const btn = document.getElementById('sendEstimateEmailBtn');
+  if(btn) { btn.disabled = true; btn.textContent = '⏳ 发送中...'; }
+
+  // ペイロード組み立て（submitAndCompleteと同じロジック）
+  const courseInfo = COURSES[course] || {};
+  const priceType  = (hall.special === 'living') ? 'living' : (plan.priceType || hall.pricingType);
+  const pricing    = PRICING[priceType] || PRICING.compact;
+  const isSimple   = plan.isSimplePlan || course === 'single';
+  let prices;
+  if(isSimple) {
+    const sp = PRICING[priceType] || PRICING.chokuso;
+    prices = sp ? sp.single : [198000, 248000];
+  } else {
+    prices = pricing[course] || pricing.ai || [0,0];
+  }
+  const isMember  = state.isMember === 'yes' || state.isMember === 'join';
+  const basePrice = isMember ? prices[0] : prices[1];
+  // ★30%減（2026/02 調整）
+  const attendHosp = { under5:35000, under15:52500, '15to30':87500, '30to50':140000, over50:210000 };
+  const hospEst   = isSimple ? 30000 : (attendHosp[state.attendance] || 70000);
+  const totalEst  = basePrice + hospEst;
+  const memberTag = isMember ? '会员价格' : '一般价格';
+
+  const chatLog = chatState.log.length > 0
+    ? chatState.log.map(l => (l.role==='bot'?'[担当AI] ':'[客户] ') + l.msg).join('\n')
+    : '（无）';
+
+  const now = new Date();
+  const dateStr = now.getFullYear() + '/' +
+    String(now.getMonth()+1).padStart(2,'0') + '/' +
+    String(now.getDate()).padStart(2,'0') + ' ' +
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0');
+
+  // 报价详情テキスト（メール本文用）
+  const estimateDetail = [
+    '━━━━━━━━━━━━━━━━━━━━',
+    '⚘ 佐伯葬祭　报价',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '',
+    '【客户情報】',
+    '　姓人　　　: ' + (state.name || '未填写') + '　様',
+    '　与故人的关系: ' + getRelationLabel(state.relation),
+    '　电话号码　　: ' + (state.phone || '未填写'),
+    '　参列予定人数: ' + getAttendanceLabel(state.attendance),
+    '　葬礼形式　　: ' + getFuneralTypeLabel(state.funeralType),
+    '',
+    '【选择方案・会場】',
+    '　方案　 : ' + (plan.name || ''),
+    '　会　場　 : ' + (hall.name || ''),
+    '　住　所　 : ' + (hall.address || ''),
+    '　祭壇套餐: ' + (isSimple ? '（直葬·火葬式のため套餐无）' : (courseInfo.name || course)),
+    '　会员区分 : ' + getMemberLabel(state.isMember),
+    '',
+    '【費用目安（' + memberTag + '）】',
+    '　' + (isSimple ? '直葬・火葬費用' : '葬儀基本套餐') + ': ' + formatPrice(basePrice),
+    '　' + (isSimple ? '运送費目安' : 'おもて无費用目安') + ': ' + formatPrice(hospEst),
+    '　─────────────────',
+    '　合计参考　　　: ' + formatPrice(totalEst),
+    '',
+    '⚠️ ━━━━ 请确认 ━━━━ ⚠️',
+    '　此金额仅为目安で、',
+    '　しっかり「お見送り予算」を加えた',
+    '　場合の数字。',
+    '　由客户自行选择，不要な',
+    '　オプションは删除可能。',
+    '　请放心！',
+    '⚠️ ━━━━━━━━━━━━━━━━ ⚠️',
+    '',
+    '【ご希望・備考】',
+    (state.wishes ? state.wishes.trim() : '（无）'),
+    '',
+    '【聊天记录】',
+    chatLog,
+    '',
+    '📞 0120-315-312（24時間受付）',
+    '🌐 https://saiki-sousai.com/'
+  ].join('\n')
+  const payload = {
+    submitted_at:     dateStr,
+    name:             state.name || '未填写',
+    relation:         getRelationLabel(state.relation),
+    phone:            state.phone || '未填写',
+    attendance:       getAttendanceLabel(state.attendance),
+    funeral_type:     getFuneralTypeLabel(state.funeralType),
+    plan_name:        plan.name || '',
+    hall_name:        hall.name || '',
+    hall_address:     hall.address || '',
+    hall_access:      hall.access || '',
+    course_name:      isSimple ? '（直葬·火葬式）' : (courseInfo.name || ''),
+    member_status:    getMemberLabel(state.isMember),
+    price_estimate:   formatPrice(totalEst) + '（目安）',
+    wishes:           state.wishes || '（无）',
+    chat_log:         chatLog,
+    to_email:         EMAILJS_TO_EMAIL,
+    estimate_detail:  estimateDetail
+  };
+
+  try {
+    await sendViaEmailJS(payload);
+    gaTrack('email_send_success', { hall_name: (state.selectedHall && state.selectedHall.name) || '' });
+    showEstimateEmailBanner('success',
+      '✅ 邮件发送完成！<br>' +
+      '<strong>' + EMAILJS_TO_EMAIL + '</strong> 已将报价内容发送至。<br>' +
+      '请等待负责人联系您。'
+    );
+    // 发送完成标志
+    if(btn) { btn.textContent = '✅ 已发送'; btn.style.background = '#4caf50'; }
+  } catch(err) {
+    console.error('报价邮件发送错误:', err);
+    let msg = '❌ 邮件发送に失敗しました。<br>';
+    if(err === 'EmailJS not configured') {
+      msg += 'EmailJS尚未配置。SERVICE_ID・TEMPLATE_ID・PUBLIC_KEYを确认して请。';
+    } else if(err && err.status === 400) {
+      msg += 'テンプレート変数人が一致しない可能性が有。EmailJSダッシュボードのテンプレートを确认して请。';
+    } else if(err && err.status === 401) {
+      msg += 'PUBLIC_KEYが正しく有ません。EmailJSダッシュボードで确认して请。';
+    } else {
+      msg += '麻烦您 <strong>📞 0120-315-312</strong> 请联系。<br>';
+      msg += '<small style="color:#999;">' + JSON.stringify(err) + '</small>';
+    }
+    showEstimateEmailBanner('error', msg);
+    if(btn) { btn.disabled = false; btn.textContent = '✉️ 邮件发送'; }
+  }
+}
+
+function showEstimateEmailBanner(type, html) {
+  const el = document.getElementById('estimateEmailBanner');
+  if(!el) return;
+  const styles = {
+    success: 'background:#e8f5e9; border:2px solid #4caf50; color:#1b5e20;',
+    error:   'background:#ffebee; border:2px solid #f44336; color:#b71c1c;',
+    warning: 'background:#fff8e1; border:2px solid #ffa000; color:#e65100;'
+  };
+  el.style.cssText = 'display:block; margin-top:12px; padding:14px 16px; border-radius:10px; font-size:0.9rem; font-weight:bold; line-height:1.8; ' + (styles[type] || styles.warning);
+  el.innerHTML = html;
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+// ========== PDF保存（html2canvas + jsPDF） ==========
+function downloadEstimatePDF() {
+  const hall   = state.selectedHall;
+  const plan   = state.selectedPlan;
+  const course = state.selectedCourse;
+  if (!hall || !plan || !course) { alert('报价情報が不足して。'); return; }
+
+  const now2 = new Date();
+  const dateStr = now2.getFullYear() + '年'
+    + String(now2.getMonth()+1).padStart(2,'0') + '月'
+    + String(now2.getDate()).padStart(2,'0') + '日';
+
+  const cardEl = document.getElementById('estimateCard');
+  const cardHTML = cardEl ? cardEl.innerHTML : '<p>无法获取报价信息。</p>';
+
+  const printCSS = `
+    @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+    body { font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif; margin: 0; padding: 20px; font-size: 13px; color: #333; }
+    .print-header { text-align: center; border-bottom: 2px solid #7CB342; padding-bottom: 10px; margin-bottom: 16px; }
+    .print-header h1 { font-size: 20px; color:#33691E; margin: 0 0 4px 0; }
+    .print-header .date { font-size: 11px; color: #888; }
+    .estimate-section-title { font-weight: bold; color:#33691E; font-size: 13px; margin: 14px 0 6px; padding: 4px 8px; background: #F1F8E9; border-left: 3px solid #7CB342; border-radius: 3px; }
+    .estimate-row { display: flex; justify-content: space-between; padding: 5px 4px; border-bottom: 1px dashed #e0d5c5; font-size: 12px; }
+    .estimate-label { color: #666; flex: 1; }
+    .estimate-value { font-weight: 500; text-align: right; flex: 1; }
+    .estimate-total { background: linear-gradient(135deg, #558B2F, #33691E); color: #fff; padding: 12px 14px; border-radius: 8px; margin-top: 12px; text-align: center; }
+    .estimate-total-label { font-size: 11px; opacity: 0.85; margin-bottom: 4px; }
+    .estimate-total-price { font-size: 22px; font-weight: bold; }
+    .estimate-total-note { font-size: 10px; opacity: 0.75; margin-top: 4px; }
+    .print-footer { margin-top: 20px; padding-top: 10px; border-top: 1px solid #ddd; text-align: center; font-size: 10px; color: #888; }
+    .info-box-print { margin-top: 12px; padding: 10px 12px; background: #fff5f5; border: 2px solid #e53935; border-radius: 8px; font-size: 11px; color: #c62828; }
+  `;
+
+  const printHTML = '<!DOCTYPE html><html lang="zh-CN"><head>'
+    + '<meta charset="UTF-8">'
+    + '<meta name="viewport" content="width=device-width,initial-scale=1">'
+    + '<title>\u3055\u3044\u304d\u846c\u796d \u304a\u898b\u7a4d\u3082\u308a</title>'
+    + '<style>' + printCSS + '</style></head><body>'
+    + '<div class="print-header"><h1>\u29f8 \u3055\u3044\u304d\u846c\u796d \u304a\u898b\u7a4d\u3082\u308a</h1>'
+    + '<div class="date">\u4f5c\u6210\u65e5: ' + dateStr + '</div></div>'
+    + cardHTML
+    + '<div class="info-box-print">'
+    + '\u26a0\ufe0f \u4e0a\u8a18\u306f\u304a\u898b\u7a4d\u3082\u308a\u306e\u76ee\u5b89\u3067\u3059\u3002\u304a\u3082\u3066\u306a\u3057\u8cbb\u7528\u30fb\u30aa\u30d7\u30b7\u30e7\u30f3\u8cbb\u7528\u306a\u3069\u306f\u53c2\u5217\u8005\u6570\u3084\u5185\u5bb9\u306b\u3088\u308a\u5909\u52d5\u3057\u307e\u3059\u3002\u8a73\u7d30\u306f\u62c5\u5f53\u8005\u306b\u3054\u78ba\u8a8d\u304f\u3060\u3055\u3044\u3002'
+    + '</div>'
+    + '<div class="print-footer">'
+    + '\ud83d\udcde 0120-315-312\uff0824\u6642\u9593\u53d7\u4ed8\uff09 \uff5c https://saiki-sousai.com/<br>'
+    + '\u30a2\u30a4\u30d5\u30a3\u30c3\u30c8\u3055\u3044\u304d\u846c\u796d'
+    + '</div>'
+    + '<script>window.onload=function(){window.print();};<\/script>'
+    + '</body></html>';
+
+  const blob = new Blob([printHTML], { type: 'text/html;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const win  = window.open(url, '_blank');
+  if (!win) {
+    alert('\u30dd\u30c3\u30d7\u30a2\u30c3\u30d7\u304c\u30d6\u30ed\u30c3\u30af\u3055\u308c\u3066\u3044\u307e\u3059\u3002\n\u30d6\u30e9\u30a6\u30b6\u306e\u30dd\u30c3\u30d7\u30a2\u30c3\u30d7\u3092\u8a31\u53ef\u3057\u3066\u304b\u3089\u518d\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002');
+    URL.revokeObjectURL(url);
+    return;
+  }
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 30000);
+}
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if(document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
+    const s = document.createElement('script');
+    s.src = src; s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+// ========== LINE分享 ==========
+function shareToLINE() {
+  const hall   = state.selectedHall;
+  const plan   = state.selectedPlan;
+  const course = state.selectedCourse;
+  if (!hall || !plan) { alert('先に报价を完成させて请。'); return; }
+
+  /* ── 価格計算（renderEstimate と同じロジック） ── */
+  const priceType  = (hall.special === 'living') ? 'living' : (plan.priceType || hall.pricingType);
+  const pricing    = PRICING[priceType] || PRICING.compact;
+  const isSimple   = plan.isSimplePlan || course === 'single';
+  let prices;
+  if (isSimple) {
+    const sp = PRICING[priceType] || PRICING.chokuso;
+    prices   = sp ? sp.single : [198000, 248000];
+  } else {
+    prices = pricing[course] || [0, 0];
+  }
+  const isMember  = state.isMember === 'yes' || state.isMember === 'join';
+  const basePrice = isMember ? prices[0] : prices[1];
+  const hospMap   = { under5:35000, under15:52500, '15to30':87500, '30to50':140000, over50:210000 };
+  const hospEst   = isSimple ? 30000 : (hospMap[state.attendance] || 70000);
+  const optEst    = isSimple ? 0 : 200000;
+  const total     = basePrice + hospEst + (isSimple ? 0 : optEst);
+
+  const courseName  = isSimple
+    ? '（直葬·火葬式 / 套餐选择无）'
+    : (COURSES[course] ? COURSES[course].name : course);
+  const memberTag   = isMember ? '【会员价格】' : '【一般价格】';
+  const memberNote  = state.isMember === 'join' ? '\n　　※当日会员入会で30%割引予定' : '';
+
+  /* ── 发送テキスト組み立て ── */
+  const SEP  = '━━━━━━━━━━━━━━━━━━━━';
+  const SEP2 = '┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄';
+  const lines = [
+    SEP,
+    '　🌿 佐伯葬祭｜报价内容',
+    SEP,
+    '',
+    '📋 客户情報',
+    `　姓人　　　: ${state.name || '未填写'} 様`,
+    `　与故人的关系 : ${getRelationLabel(state.relation)}`,
+    `　参列予定人数 : ${getAttendanceLabel(state.attendance)}`,
+    `　葬儀の形式　: ${getFuneralTypeLabel(state.funeralType)}`,
+    '',
+    '🏛 选择内容',
+    `　方案　　: ${plan.name}`,
+    `　会　場　　: ${hall.name}`,
+    `　〒住　所　: ${hall.address}`,
+    `　祭壇套餐 : ${courseName}`,
+    `　会员区分　: ${getMemberLabel(state.isMember)}${memberNote}`,
+    '',
+    '💴 費用目安（含税）',
+    `　▶ ${isSimple ? '直葬·火葬费用' : '葬礼基本套餐'}`,
+    `　　 ${formatPrice(basePrice)}　${memberTag}`,
+    `　▶ ${isSimple ? '运送費目安' : 'おもて无費（回礼品・食事等）'}`,
+    `　　 ${formatPrice(hospEst)}${isSimple ? '' : '　※参列者数に而变动'}`,
+  ];
+  if (!isSimple) {
+    lines.push('　▶ オプション目安（生花・料理・バス等）');
+    lines.push(`　　 ${formatPrice(optEst)}　※内容に而变动`);
+  }
+  lines.push(SEP2);
+  lines.push('　💰 合计参考');
+  lines.push(`　　 ${formatPrice(total)}　${memberTag}`);
+  lines.push('　　 （消费税10%込み）');
+  lines.push('');
+  lines.push(SEP);
+  lines.push('⚠️ この金額はあくまで【目安】。');
+  lines.push('　 不要なオプションは删除可以。');
+  if (state.wishes && state.wishes.trim()) {
+    lines.push('');
+    lines.push('📝 ご希望・備考');
+    lines.push(state.wishes.trim());
+  }
+  lines.push('');
+  lines.push('📞 0120-315-312（24時間365日）');
+  lines.push('🌐 https://saiki-sousai.com/');
+  lines.push(SEP);
+
+  const text = lines.join('\n');
+
+  /* ── URL組み立て・起動 ── */
+  const encoded = encodeURIComponent(text);
+  const url     = 'https://line.me/R/msg/text/?text=' + encoded;
+
+  const a = document.createElement('a');
+  a.href    = url;
+  a.target  = '_blank';
+  a.rel     = 'noopener noreferrer';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  /* フォールバック: LINEが開けない場合クリップボードにコピー */
+  setTimeout(() => {
+    if (document.hidden) return; // LINEが開いたと判断
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('LINEアプリが開き。開かない場合はクリップボードにコピーしました。\nLINEのトークにペーストしてお使い请。');
+      }).catch(() => {});
+    }
+  }, 2500);
+
+  if (typeof gaTrack === 'function') gaTrack('line_share', { step: state.currentStep });
+}
+
+function saveFormData() {
+  try {
+    const draft = {
+      state: {
+        name: state.name, relation: state.relation,
+        attendance: state.attendance, funeralType: state.funeralType,
+        isMember: state.isMember, wishes: state.wishes,
+        selectedPlan: state.selectedPlan ? state.selectedPlan.id : null,
+        selectedHall: state.selectedHall ? state.selectedHall.id : null,
+        selectedCourse: state.selectedCourse,
+        currentStep: state.currentStep
+      },
+      savedAt: new Date().toISOString()
+    };
+    localStorage.setItem(SAVE_KEY, JSON.stringify(draft));
+    showAutoSaveBanner('💾 已自动保存填写内容');
+  } catch(e) { console.warn('自動保存失敗:', e); }
+}
+
+function loadFormData() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return false;
+    const draft = JSON.parse(raw);
+    if(!draft || !draft.state) return false;
+    const saved = draft.state;
+    const savedAt = draft.savedAt ? new Date(draft.savedAt) : null;
+    const now = new Date();
+    if(savedAt && (now - savedAt) > 48 * 60 * 60 * 1000) {
+      localStorage.removeItem(SAVE_KEY); return false;
+    }
+    // 确认ダイアログ
+    const dateStr = savedAt ? (savedAt.getMonth()+1)+'月'+savedAt.getDate()+'日 '+String(savedAt.getHours()).padStart(2,'0')+':'+String(savedAt.getMinutes()).padStart(2,'0') : '';
+    const msg = `前回の填写データが見つかりました（${dateStr}保存）。\n続き起再開しか？`;
+    if(!confirm(msg)) { localStorage.removeItem(SAVE_KEY); return false; }
+    // stateを復元
+    state.name = saved.name || '';
+    state.relation = saved.relation || '';
+    state.attendance = saved.attendance || '';
+    state.funeralType = saved.funeralType || '';
+    state.isMember = saved.isMember || '';
+    state.wishes = saved.wishes || '';
+    if(saved.selectedPlan) {
+      // planオブジェクトを再取得（PLANS内を検索）
+      for(const k in PLANS){ if(PLANS[k].id === saved.selectedPlan){ state.selectedPlan = PLANS[k]; break; } }
+    }
+    if(saved.selectedHall) {
+      state.selectedHall = HALLS[saved.selectedHall] || null;
+    }
+    state.selectedCourse = saved.selectedCourse || null;
+    const step = Math.max(1, Math.min(saved.currentStep || 1, 7));
+    showAutoSaveBanner('✅ 前回の填写内容を復元しました');
+    return step;
+  } catch(e) { console.warn('復元失敗:', e); return false; }
+}
+
+function clearSavedData() {
+  localStorage.removeItem(SAVE_KEY);
+  showAutoSaveBanner('🗑 保存データを删除しました');
+  setTimeout(() => {
+    const b = document.getElementById('autoSaveBanner');
+    if(b) b.style.display = 'none';
+  }, 2000);
+}
+
+let _saveTimer = null;
+function autoSaveDebounced() {
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(() => saveFormData(), 1500);
+}
+
+function showAutoSaveBanner(msg) {
+  const b = document.getElementById('autoSaveBanner');
+  const m = document.getElementById('autoSaveMsg');
+  if(b && m) {
+    m.textContent = msg;
+    b.style.display = 'flex';
+    clearTimeout(b._hideTimer);
+    b._hideTimer = setTimeout(() => { b.style.display = 'none'; }, 3000);
+  }
+}
+
+// ========== 起動時：途中保存データの復元 ==========
+(function initApp() {
+  const savedStep = loadFormData();
+  if(savedStep && savedStep > 1) {
+    // 現在のstep1をhideして保存済みstepへ遷移
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('dot1').classList.remove('active');
+    // 1～savedStep-1 を done にする
+    for(let i = 1; i < savedStep; i++) {
+      const dot = document.getElementById('dot'+i);
+      if(dot) { dot.classList.remove('active'); dot.classList.add('done'); }
+      const con = document.getElementById('con'+i);
+      if(con) con.classList.add('done');
+    }
+    state.currentStep = savedStep;
+    const stepEl = document.getElementById('step'+savedStep);
+    if(stepEl) stepEl.classList.add('active');
+    const dotEl = document.getElementById('dot'+savedStep);
+    if(dotEl) { dotEl.classList.add('active'); dotEl.classList.remove('done'); }
+    // ステップ固有の描画
+    if(savedStep === 3) renderPlans();
+    if(savedStep === 4) renderHalls();
+    if(savedStep === 5) renderCourses();
+    if(savedStep === 7) renderEstimate();
+  }
+})();
+  // ===== 返回首页重新开始関数（全ステップ共通） =====
+  function restartApp() {
+    // STEP3以降は填写済みデータがあるため強めの警告
+    const warningMsg = state.currentStep >= 3
+      ? '最初の画面に戻り。\nここまでの填写内容（方案・礼堂・套餐选择など）はすべて清除され。よろしいか？'
+      : '最初の画面に戻り。填写内容は清除されがよろしいか？';
+
+    if (!confirm(warningMsg)) return;
+
+    // state を完全初期化
+    state.name           = '';
+    state.relation       = '';
+    state.phone          = '';
+    state.attendance     = '';
+    state.funeralType    = '';
+    state.selectedPlan   = null;
+    state.selectedHall   = null;
+    state.selectedCourse = null;
+    state.wishes         = '';
+    state.concerns       = '';
+    state.chatLog        = [];
+    state.isMember       = '';
+
+    // フォーム填写欄を清除
+    ['clientName','clientRelation','clientPhone'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+
+    // 选择済みハイライトをリセット
+    document.querySelectorAll('.btn-choice.selected').forEach(b => b.classList.remove('selected'));
+
+    // localStorage のオートセーブを清除
+    try { localStorage.removeItem('saikiFormData'); } catch(e) {}
+
+    // STEP1へ遷移してトップへスクロール
+    goToStep(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+
+// ===== SMS 分享 =====
+function smsShare() {
+  const hall   = state.selectedHall;
+  const plan   = state.selectedPlan;
+  const course = state.selectedCourse;
+
+  /* 費用計算 */
+  let totalStr = '';
+  if (hall && plan && course) {
+    const priceType = (hall.special === 'living') ? 'living' : (plan.priceType || hall.pricingType);
+    const pricing   = PRICING[priceType] || PRICING.compact;
+    const isSimple  = plan.isSimplePlan || course === 'single';
+    let prices;
+    if (isSimple) {
+      const sp = PRICING[priceType] || PRICING.chokuso;
+      prices   = sp ? sp.single : [198000, 248000];
+    } else {
+      prices = pricing[course] || [0, 0];
+    }
+    const isMember  = state.isMember === 'yes' || state.isMember === 'join';
+    const basePrice = isMember ? prices[0] : prices[1];
+    const hospMap   = { under5:35000, under15:52500, '15to30':87500, '30to50':140000, over50:210000 };
+    const hospEst   = isSimple ? 30000 : (hospMap[state.attendance] || 70000);
+    const optEst    = isSimple ? 0 : 200000;
+    const total     = basePrice + hospEst + (isSimple ? 0 : optEst);
+    totalStr        = '\n合计参考: ' + formatPrice(total) + (isMember ? '【会员】' : '【一般】');
+  }
+
+  const hallName   = (hall && hall.name)      || '未选择';
+  const planName   = (plan && plan.name)      || '未选择';
+  const courseName = course
+    ? (COURSES[course] ? COURSES[course].name : course)
+    : '未选择';
+
+  const body = [
+    '【佐伯葬祭 报价】',
+    `${state.name || '客户'} 様`,
+    '',
+    '▼ 您的选择',
+    `仪式场地: ${hallName}`,
+    `方案: ${planName}`,
+    `祭壇: ${courseName}`,
+    totalStr,
+    '',
+    '📞 0120-315-312',
+    '（24時間365日受付）',
+  ].join('\n');
+
+  const encoded = encodeURIComponent(body);
+  const ua  = navigator.userAgent;
+  const url = /iPhone|iPad|iPod/.test(ua)
+    ? 'sms:&body='  + encoded
+    : 'sms:?body='  + encoded;
+
+  window.location.href = url;
+  if (typeof gaTrack === 'function') gaTrack('sms_share', { step: state.currentStep });
+}
+
+</script>
+</body>
+</html>

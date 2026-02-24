@@ -1,0 +1,3842 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saiki Funeral Services - Funeral Planning Support</title>
+<style>
+  /* ===================================================
+     Color palette（CSSVariable）
+     primary  : Lime Green #7CB342
+     secondary: Soft Pink   #F48FB1
+  =================================================== */
+  :root {
+    --clr-primary:     #7CB342;
+    --clr-primary-d:   #558B2F;
+    --clr-primary-l:   #9CCC65;
+    --clr-primary-bg:  #F1F8E9;
+    --clr-primary-lt:  #DCEDC8;
+    --clr-pink:        #F48FB1;
+    --clr-pink-d:      #E91E63;
+    --clr-pink-bg:     #FCE4EC;
+    --clr-pink-lt:     #F8BBD0;
+    --clr-bg:          #F4FBF0;
+    --clr-text:        #2E3A1F;
+    --clr-text-sub:    #5A6A3A;
+    --clr-border:      #C5E1A5;
+    --clr-white:       #FFFFFF;
+    --radius:          12px;
+    --shadow:          0 4px 14px rgba(124,179,66,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--clr-bg);
+    color: var(--clr-text);
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* ===== Header ===== */
+  .app-header {
+    background: linear-gradient(135deg, var(--clr-primary-d) 0%, var(--clr-primary) 60%, #A5D66A 100%);
+    color: #fff;
+    padding: 18px 20px;
+    text-align: center;
+    box-shadow: 0 3px 12px rgba(85,139,47,0.35);
+    position: relative;
+    overflow: hidden;
+  }
+  .app-header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='20' cy='20' r='8'/%3E%3C/g%3E%3C/svg%3E");
+  }
+  .app-header h1 {
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  .app-header p { font-size: 0.8rem; opacity: 0.9; margin-top: 4px; position: relative; }
+
+  /* ===== Voice InputproposalinsideBanner ===== */
+  .voice-notice {
+    background: linear-gradient(135deg, var(--clr-primary-bg), var(--clr-primary-lt));
+    border: 2px solid var(--clr-primary);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 12px 16px;
+    line-height: 1.7;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .voice-notice .icon { font-size: 1.8rem; }
+  .voice-notice .text { font-size: 0.85rem; color: var(--clr-primary-d); font-weight: bold; line-height: 1.5; }
+
+  /* ===== Progress Bar ===== */
+  .progress-bar {
+    background: var(--clr-primary-lt);
+    padding: 12px 16px;
+    display: flex; gap: 6px; justify-content: flex-start; align-items: center;
+    overflow-x: auto; scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+  }
+  .step-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #C8E6C9; color: #fff; font-size: 0.7rem;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; flex-shrink: 0; transition: all 0.3s;
+  }
+  .step-dot.active {
+    background: var(--clr-primary);
+    box-shadow: 0 0 0 3px var(--clr-primary-lt), 0 0 0 5px var(--clr-primary);
+    transform: scale(1.18);
+  }
+  .step-dot.done { background: var(--clr-primary-d); }
+  .step-connector { width: 20px; height: 2px; background: #C8E6C9; flex-shrink: 0; transition: background 0.3s; }
+  .step-connector.done { background: var(--clr-primary-d); }
+
+  /* ===== Step content ===== */
+  .step { display: none; padding: 20px 18px; }
+  .step.active { display: block; }
+
+  .step-title {
+    font-size: 1.1rem; font-weight: bold; color: var(--clr-primary-d);
+    margin-bottom: 16px; padding-bottom: 8px;
+    border-bottom: 2.5px solid var(--clr-primary);
+    display: flex; align-items: center; gap: 8px;
+    position: relative;
+  }
+  .step-title .step-num {
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 0.85rem; flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(124,179,66,0.4);
+  }
+
+  /* ===== Form elements ===== */
+  .form-group { margin-bottom: 18px; }
+  .form-label { font-size: 0.9rem; font-weight: bold; color: var(--clr-primary-d); margin-bottom: 8px; display: block; }
+  .form-input {
+    width: 100%; padding: 12px; border: 2px solid var(--clr-border);
+    border-radius: 8px; font-size: 0.95rem;
+    background: #fff; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-input:focus { outline: none; border-color: var(--clr-primary); box-shadow: 0 0 0 3px rgba(124,179,66,0.15); }
+  .form-select {
+    width: 100%; padding: 12px; border: 2px solid var(--clr-border);
+    border-radius: 8px; font-size: 0.95rem;
+    background: #fff; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%237CB342'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+    cursor: pointer; transition: border-color 0.2s;
+  }
+  .form-select:focus { outline: none; border-color: var(--clr-primary); }
+
+  /* ===== Selection button group ===== */
+  .btn-group { display: flex; flex-direction: column; gap: 8px; }
+  .btn-choice {
+    width: 100%; padding: 14px 16px; border: 2px solid var(--clr-border);
+    border-radius: 10px; background: #fff; cursor: pointer;
+    text-align: left; font-size: 0.95rem; color: #333;
+    transition: all 0.2s; display: flex; align-items: center; gap: 10px;
+  }
+  .btn-choice:hover { border-color: var(--clr-primary); background: var(--clr-primary-bg); }
+  .btn-choice.selected {
+    border-color: var(--clr-primary);
+    background: linear-gradient(135deg, var(--clr-primary-bg), #E8F5E9);
+    color: var(--clr-primary-d); font-weight: bold;
+    box-shadow: 0 2px 8px rgba(124,179,66,0.2);
+  }
+  .btn-choice .choice-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .btn-choice .choice-text { flex: 1; }
+  .btn-choice .choice-desc { font-size: 0.78rem; color: #888; margin-top: 2px; }
+  .btn-choice.selected .choice-desc { color: var(--clr-primary); }
+  .btn-choice .check-mark { display: none; color: var(--clr-primary); font-size: 1.2rem; }
+  .btn-choice.selected .check-mark { display: block; }
+
+  /* ===== PlanSuggestionCard ===== */
+  .plan-cards { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+  .plan-card {
+    border-radius: var(--radius); overflow: hidden;
+    border: 2px solid var(--clr-border); background: #fff;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .plan-card:hover { border-color: var(--clr-primary); box-shadow: var(--shadow); }
+  .plan-card.selected {
+    border-color: var(--clr-primary);
+    box-shadow: 0 4px 16px rgba(124,179,66,0.3);
+  }
+  .plan-card-badge {
+    padding: 6px 14px; font-size: 0.78rem; font-weight: bold;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .badge-small { background: var(--clr-primary-bg); color: var(--clr-primary-d); }
+  .badge-rec { background: linear-gradient(135deg, var(--clr-pink-lt), var(--clr-pink)); color: #880e4f; }
+  .badge-large { background: var(--clr-pink-bg); color: #880e4f; }
+  .plan-card-body { padding: 14px; }
+  .plan-card-title { font-size: 1.05rem; font-weight: bold; color: #333; margin-bottom: 4px; }
+  .plan-card-sub { font-size: 0.82rem; color: #888; margin-bottom: 8px; }
+  .plan-card-desc { font-size: 0.85rem; color: #555; line-height: 1.6; }
+
+  /* ===== VenueCard ===== */
+  .hall-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 400px) { .hall-cards { grid-template-columns: 1fr; } }
+  .hall-card {
+    border-radius: var(--radius); overflow: hidden;
+    border: 2px solid var(--clr-border); background: #fff;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .hall-card:hover { border-color: var(--clr-primary); box-shadow: var(--shadow); }
+  .hall-card.selected {
+    border-color: var(--clr-primary);
+    box-shadow: 0 4px 16px rgba(124,179,66,0.3);
+  }
+  .hall-card-img { width: 100%; height: 110px; object-fit: cover; }
+  .hall-card-body { padding: 10px; }
+  .hall-card-name { font-size: 0.85rem; font-weight: bold; color: #333; margin-bottom: 4px; }
+  .hall-card-cap { font-size: 0.73rem; color: #888; margin-bottom: 3px; }
+  .hall-card-addr { font-size: 0.7rem; color: #aaa; }
+  .hall-recommended-badge {
+    position: absolute; top: 6px; right: 6px;
+    background: linear-gradient(135deg, var(--clr-pink), var(--clr-pink-d));
+    color: #fff; font-size: 0.65rem;
+    padding: 2px 6px; border-radius: 10px; font-weight: bold;
+  }
+  .hall-card-wrapper { position: relative; }
+  .hall-selected-check {
+    position: absolute; top: 6px; left: 6px; display: none;
+    background: var(--clr-primary); color: #fff; width: 24px; height: 24px;
+    border-radius: 50%; align-items: center; justify-content: center; font-size: 0.9rem;
+  }
+  .hall-card.selected .hall-selected-check { display: flex; }
+
+  /* ===== CourseCard ===== */
+  .course-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 400px) { .course-cards { grid-template-columns: 1fr; } }
+  .course-card {
+    border-radius: var(--radius); overflow: hidden;
+    border: 2px solid var(--clr-border); background: #fff;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .course-card:hover { border-color: var(--clr-primary); box-shadow: var(--shadow); }
+  .course-card.selected {
+    border-color: var(--clr-pink);
+    box-shadow: 0 4px 16px rgba(244,143,177,0.35);
+  }
+  .course-card-img { width: 100%; height: 130px; object-fit: cover; }
+  .course-card-body { padding: 12px; }
+  .course-card-name { font-size: 1rem; font-weight: bold; color: var(--clr-primary-d); margin-bottom: 4px; }
+  .course-card-price { font-size: 0.82rem; color: #888; }
+  .course-card-price .member-price { font-size: 1rem; font-weight: bold; color: var(--clr-primary); }
+  .course-card-desc { font-size: 0.75rem; color: #888; margin-top: 4px; line-height: 1.5; }
+  .course-selected-mark {
+    display: none; text-align: center; padding: 4px;
+    background: linear-gradient(90deg, var(--clr-primary-bg), var(--clr-pink-bg));
+    font-size: 0.8rem; color: var(--clr-primary-d); font-weight: bold;
+  }
+  .course-card.selected .course-selected-mark { display: block; }
+
+  /* ===== Navigation Buttons ===== */
+  .nav-buttons { display: flex; gap: 10px; margin-top: 20px; }
+  .btn-back {
+    flex: 1; padding: 14px; border: 2px solid var(--clr-border);
+    border-radius: 10px; background: #fff; color: var(--clr-primary-d);
+    font-size: 1rem; cursor: pointer; font-weight: bold;
+    transition: all 0.2s;
+  }
+  .btn-back:hover { background: var(--clr-primary-bg); border-color: var(--clr-primary); }
+  .btn-next {
+    flex: 2; padding: 14px; border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; font-size: 1rem; cursor: pointer;
+    font-weight: bold; transition: all 0.2s;
+    box-shadow: 0 3px 8px rgba(124,179,66,0.4);
+  }
+  .btn-next:hover {
+    background: linear-gradient(135deg, var(--clr-primary-l), var(--clr-primary));
+    transform: translateY(-1px);
+  }
+  .btn-next:disabled { background: #C8E6C9; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-finish {
+    flex: 2; padding: 14px; border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; font-size: 1rem; cursor: pointer;
+    font-weight: bold; transition: all 0.2s;
+    box-shadow: 0 3px 8px rgba(124,179,66,0.4);
+  }
+
+  /* ===== TextArea ===== */
+  .form-textarea {
+    width: 100%; padding: 12px; border: 2px solid var(--clr-border);
+    border-radius: 8px; font-size: 0.95rem; background: #fff;
+    resize: vertical; min-height: 100px; font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .form-textarea:focus { outline: none; border-color: var(--clr-primary); }
+
+  /* ===== EstimateCard ===== */
+  .estimate-card {
+    background: #fff; border-radius: 14px;
+    border: 2px solid var(--clr-border); padding: 20px 18px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .estimate-section-title {
+    font-size: 1.05rem; font-weight: bold; color: var(--clr-primary-d);
+    margin-bottom: 12px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--clr-primary-lt);
+  }
+  .estimate-row {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; padding: 10px 0;
+    border-bottom: 1px solid var(--clr-primary-bg); font-size: 1rem;
+  }
+  .estimate-row:last-child { border-bottom: none; }
+  .estimate-label { color: #666; flex: 1; }
+  .estimate-value { color: #333; font-weight: bold; text-align: right; flex-shrink: 0; word-break: keep-all; max-width: 55%; }
+  .estimate-total {
+    background: linear-gradient(135deg, var(--clr-primary-bg), var(--clr-pink-bg));
+    border: 2px solid var(--clr-primary-lt);
+    border-radius: 10px; padding: 14px; margin-top: 12px;
+    text-align: center;
+  }
+  .estimate-total-label { font-size: 0.85rem; color: var(--clr-primary-d); margin-bottom: 4px; }
+  .estimate-total-price { font-size: 1.9rem; font-weight: bold; color: var(--clr-primary-d); }
+  .estimate-total-note { font-size: 0.73rem; color: #888; margin-top: 4px; }
+
+  /* ===== STEP8 CompleteScreen ===== */
+  /* Confetti animation */
+  @keyframes confettiFall {
+    0%   { transform: translateY(-20px) rotate(0deg);  opacity: 1; }
+    100% { transform: translateY(120px) rotate(360deg); opacity: 0; }
+  }
+  @keyframes confettiSway {
+    0%,100% { margin-left: 0; }
+    50%      { margin-left: 14px; }
+  }
+  @keyframes pulse-ring {
+    0%   { transform: scale(0.85); box-shadow: 0 0 0 0 rgba(124,179,66,0.5); }
+    70%  { transform: scale(1);    box-shadow: 0 0 0 16px rgba(124,179,66,0); }
+    100% { transform: scale(0.85); box-shadow: 0 0 0 0  rgba(124,179,66,0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    14%     { transform: scale(1.2); }
+    28%     { transform: scale(1); }
+    42%     { transform: scale(1.15); }
+    70%     { transform: scale(1); }
+  }
+
+  .confetti-wrap {
+    position: relative; height: 56px; overflow: hidden;
+    margin-bottom: 4px; pointer-events: none;
+  }
+  .confetti-piece {
+    position: absolute; top: -10px; width: 8px; height: 8px;
+    border-radius: 2px;
+    animation: confettiFall 1.8s ease-in infinite, confettiSway 1.2s ease-in-out infinite;
+  }
+
+  .complete-card {
+    background: linear-gradient(160deg, var(--clr-primary-bg) 0%, #fff 40%, var(--clr-pink-bg) 100%);
+    border-radius: 20px;
+    border: 2.5px solid var(--clr-primary);
+    padding: 28px 22px 22px;
+    text-align: center; margin-bottom: 18px;
+    box-shadow: 0 8px 32px rgba(124,179,66,0.18), 0 2px 8px rgba(244,143,177,0.15);
+    animation: fadeInUp 0.6s ease both;
+  }
+  .complete-icon {
+    font-size: 3.6rem; margin-bottom: 10px;
+    display: inline-block;
+    animation: heartbeat 2.4s ease-in-out infinite;
+  }
+  .complete-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; font-size: 0.72rem; font-weight: bold;
+    padding: 4px 14px; border-radius: 20px; letter-spacing: 1px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(124,179,66,0.3);
+  }
+  .complete-title {
+    font-size: 1.45rem; font-weight: bold;
+    background: linear-gradient(135deg, var(--clr-primary-d), var(--clr-pink-d));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px; line-height: 1.4;
+  }
+  .complete-subtitle {
+    font-size: 0.9rem; color: var(--clr-primary-d); font-weight: bold;
+    margin-bottom: 14px; opacity: 0.85;
+  }
+  .complete-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--clr-primary-lt), var(--clr-pink-lt), transparent);
+    margin: 14px 0;
+    border-radius: 1px;
+  }
+  .complete-text {
+    font-size: 0.9rem; color: #555; line-height: 1.9;
+    background: rgba(255,255,255,0.7); border-radius: 10px;
+    padding: 14px; margin-top: 4px;
+  }
+  .complete-phone {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; font-size: 1.15rem; font-weight: bold;
+    padding: 10px 22px; border-radius: 30px; margin: 10px 0;
+    box-shadow: 0 4px 12px rgba(124,179,66,0.35);
+    text-decoration: none;
+  }
+  .complete-hours { font-size: 0.78rem; color: var(--clr-primary-d); margin-top: 4px; opacity: 0.8; }
+
+  /* STEP8 Action Buttons */
+  .step8-actions {
+    display: flex; flex-direction: column; gap: 12px;
+    margin: 20px 0 10px;
+    animation: fadeInUp 0.8s ease 0.3s both;
+  }
+  .step8-actions-title {
+    text-align: center; font-size: 0.88rem; font-weight: bold;
+    color: var(--clr-primary-d); margin-bottom: 4px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-s8 {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 16px 20px; border: none; border-radius: 14px;
+    font-size: 1.05rem; font-weight: bold; letter-spacing: 0.04em;
+    cursor: pointer; width: 100%; min-height: 58px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.14);
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-decoration: none;
+  }
+  .btn-s8:active { transform: scale(0.97); box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+  .btn-s8 .s8-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .btn-s8 .s8-label { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.3; }
+  .btn-s8 .s8-main { font-size: 1.05rem; font-weight: bold; }
+  .btn-s8 .s8-sub  { font-size: 0.78rem; opacity: 0.88; font-weight: normal; }
+
+  .btn-s8-line  { background: linear-gradient(135deg, #00B900, #008000); color: #fff; }
+  .btn-s8-sms   { background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d)); color: #fff; }
+  .btn-s8-pdf   { background: linear-gradient(135deg, #EF5350, #B71C1C); color: #fff; }
+  .btn-s8-restart {
+    background: linear-gradient(135deg, var(--clr-pink-lt), var(--clr-pink));
+    color: #4a148c; border: none;
+  }
+
+  /* ===== Info box ===== */
+  .info-box {
+    background: linear-gradient(135deg, var(--clr-primary-bg), var(--clr-pink-bg));
+    border: 1px solid var(--clr-primary-lt);
+    border-radius: 8px; padding: 14px; margin-top: 12px;
+    font-size: 0.92rem; color: #666; line-height: 1.8;
+  }
+
+  /* ===== VenueDetails ===== */
+  .selected-hall-detail {
+    background: var(--clr-primary-bg); border-radius: 8px;
+    padding: 12px; margin-top: 12px;
+    border: 1px solid var(--clr-border); font-size: 0.83rem;
+    color: #666; line-height: 1.7;
+  }
+
+  /* ===== Error display ===== */
+  .error-msg { color: #E53935; font-size: 0.8rem; margin-top: 4px; display: none; }
+  .required  { color: #E53935; margin-left: 4px; }
+
+  /* ===== Selection summary ===== */
+  .selection-summary {
+    background: var(--clr-primary-bg); border-radius: 8px; padding: 10px 14px;
+    margin-bottom: 14px; font-size: 0.82rem; color: var(--clr-primary-d);
+    border-left: 3px solid var(--clr-primary);
+  }
+
+  /* ===== Yasuragi LivingSpecialBadge ===== */
+  .living-badge {
+    display: inline-block; background: var(--clr-primary-bg); color: var(--clr-primary-d);
+    font-size: 0.7rem; padding: 2px 8px; border-radius: 10px;
+    font-weight: bold; margin-top: 4px;
+  }
+
+  .hall-all-btn {
+    width: 100%; padding: 12px; border: 2px dashed var(--clr-border);
+    border-radius: 10px; background: #fafafa; cursor: pointer;
+    text-align: center; font-size: 0.9rem; color: var(--clr-primary-d);
+    transition: all 0.2s; margin-top: 8px; font-weight: bold;
+  }
+  .hall-all-btn:hover { background: var(--clr-primary-bg); border-color: var(--clr-primary); }
+
+  /* ===== PlanType label ===== */
+  .plan-type-tag {
+    display: inline-block; font-size: 0.7rem; padding: 2px 8px;
+    border-radius: 10px; font-weight: bold; margin-left: 6px;
+  }
+  .tag-compact { background: var(--clr-primary-bg);  color: var(--clr-primary-d); }
+  .tag-living  { background: #E8F5E9; color: #2E7D32; }
+  .tag-family  { background: #FFF3E0; color: #E65100; }
+  .tag-normal  { background: var(--clr-pink-bg);     color: #880E4F; }
+
+  /* ===== Chatbot ===== */
+  .chat-window {
+    background: var(--clr-primary-bg); border-radius: 14px; overflow: hidden;
+    border: 2px solid var(--clr-border); margin-bottom: 14px;
+    display: flex; flex-direction: column; height: 380px;
+  }
+  .chat-header {
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; padding: 10px 14px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.88rem; font-weight: bold; flex-shrink: 0;
+  }
+  .chat-header .bot-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: #fff; display: flex; align-items: center;
+    justify-content: center; font-size: 1rem;
+  }
+  .chat-messages {
+    flex: 1; overflow-y: auto; padding: 12px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .chat-msg { display: flex; gap: 8px; align-items: flex-end; max-width: 88%; }
+  .chat-msg.bot  { align-self: flex-start; }
+  .chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+  .msg-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--clr-primary); color: #fff; font-size: 0.8rem;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .msg-avatar.user-av { background: var(--clr-primary-d); }
+  .msg-bubble {
+    padding: 10px 13px; border-radius: 16px;
+    font-size: 0.88rem; line-height: 1.6; max-width: 100%;
+  }
+  .bot  .msg-bubble {
+    background: #fff; color: #333;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  .user .msg-bubble {
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; border-bottom-right-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .chat-typing {
+    display: none; align-self: flex-start;
+    padding: 8px 14px; background: #fff; border-radius: 16px;
+    border-bottom-left-radius: 4px; font-size: 0.82rem; color: #999;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  .chat-typing.show { display: block; }
+  .typing-dots { display: inline-flex; gap: 3px; }
+  .typing-dots span {
+    width: 6px; height: 6px; background: #bbb; border-radius: 50%;
+    animation: typingBounce 1.2s infinite;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typingBounce {
+    0%,60%,100% { transform: translateY(0); }
+    30%          { transform: translateY(-5px); }
+  }
+  /* Quick Replies */
+  .quick-replies {
+    padding: 8px 12px; display: flex; flex-wrap: wrap;
+    gap: 6px; background: #fff; border-top: 1px solid var(--clr-primary-lt);
+    flex-shrink: 0;
+  }
+  .quick-reply-btn {
+    padding: 6px 12px; border: 1.5px solid var(--clr-primary);
+    border-radius: 20px; background: #fff; color: var(--clr-primary-d);
+    font-size: 0.78rem; cursor: pointer; font-weight: bold;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .quick-reply-btn:hover { background: var(--clr-primary-bg); }
+  /* ChatInputArea */
+  .chat-input-area {
+    display: flex; gap: 6px; padding: 8px 12px;
+    background: #fff; border-top: 2px solid var(--clr-primary-lt);
+    flex-shrink: 0; align-items: center;
+  }
+  .chat-input {
+    flex: 1; padding: 8px 12px; border: 2px solid var(--clr-border);
+    border-radius: 20px; font-size: 0.9rem;
+    outline: none; font-family: inherit; resize: none;
+    max-height: 80px; line-height: 1.4;
+  }
+  .chat-input:focus { border-color: var(--clr-primary); }
+  .chat-send-btn {
+    width: 36px; height: 36px; border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    color: #fff; font-size: 1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.2s;
+  }
+  .chat-send-btn:hover { transform: scale(1.08); }
+  .chat-send-btn:disabled { background: #C8E6C9; cursor: not-allowed; }
+  /* ChatCompleteBanner */
+  .chat-done-banner {
+    display: none; background: var(--clr-primary-bg); border: 2px solid var(--clr-primary);
+    border-radius: 10px; padding: 10px 14px; margin-bottom: 10px;
+    font-size: 0.85rem; color: var(--clr-primary-d); font-weight: bold;
+  }
+  .chat-done-banner.show { display: block; }
+
+  /* ===== Photo illustrationNote ===== */
+  .image-notice {
+    background: var(--clr-primary-bg); border: 1px solid var(--clr-primary-lt);
+    border-radius: 8px; padding: 8px 12px;
+    font-size: 0.78rem; color: var(--clr-primary-d);
+    margin-bottom: 10px; text-align: center; font-weight: bold;
+  }
+
+  /* ===== Day ofMembershipBadge ===== */
+  .join-badge {
+    display: inline-block; background: var(--clr-pink-bg); color: var(--clr-pink-d);
+    font-size: 0.68rem; padding: 1px 6px; border-radius: 8px;
+    font-weight: bold; margin-left: 4px; border: 1px solid var(--clr-pink-lt);
+  }
+
+  /* ===== PrintforStyle ===== */
+  @media print {
+    body { background: #fff !important; }
+    .app-header, .voice-notice, .progress-bar, .nav-buttons,
+    .btn-finish, .step:not(#step8), .chat-window,
+    .chat-input-area, .quick-replies, #autoSaveBanner { display: none !important; }
+    #step8 { display: block !important; }
+    .print-header { display: block !important; }
+    .print-chat-log { display: block !important; }
+    .print-summary { display: block !important; }
+    .no-print { display: none !important; }
+    .complete-card { border: 1px solid #ccc !important; box-shadow: none !important;
+      background: #fff !important; }
+    .pdf-chat-bubble-bot  { background: #f5f5f5 !important; }
+    .pdf-chat-bubble-user { background: var(--clr-primary-lt) !important; }
+    @page { margin: 15mm; size: A4; }
+  }
+
+  /* ===== PrintDedicatedHeader ===== */
+  .print-header {
+    display: none; text-align: center; padding: 16px 0 10px;
+    border-bottom: 2px solid var(--clr-primary); margin-bottom: 14px;
+  }
+  .print-header h2 { font-size: 1.2rem; color: var(--clr-primary-d); letter-spacing: 2px; }
+  .print-header p  { font-size: 0.78rem; color: #888; margin-top: 4px; }
+
+  /* ===== Chat HistoryPDFfor ===== */
+  .print-chat-log {
+    display: none;
+    background: var(--clr-primary-bg); border: 2px solid var(--clr-border);
+    border-radius: 12px; padding: 16px; margin-bottom: 14px;
+  }
+  .print-chat-log-title {
+    font-size: 0.95rem; font-weight: bold; color: var(--clr-primary-d);
+    margin-bottom: 12px; padding-bottom: 6px;
+    border-bottom: 2px solid var(--clr-primary);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pdf-chat-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: flex-start; }
+  .pdf-chat-row.user-row { flex-direction: row-reverse; }
+  .pdf-chat-label {
+    font-size: 0.72rem; font-weight: bold; white-space: nowrap;
+    padding-top: 3px; color: #888; flex-shrink: 0;
+  }
+  .pdf-chat-row.user-row .pdf-chat-label { color: var(--clr-primary-d); }
+  .pdf-chat-bubble-bot {
+    background: #fff; border: 1px solid var(--clr-border);
+    border-radius: 12px; border-bottom-left-radius: 3px;
+    padding: 8px 12px; font-size: 0.85rem; line-height: 1.65;
+    color: #333; max-width: 82%;
+  }
+  .pdf-chat-bubble-user {
+    background: var(--clr-primary-lt); border: 1px solid var(--clr-primary);
+    border-radius: 12px; border-bottom-right-radius: 3px;
+    padding: 8px 12px; font-size: 0.85rem; line-height: 1.65;
+    color: var(--clr-primary-d); font-weight: bold; max-width: 82%;
+  }
+  .pdf-chat-time { font-size: 0.68rem; color: #bbb; margin-top: 2px; text-align: right; }
+  .pdf-chat-row.user-row .pdf-chat-time { text-align: left; }
+
+  /* ===== FAQPanel ===== */
+  .faq-panel {
+    background: #fff; border: 2px solid var(--clr-border);
+    border-radius: 14px; margin-bottom: 12px; overflow: hidden;
+  }
+  .faq-panel-header {
+    background: linear-gradient(135deg, var(--clr-primary-bg), var(--clr-primary-lt));
+    padding: 10px 14px; display: flex; align-items: center;
+    justify-content: space-between; cursor: pointer; user-select: none;
+  }
+  .faq-panel-header-left {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.88rem; font-weight: bold; color: var(--clr-primary-d);
+  }
+  .faq-toggle-icon { font-size: 0.75rem; color: var(--clr-primary); transition: transform 0.3s; }
+  .faq-toggle-icon.open { transform: rotate(180deg); }
+  .faq-body { display: none; padding: 10px 12px 12px; }
+  .faq-body.open { display: block; }
+  .faq-category { margin-bottom: 10px; }
+  .faq-category-label {
+    font-size: 0.75rem; font-weight: bold; color: var(--clr-primary-d);
+    margin-bottom: 6px; padding: 3px 8px;
+    background: var(--clr-primary-bg); border-radius: 6px; display: inline-block;
+  }
+  .faq-items { display: flex; flex-wrap: wrap; gap: 6px; }
+  .faq-btn {
+    padding: 7px 12px; border: 1.5px solid var(--clr-primary);
+    border-radius: 20px; background: #fff; color: var(--clr-primary-d);
+    font-size: 0.78rem; cursor: pointer; font-weight: bold;
+    transition: all 0.2s; display: flex; align-items: center; gap: 4px;
+  }
+  .faq-btn:hover {
+    background: var(--clr-primary-bg); border-color: var(--clr-primary-d);
+    transform: translateY(-1px); box-shadow: 0 2px 6px rgba(124,179,66,0.2);
+  }
+  .faq-btn .faq-icon { font-size: 0.9rem; }
+  .faq-btn.used { background: var(--clr-primary-bg); border-color: var(--clr-primary); color: var(--clr-primary-d); cursor: default; }
+  .faq-btn.used:hover { transform: none; box-shadow: none; }
+
+  /* FAQSuggestionBanner */
+  .chat-faq-suggest {
+    background: linear-gradient(135deg, var(--clr-primary-bg), #fff);
+    border: 1.5px solid var(--clr-primary-lt);
+    border-radius: 10px; padding: 8px 10px;
+    margin: 6px 0 2px; font-size: 0.78rem; color: var(--clr-primary-d);
+  }
+  .chat-faq-suggest-title { font-weight: bold; margin-bottom: 5px; display: flex; align-items: center; gap: 4px; }
+  .chat-faq-suggest-btns { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chat-faq-suggest-btn {
+    padding: 5px 10px; border: 1.5px solid var(--clr-primary);
+    border-radius: 16px; background: #fff; color: var(--clr-primary-d);
+    font-size: 0.75rem; cursor: pointer; font-weight: bold; transition: all 0.18s;
+  }
+  .chat-faq-suggest-btn:hover { background: var(--clr-primary-bg); }
+
+  /* FAQAnswer bubble */
+  .faq-answer-bubble {
+    background: #fffeff; border: 1px solid var(--clr-primary-lt);
+    border-radius: 12px; border-bottom-left-radius: 3px;
+    padding: 10px 13px; font-size: 0.85rem; line-height: 1.7;
+    color: #333; max-width: 100%;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .faq-answer-bubble strong { color: var(--clr-primary-d); }
+  .faq-answer-badge {
+    display: inline-block; font-size: 0.68rem;
+    background: var(--clr-primary-bg); color: var(--clr-primary-d);
+    border: 1px solid var(--clr-primary-lt); border-radius: 8px;
+    padding: 1px 6px; margin-bottom: 4px; font-weight: bold;
+  }
+
+  /* ===== SendProcessUI ===== */
+  .submit-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55); z-index: 9999;
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 14px;
+  }
+  .submit-overlay.show { display: flex; }
+  .submit-spinner {
+    width: 52px; height: 52px; border: 5px solid var(--clr-primary-lt);
+    border-top-color: var(--clr-primary); border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .submit-overlay-text { color: #fff; font-size: 1.05rem; font-weight: bold; }
+  .submit-result-banner {
+    display: none; margin: 12px 0; padding: 14px 16px;
+    border-radius: 10px; font-size: 0.9rem; line-height: 1.7; text-align: center;
+  }
+  .submit-result-banner.success { display: block; background: var(--clr-primary-bg); border: 2px solid var(--clr-primary); color: var(--clr-primary-d); }
+  .submit-result-banner.error   { display: block; background: #fce4ec; border: 2px solid #ef9a9a; color: #b71c1c; }
+
+  /* ===== EstimateAction Buttons ===== */
+  .estimate-action-buttons { display: flex; flex-direction: column; gap: 12px; margin: 20px 0 10px; }
+  .btn-estimate-action {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 16px 20px; border: none; border-radius: 14px;
+    font-size: 1.05rem; font-weight: bold; letter-spacing: 0.05em;
+    cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+    transition: transform 0.15s, box-shadow 0.15s;
+    width: 100%; min-height: 56px; text-decoration: none;
+  }
+  .btn-estimate-action:active { transform: scale(0.97); box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+  .btn-pdf   { background: linear-gradient(135deg, #E53935, #B71C1C); color: #fff; }
+  .btn-line  { background: linear-gradient(135deg, #00C300, #008000); color: #fff; }
+  .btn-email { background: linear-gradient(135deg, #1565C0, #0D47A1); color: #fff; }
+  .btn-estimate-action .btn-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .btn-estimate-action .btn-label { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.3; }
+  .btn-estimate-action .btn-label-main { font-size: 1.05rem; font-weight: bold; }
+  .btn-estimate-action .btn-label-sub  { font-size: 0.80rem; opacity: 0.9; font-weight: normal; letter-spacing: 0.02em; }
+  #estimateEmailBanner { margin: 10px 0; padding: 12px 14px; border-radius: 10px; font-size: 0.88rem; text-align: center; display: none; }
+  .email-banner-success { background: var(--clr-primary-bg); color: var(--clr-primary-d); border: 1.5px solid var(--clr-primary); }
+  .email-banner-error   { background: #fff5f5; color: #c62828; border: 1.5px solid #e53935; }
+
+  /* ===== For smartphonesAdditionalImprovement ===== */
+  @media (max-width: 480px) {
+    .step { padding: 18px 14px; }
+    .estimate-card { padding: 16px 13px; margin-bottom: 14px; }
+    .estimate-row { padding: 10px 0; font-size: 0.97rem; }
+    .estimate-total-price { font-size: 1.85rem; }
+    .info-box { font-size: 0.88rem; padding: 14px 12px; line-height: 1.8; }
+    .btn-estimate-action { padding: 15px 16px; font-size: 1rem; min-height: 58px; }
+    .estimate-section-title { font-size: 1rem; margin: 16px 0 8px; }
+    .btn-s8 { padding: 14px 16px; font-size: 1rem; min-height: 56px; }
+    .complete-title { font-size: 1.25rem; }
+  }
+
+  /* ===== StarttoBackButton ===== */
+  .restart-btn-wrap { text-align: center; margin-top: 10px; margin-bottom: 4px; }
+  .btn-restart-top {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 24px; background: transparent;
+    color: var(--clr-primary-d); border: 2px solid var(--clr-border);
+    border-radius: 20px; font-size: 0.88rem; font-weight: bold;
+    cursor: pointer; transition: background .15s, color .15s;
+  }
+  .btn-restart-top:hover { background: var(--clr-primary-bg); border-color: var(--clr-primary); }
+
+  /* ===== STEP3–7: top right「StarttoBack」Button ===== */
+  .step-title { position: relative; }
+  .btn-restart-topright {
+    position: absolute; top: 50%; right: 0; transform: translateY(-50%);
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 10px; background: rgba(255,255,255,0.9);
+    color: var(--clr-primary-d); border: 1.5px solid var(--clr-border);
+    border-radius: 16px; font-size: 0.75rem; font-weight: bold;
+    cursor: pointer; white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(124,179,66,0.15);
+    transition: background .15s, color .15s, border-color .15s; z-index: 10;
+  }
+  .btn-restart-topright:active { background: var(--clr-primary-bg); border-color: var(--clr-primary); }
+  .step-title-text { display: inline-block; padding-right: 90px; }
+
+  /* ===== SMS button (STEP7) ===== */
+  .btn-sms { background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d)); color: #fff; }
+  .btn-sms:hover { background: linear-gradient(135deg, var(--clr-primary-l), var(--clr-primary)); transform: translateY(-2px); }
+
+  /* ===== Funeral Flow Timeline (Additional) ===== */
+  .flow-section {
+    margin-top: 24px;
+    padding: 0 4px;
+  }
+  .flow-section-title {
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--clr-primary-d);
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, var(--clr-primary-bg), #fff);
+    border-radius: 10px;
+    border-left: 4px solid var(--clr-primary);
+    letter-spacing: 0.05em;
+  }
+  .flow-phase-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0 12px -4px;
+  }
+  .flow-phase-badge {
+    background: var(--clr-primary-d);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 12px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+  .flow-phase-line {
+    flex: 1;
+    height: 1px;
+    background: var(--clr-primary-lt);
+  }
+  .flow-timeline {
+    position: relative;
+    padding-left: 52px;
+  }
+  .flow-timeline::before {
+    content: '';
+    position: absolute;
+    left: 18px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--clr-primary-d), var(--clr-primary), var(--clr-primary-l));
+    border-radius: 2px;
+  }
+  .flow-item {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .flow-item:last-child { margin-bottom: 0; }
+  .flow-badge {
+    position: absolute;
+    left: -44px;
+    top: 8px;
+    width: 34px;
+    height: 34px;
+    background: var(--clr-primary-d);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.62rem;
+    font-weight: 800;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(85,139,47,0.3);
+    z-index: 1;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .flow-badge .badge-num { font-size: 0.6rem; opacity: 0.85; }
+  .flow-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 11px 13px;
+    border: 1px solid var(--clr-primary-lt);
+    box-shadow: 0 2px 6px rgba(124,179,66,0.08);
+  }
+  .flow-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+  }
+  .flow-icon { font-size: 1.2rem; }
+  .flow-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--clr-primary-d);
+    flex: 1;
+  }
+  .flow-timing {
+    font-size: 0.68rem;
+    background: var(--clr-primary);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .flow-desc {
+    font-size: 0.79rem;
+    color: #444;
+    line-height: 1.6;
+  }
+  .flow-note {
+    margin-top: 5px;
+    padding: 5px 9px;
+    background: var(--clr-primary-bg);
+    border-radius: 6px;
+    font-size: 0.74rem;
+    color: var(--clr-primary-d);
+    font-weight: 600;
+  }
+  .flow-after-section {
+    margin-top: 14px;
+    padding: 13px;
+    background: linear-gradient(135deg, var(--clr-primary-d), #3d6b1c);
+    border-radius: 12px;
+    color: #fff;
+    text-align: center;
+  }
+  .flow-after-section .after-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #d4f0a0;
+  }
+  .flow-after-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+  }
+  .flow-after-tag {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    font-size: 0.72rem;
+    padding: 3px 9px;
+    border-radius: 10px;
+  }
+  .flow-phone-cta {
+    margin-top: 18px;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-d));
+    border-radius: 13px;
+    padding: 14px;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(124,179,66,0.3);
+  }
+  .flow-phone-cta .cta-text {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .flow-phone-cta a {
+    display: inline-block;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+  }
+  .flow-phone-cta .cta-sub {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.75);
+    margin-top: 3px;
+  }
+</style>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <!-- Google Analytics GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX', {
+      send_page_view: true,
+      page_title: 'Saiki Funeral Services - Funeral Support',
+      page_path: '/funeral-support'
+    });
+
+    // ============================================================
+    // GA4 Custom eventSendHelper
+    // ============================================================
+    const STEP_LABELS = {
+      1: 'BasicInformationInput',
+      2: 'Attendees & Funeral Style',
+      3: 'Plan Selection',
+      4: 'Venue Selection',
+      5: 'Altar Course Selection',
+      6: 'AIChat Consultation',
+      7: 'Estimate Review',
+      8: 'SendComplete'
+    };
+
+    function gaTrack(eventName, params = {}) {
+      if (typeof gtag === 'undefined') return;
+      gtag('event', eventName, {
+        app_name: 'Saiki_funeral_support',
+        ...params
+      });
+    }
+
+    // Step display event（Virtual page view）
+    function gaStepView(stepNum) {
+      const label = STEP_LABELS[stepNum] || 'Step' + stepNum;
+      gaTrack('step_view', {
+        step_number: stepNum,
+        step_label: label,
+        page_path: '/funeral-support/step' + stepNum,
+        page_title: 'STEP' + stepNum + ': ' + label
+      });
+      // GA4 also as virtual page view forSend
+      gtag('config', 'G-XXXXXXXXXX', {
+        page_path: '/funeral-support/step' + stepNum,
+        page_title: 'STEP' + stepNum + ': ' + label
+      });
+    }
+
+    // Exit event（visibilitychange + beforeunload）
+    let _gaExitSent = false;
+    function gaSendExit() {
+      if (_gaExitSent) return;
+      _gaExitSent = true;
+      if (typeof state === 'undefined') return;
+      const step = state.currentStep || 1;
+      const label = STEP_LABELS[step] || 'Step' + step;
+      // sendBeacon reliablySend
+      if (navigator.sendBeacon) {
+        const body = JSON.stringify({
+          event: 'step_exit',
+          step_number: step,
+          step_label: label
+        });
+        // GA4 Measurement Protocol toSend（Standalone）
+        gaTrack('step_exit', {
+          step_number: step,
+          step_label: label,
+          engagement_time_msec: Date.now() - _gaPageStart
+        });
+      }
+    }
+    const _gaPageStart = Date.now();
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') gaSendExit();
+    });
+    window.addEventListener('pagehide', gaSendExit);
+    window.addEventListener('beforeunload', gaSendExit);
+  </script>
+</head>
+<body>
+
+
+<!-- ===== Sendmid-overlay ===== -->
+<div class="submit-overlay" id="submitOverlay">
+  <div class="submit-spinner"></div>
+  <div class="submit-overlay-text">SendMedium。Please wait a moment…</div>
+</div>
+<div class="app-header">
+  <h1>⚘ Saiki Funeral Services - Funeral Support</h1>
+  <p>'sthank you for your requestThank you。<br>Pre-meeting preliminary informationInputApp</p>
+</div>
+
+<!-- Voice InputproposalinsideBanner -->
+<div class="voice-notice">
+  <div class="icon">🎙️</div>
+  <div class="text">
+    Voice Inputfor those using：<br>
+    few々'stypo / conversion errorsalsoLargeOK / fine。<br>
+    Our staff will carefully review your information and assist you promptly.
+  </div>
+</div>
+
+<!-- MidwaySaveBanner -->
+<div id="autoSaveBanner" style="display:none; background:linear-gradient(135deg,#e8f5e9,#c8e6c9); border-bottom:2px solid #4caf50; padding:8px 18px; font-size:0.88rem; color:#2e7d32; display:flex; align-items:center; justify-content:space-between; gap:8px;">
+  <span id="autoSaveMsg">💾 InputContentsAuto-savecompleted</span>
+  <button onclick="clearSavedData()" style="background:none; border:1px solid #4caf50; color:#2e7d32; border-radius:6px; padding:3px 10px; font-size:0.8rem; cursor:pointer;">Clear</button>
+</div>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progressBar">
+  <div class="step-dot active" id="dot1">1</div>
+  <div class="step-connector" id="con1"></div>
+  <div class="step-dot" id="dot2">2</div>
+  <div class="step-connector" id="con2"></div>
+  <div class="step-dot" id="dot3">3</div>
+  <div class="step-connector" id="con3"></div>
+  <div class="step-dot" id="dot4">4</div>
+  <div class="step-connector" id="con4"></div>
+  <div class="step-dot" id="dot5">5</div>
+  <div class="step-connector" id="con5"></div>
+  <div class="step-dot" id="dot6">6</div>
+  <div class="step-connector" id="con6"></div>
+  <div class="step-dot" id="dot7">7</div>
+  <div class="step-connector" id="con7"></div>
+  <div class="step-dot" id="dot8">8</div>
+</div>
+
+<!-- ===== STEP 1: BasicInformation ===== -->
+<div class="step active" id="step1">
+  <div class="step-title"><span class="step-title-text"><span class="step-num">1</span>Basic Information</span><button class="btn-restart-topright no-print" onclick="restartApp()">🔄 Start Over</button></div>
+  
+  <div class="form-group">
+    <label class="form-label">Your Name<span class="required">*</span></label>
+    <input type="text" class="form-input" id="name" placeholder="Example：Yamada Taro">
+    <div class="error-msg" id="nameError">Please enter your name</div>
+  </div>
+  
+  <div class="form-group">
+    <label class="form-label">Your Relationship to the Deceased<span class="required">*</span></label>
+    <select class="form-select" id="relation">
+      <option value="">--- Please select ---</option>
+      <option value="spouse">Spouse（Spouse）</option>
+      <option value="parent">Parent (Father/Mother)</option>
+      <option value="child">Child</option>
+      <option value="sibling">Sibling</option>
+      <option value="grandparent">Grandparent</option>
+      <option value="inlaw">Parent-in-law</option>
+      <option value="relative">OtherRelatives</option>
+      <option value="other">Other</option>
+    </select>
+    <div class="error-msg" id="relationError">relationship is required</div>
+  </div>
+  
+  <div class="form-group">
+    <label class="form-label">Phone Number (Optional)</label>
+    <input type="tel" class="form-input" id="phone" placeholder="Example：0120-315-312">
+  </div>
+  
+  <div class="info-box">
+    📋 The information you provide will be used solely for creating your estimate.<br>
+    Personal information is strictly protected。
+  </div>
+  
+  <div class="nav-buttons">
+    <button class="btn-next" onclick="goToStep(2)">Next → Attendees & Funeral Style</button>
+  </div>
+</div>
+
+<!-- ===== STEP 2: Attendees & Funeral Style ===== -->
+<div class="step" id="step2">
+  <div class="step-title"><span class="step-title-text"><span class="step-num">2</span>Attendees & Funeral Style</span><button class="btn-restart-topright no-print" onclick="restartApp()">🔄 Start Over</button></div>
+  
+  <div class="form-group">
+    <label class="form-label">Please tell us the estimated number of attendees<span class="required">*</span></label>
+    <div class="btn-group" id="attendanceGroup">
+      <button class="btn-choice" onclick="selectAttendance(this,'under5')" data-value="under5">
+        <span class="choice-icon">👤</span>
+        <span class="choice-text">
+          <strong>5people or fewer</strong>
+          <div class="choice-desc">Closest family members only（Suitable for direct cremation / private funeral）</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectAttendance(this,'under15')" data-value="under15">
+        <span class="choice-icon">👥</span>
+        <span class="choice-text">
+          <strong>15people or fewer</strong>
+          <div class="choice-desc">Close family / immediate relatives only</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectAttendance(this,'15to30')" data-value="15to30">
+        <span class="choice-icon">👨‍👩‍👧‍👦</span>
+        <span class="choice-text">
+          <strong>15people from30 people</strong>
+          <div class="choice-desc">Mainly family, including close friends</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectAttendance(this,'30to50')" data-value="30to50">
+        <span class="choice-icon">🏢</span>
+        <span class="choice-text">
+          <strong>30people from50 people</strong>
+          <div class="choice-desc">Standard funeral with friends & work contacts</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectAttendance(this,'over50')" data-value="over50">
+        <span class="choice-icon">🏛️</span>
+        <span class="choice-text">
+          <strong>50people or more</strong>
+          <div class="choice-desc">Large-scale funeral with many company/org. attendees</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+    </div>
+    <div class="error-msg" id="attendanceError">Please select the number of attendees</div>
+  </div>
+  
+  <div class="form-group" style="margin-top:20px">
+    <label class="form-label">Preferred Funeral Style<span class="required">*</span></label>
+    <div class="btn-group" id="funeralTypeGroup">
+      <button class="btn-choice" onclick="selectFuneralType(this,'family')" data-value="family">
+        <span class="choice-icon">🌸</span>
+        <span class="choice-text">
+          <strong>Family Funeral</strong>
+          <div class="choice-desc">A quiet farewell with close family only</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectFuneralType(this,'family_friends')" data-value="family_friends">
+        <span class="choice-icon">🌼</span>
+        <span class="choice-text">
+          <strong>Family funeral with a few friends</strong>
+          <div class="choice-desc">Mainly family, with a few friends and acquaintances</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectFuneralType(this,'general')" data-value="general">
+        <span class="choice-icon">🌿</span>
+        <span class="choice-text">
+          <strong>Standard Funeral (relatives, friends & work contacts)</strong>
+          <div class="choice-desc">A traditional funeral welcoming a wider circle of attendees</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectFuneralType(this,'general_company')" data-value="general_company">
+        <span class="choice-icon">🏢</span>
+        <span class="choice-text">
+          <strong>Standard Funeral with company/organization attendees</strong>
+          <div class="choice-desc">Large-scale ceremony for companies, organizations, or unions</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectFuneralType(this,'chokuso')" data-value="chokuso">
+        <span class="choice-icon">🕊️</span>
+        <span class="choice-text">
+          <strong>Direct Cremation</strong>
+          <div class="choice-desc">No wake or memorial service. Cremation only, or minimal farewell</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectFuneralType(this,'kasouonly')" data-value="kasouonly">
+        <span class="choice-icon">⛩️</span>
+        <span class="choice-text">
+          <strong>Cremation Only (Simplest)</strong>
+          <div class="choice-desc">Transport and cremation only. A farewell at minimal cost</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+    </div>
+    <div class="error-msg" id="funeralTypeError">Please select the funeral style</div>
+  </div>
+  
+  <div class="nav-buttons">
+    <button class="btn-back" onclick="goToStep(1)">← Back</button>
+    <button class="btn-next" onclick="goToStep(3)">Next → Plan Suggestions</button>
+  </div>
+</div>
+
+<!-- ===== STEP 3: PlanSuggestion（3types） ===== -->
+<div class="step" id="step3">
+  <div class="step-title"><span class="step-title-text"><span class="step-num">3</span>Please Select a Recommended Plan</span><button class="btn-restart-topright no-print" onclick="restartApp()">🔄 Start Over</button></div>
+  <div class="selection-summary" id="step3Summary"></div>
+  
+  <div class="plan-cards" id="planCards">
+    <!-- JavaScriptdynamic generation -->
+  </div>
+  
+  <div class="error-msg" id="planError" style="display:block">Please select a plan</div>
+  
+  <div class="nav-buttons">
+    <button class="btn-back" onclick="goToStep(2)">← Back</button>
+    <button class="btn-next" onclick="goToStep(4)">Next → Venue Selection</button>
+  </div>
+</div>
+
+<!-- ===== STEP 4: Venue Selection ===== -->
+<div class="step" id="step4">
+  <div class="step-title"><span class="step-title-text"><span class="step-num">4</span>Please Select a Venue (Hall)</span><button class="btn-restart-topright no-print" onclick="restartApp()">🔄 Start Over</button></div>
+  <div class="selection-summary" id="step4Summary"></div>
+  
+  <div class="hall-cards" id="hallCards">
+    <!-- JavaScriptdynamic generation -->
+  </div>
+  
+  <button class="hall-all-btn" id="showAllHallsBtn" onclick="showAllHalls()" style="display:none">
+    ▽ Show all other venues
+  </button>
+  
+  <div class="error-msg" id="hallError" style="display:block">Please select a venue</div>
+  
+  <div class="nav-buttons">
+    <button class="btn-back" onclick="goToStep(3)">← Back</button>
+    <button class="btn-next" onclick="goToStep(5)">Next → Altar Course Selection</button>
+  </div>
+</div>
+
+<!-- ===== STEP 5: CourseSelect ===== -->
+<div class="step" id="step5">
+  <div class="step-title"><span class="step-title-text"><span class="step-num">5</span>Please Select an Altar Course</span><button class="btn-restart-topright no-print" onclick="restartApp()">🔄 Start Over</button></div>
+  <div class="selection-summary" id="step5Summary"></div>
+  
+  <!-- Photo illustrationNote -->
+  <div class="image-notice">📷 Photos of altars shown are for illustration purposes only. Please feel free to ask our staff about the actual altar details.</div>
+  
+  <div class="course-cards" id="courseCards">
+    <!-- JavaScriptdynamic generation -->
+  </div>
+  
+  <div class="info-box">
+    ✨ <strong>Transparent Pricing</strong> Promise: No additional charges beyond the pre-agreed estimate.<br>
+    If the number of attendees increases, we will always confirm with the chief mourner before proceeding.
+  </div>
+  
+  <div class="error-msg" id="courseError" style="display:block">Please select a course</div>
+  
+  <div class="nav-buttons">
+    <button class="btn-back" onclick="goToStep(4)">← Back</button>
+    <button class="btn-next" onclick="goToStep(6)">Next → Wishes & Concerns</button>
+  </div>
+</div>
+
+<!-- ===== STEP 6: Wishes & Concerns（Chatbot） ===== -->
+<div class="step" id="step6">
+  <div class="step-title"><span class="step-title-text"><span class="step-num">6</span>Please share your wishes and concerns</span><button class="btn-restart-topright no-print" onclick="restartApp()">🔄 Start Over</button></div>
+  
+  <!-- FAQ FAQPanel -->
+  <div class="faq-panel" id="faqPanel">
+    <div class="faq-panel-header" onclick="toggleFaq()">
+      <div class="faq-panel-header-left">
+        <span>💡</span>
+        <span>FAQ List（TaptoandChatatQuestioncan be done）</span>
+        <span id="faqUsedCount" style="font-size:0.72rem; background:#4caf50; color:#fff; padding:1px 7px; border-radius:10px; display:none;">0message(s) sent</span>
+      </div>
+      <span class="faq-toggle-icon" id="faqToggleIcon">▼</span>
+    </div>
+    <div class="faq-body" id="faqBody">
+
+      <div class="faq-category">
+        <span class="faq-category-label">💰 Cost / Payment</span>
+        <div class="faq-items">
+          <button class="faq-btn" onclick="faqClick(this,'Tell me about the costs')"><span class="faq-icon">❓</span>Tell me about the costs</button>
+          <button class="faq-btn" onclick="faqClick(this,'AdditionalIs there a cost?？')"><span class="faq-icon">❓</span>AdditionalIs there a cost?？</button>
+          <button class="faq-btn" onclick="faqClick(this,'min.Is installment payment possible?？')"><span class="faq-icon">❓</span>min.Is installment payment possible?？</button>
+          <button class="faq-btn" onclick="faqClick(this,'Tell me about membership discounts')"><span class="faq-icon">❓</span>Tell me about membership discounts</button>
+          <button class="faq-btn" onclick="faqClick(this,'About funeral subsidies & condolence return gifts')"><span class="faq-icon">❓</span>About funeral subsidies & condolence return gifts</button>
+        </div>
+      </div>
+
+      <div class="faq-category">
+        <span class="faq-category-label">📋 Procedures & flow</span>
+        <div class="faq-items">
+          <button class="faq-btn" onclick="faqClick(this,'funeralceremonyflow ofPlease tell us')"><span class="faq-icon">❓</span>funeralceremonyflow ofPlease tell us</button>
+          <button class="faq-btn" onclick="faqClick(this,'What are the municipal office procedures after death?')"><span class="faq-icon">❓</span>What are the municipal office procedures after death?</button>
+          <button class="faq-btn" onclick="faqClick(this,'Tell me about the death certificate')"><span class="faq-icon">❓</span>Tell me about the death certificate</button>
+          <button class="faq-btn" onclick="faqClick(this,'Who should I notify?')"><span class="faq-icon">❓</span>Who should I notify?</button>
+          <button class="faq-btn" onclick="faqClick(this,'What is the difference between a wake and a memorial service?')"><span class="faq-icon">❓</span>What is the difference between a wake and a memorial service?</button>
+        </div>
+      </div>
+
+      <div class="faq-category">
+        <span class="faq-category-label">🏷️ Religion / Temple Offering</span>
+        <div class="faq-items">
+          <button class="faq-btn" onclick="faqClick(this,'Estimated temple offering:？')"><span class="faq-icon">❓</span>Estimated temple offering:？</button>
+          <button class="faq-btn" onclick="faqClick(this,'noneReligion& noneDenominationevencan be done？')"><span class="faq-icon">❓</span>noneReligion& noneDenominationevencan be done？</button>
+          <button class="faq-btn" onclick="faqClick(this,'Other denominations also welcomeSupportcan be done？')"><span class="faq-icon">❓</span>Other denominations also welcomeSupportcan be done？</button>
+          <button class="faq-btn" onclick="faqClick(this,'Difference between Hana-tsutsumi and Himitate:？')"><span class="faq-icon">❓</span>Difference between Hana-tsutsumi and Himitate:？</button>
+        </div>
+      </div>
+
+      <div class="faq-category">
+        <span class="faq-category-label">👶 For children & young attendees</span>
+        <div class="faq-items">
+          <button class="faq-btn" onclick="faqClick(this,'Can young children attend?')"><span class="faq-icon">❓</span>Can young children attend?</button>
+          <button class="faq-btn" onclick="faqClick(this,&quot;Is there a kids' space?&quot;)"><span class="faq-icon">❓</span>Is there a kids' space?</button>
+          <button class="faq-btn" onclick="faqClick(this,'Nursing room& diaper changingcan be done？')"><span class="faq-icon">❓</span>Nursing room& diaper changingcan be done？</button>
+        </div>
+      </div>
+
+      <div class="faq-category">
+        <span class="faq-category-label">🌸 Farewell & Special Touches</span>
+        <div class="faq-items">
+          <button class="faq-btn" onclick="faqClick(this,'I want to decorate with lots of flowers')"><span class="faq-icon">❓</span>Decorate with lots of flowers</button>
+          <button class="faq-btn" onclick="faqClick(this,'Musicandwant to play video')"><span class="faq-icon">❓</span>Play music / video</button>
+          <button class="faq-btn" onclick="faqClick(this,'I want my pet to join the farewell')"><span class="faq-icon">❓</span>Pet farewell together</button>
+          <button class="faq-btn" onclick="faqClick(this,'I want to create a Memorial tablet with a photo')"><span class="faq-icon">❓</span>I want to create a Memorial tablet with a photo</button>
+        </div>
+      </div>
+
+      <div class="faq-category">
+        <span class="faq-category-label">😷 Infectious disease & healthSupport</span>
+        <div class="faq-items">
+          <button class="faq-btn" onclick="faqClick(this,'in the case of death from infectious diseaseSupport？')"><span class="faq-icon">❓</span>in the case of death from infectious diseaseSupport？</button>
+          <button class="faq-btn" onclick="faqClick(this,'What if I want to limit the number of attendees?')"><span class="faq-icon">❓</span>What if I want to limit the number of attendees?</button>
+        </div>
+      </div>
+
+    </div><!-- /faq-body -->
+  </div><!-- /faq-panel -->
+
+  <!-- ChatbotUI -->
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <div class="bot-avatar">🤝</div>
+      <div>
+        <div>Saiki Funeral Services - Consultation Support</div>
+        <div style="font-size:0.72rem; opacity:0.85;">Wishes & Concernswhatevenfeel free to</div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <!-- Messages areJSatAdditional -->
+    </div>
+    <div class="typing-dots" id="typingIndicator" style="display:none; padding:8px 14px; background:#fff; border-radius:16px; margin:4px 12px; align-self:flex-start;">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="quick-replies" id="quickReplies" style="display:none;">
+      <!-- Quick replies areJSatAdditional -->
+    </div>
+    <div class="chat-input-area">
+      <textarea class="chat-input" id="chatInput" rows="1" placeholder="Type a message… ※Voice Input'stypoalsoLargeOK / fine" onkeydown="chatKeyDown(event)"></textarea>
+      <button class="chat-send-btn" id="chatSendBtn" onclick="sendChatMessage()" title="Send">➤</button>
+    </div>
+  </div>
+  
+  <!-- ChatCompleteBanner -->
+  <div class="chat-done-banner" id="chatDoneBanner">
+    ✅ Thank you for your input. Our staff will review the details and assist you carefully.
+  </div>
+  
+  <!-- MemberConfirm -->
+  <div class="form-group" style="margin-top:4px;">
+    <label class="form-label">Are you a Yasuragi Member?</label>
+    <div class="btn-group" id="memberGroup">
+      <button class="btn-choice" onclick="selectMember(this,'yes')">
+        <span class="choice-icon">💳</span>
+        <span class="choice-text">
+          <strong>I am a member</strong>
+          <div class="choice-desc">35% member discount will be applied</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectMember(this,'join')">
+        <span class="choice-icon">🎉</span>
+        <span class="choice-text">
+          <strong>I want to join today <span class="join-badge">30%Discount</span></strong>
+          <div class="choice-desc">Day ofupon joiningalso30%Discountwill be applied</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectMember(this,'no')">
+        <span class="choice-icon">📝</span>
+        <span class="choice-text">
+          <strong>Not a member</strong>
+          <div class="choice-desc">Regular PriceatInformationwill be</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+      <button class="btn-choice" onclick="selectMember(this,'unknown')">
+        <span class="choice-icon">❓</span>
+        <span class="choice-text">
+          <strong>I'm not sure</strong>
+          <div class="choice-desc">Our staff will verify your status</div>
+        </span>
+        <span class="check-mark">✔</span>
+      </button>
+    </div>
+  </div>
+  
+  <div class="nav-buttons">
+    <button class="btn-back" onclick="goToStep(5)">← Back</button>
+    <button class="btn-next" onclick="goToStep(7)">Next → Estimate Review</button>
+  </div>
+</div>
+
+<!-- ===== STEP 7: EstimateConfirm ===== -->
+<div class="step" id="step7">
+  <div class="step-title"><span class="step-title-text"><span class="step-num">7</span>Estimate Review</span><button class="btn-restart-topright no-print" onclick="restartApp()">🔄 Start Over</button></div>
+  
+  <div class="estimate-card" id="estimateCard">
+    <!-- JavaScriptdynamic generation -->
+  </div>
+  
+  <div class="info-box">
+    ⚠️ The above is an estimated guideline. Hospitality costs and optional fees may vary depending on the number of attendees and specific arrangements.<br>
+    Please confirm the details with our staff.
+  </div>
+  
+  <!-- PDF / LINE / Email ShareButton（Improved version） -->
+  <div class="estimate-action-buttons">
+    <button class="btn-estimate-action btn-pdf" onclick="gaTrack('pdf_download',{step:state.currentStep}); downloadEstimatePDF()">
+      <span class="btn-icon">📄</span>
+      <span class="btn-label">
+        <span class="btn-label-main">PDFSave</span>
+        <span class="btn-label-sub">Save estimate as PDF</span>
+      </span>
+    </button>
+    <button class="btn-estimate-action btn-line" onclick="gaTrack('line_share',{step:state.currentStep}); shareToLINE()">
+      <span class="btn-icon">💬</span>
+      <span class="btn-label">
+        <span class="btn-label-main">LINEatShare</span>
+        <span class="btn-label-sub">Send detailed estimate via LINE</span>
+      </span>
+    </button>
+    <button id="sendEstimateEmailBtn" class="btn-estimate-action btn-email" onclick="gaTrack('email_send_click',{step:state.currentStep}); sendEstimateEmail()">
+      <span class="btn-icon">✉️</span>
+      <span class="btn-label">
+        <span class="btn-label-main">EmailSend</span>
+        <span class="btn-label-sub">Send estimate to our staff by email</span>
+      </span>
+    </button>
+    <button class="btn-estimate-action btn-sms" onclick="smsShare()">
+      <span class="btn-icon">📱</span>
+      <span class="btn-label">
+        <span class="btn-label-main">SMSatSend</span>
+        <span class="btn-label-sub">By short messageContentsSendto</span>
+      </span>
+    </button>
+  </div>
+
+  <!-- EmailSendResultBanner（step7for） -->
+  <div id="estimateEmailBanner" style="display:none; margin-top:12px; padding:12px 16px; border-radius:10px; font-size:0.92rem; font-weight:bold; line-height:1.6;"></div>
+
+  <div class="nav-buttons">
+    <button class="btn-back" onclick="goToStep(6)">← Back</button>
+    <button class="btn-finish" id="submitBtn" onclick="submitAndComplete()">✔ SendComplete</button>
+  </div>
+</div>
+
+<!-- ===== STEP 8: Complete ===== -->
+<div class="step" id="step8">
+
+  <!-- confetti -->
+  <div class="confetti-wrap no-print" id="confettiWrap"></div>
+
+  <!-- thank-you messageCard -->
+  <div class="complete-card">
+    <div class="complete-icon">🌸</div>
+    <div class="complete-badge">✨ InputComplete ✨</div>
+    <div class="complete-title">
+      InputThank you！<br>
+      We sincerely thank you
+    </div>
+    <div class="complete-subtitle">⚘ From all Saiki Funeral Services staff</div>
+    <div class="complete-divider"></div>
+    <div class="complete-text">
+      Our staff member will arrive at the scheduled time.<br>
+      wholeheartedly meetingContentsConfirmwe will。<br><br>
+      If it is urgent, please call us.<br>
+      24 hours365day、whenevenwill accept。
+      <br><br>
+      <a class="complete-phone no-print" href="tel:0120315312">
+        📞 0120-315-312
+      </a>
+      <div class="complete-hours">24 hours 365day 365 days a year</div>
+    </div>
+  </div>
+
+  <!-- PrintDedicatedHeader -->
+  <div class="print-header" id="printHeader">
+    <h2>⚘ Saiki Funeral Services - Funeral Support Estimate＆ConsultationRecord</h2>
+    <p id="printDate"></p>
+  </div>
+
+  <div class="submit-result-banner" id="submitResultBanner"></div>
+
+  <div id="finalSummary" style="background:#fff; border-radius:12px; border:2px solid var(--clr-border); padding:16px; margin-bottom:16px; font-size:0.87rem; line-height:1.9;"></div>
+
+  <!-- Chat conversation log（PDFPrintfor） -->
+  <div class="print-chat-log" id="printChatLog">
+    <div class="print-chat-log-title">💬 Wishes & Concerns Chat conversation log</div>
+    <div id="printChatMessages"></div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="step8-actions no-print">
+    <div class="step8-actions-title">💚 Save / Share Estimate</div>
+
+    <button class="btn-s8 btn-s8-line" onclick="shareToLINE()">
+      <span class="s8-icon">💬</span>
+      <span class="s8-label">
+        <span class="s8-main">LINEatShare</span>
+        <span class="s8-sub">Send estimate details via LINE</span>
+      </span>
+    </button>
+
+    <button class="btn-s8 btn-s8-sms" onclick="smsShare()">
+      <span class="s8-icon">📱</span>
+      <span class="s8-label">
+        <span class="s8-main">SMSatShare</span>
+        <span class="s8-sub">By short messageSend</span>
+      </span>
+    </button>
+
+    <button class="btn-s8 btn-s8-pdf" onclick="printPage()">
+      <span class="s8-icon">🖨️</span>
+      <span class="s8-label">
+        <span class="s8-main">Print / PDFSave</span>
+        <span class="s8-sub">Save estimate as PDF</span>
+      </span>
+    </button>
+
+    <div class="step8-actions-title" style="margin-top:8px;">🔄 Start over</div>
+    <button class="btn-s8 btn-s8-restart" onclick="restartApp()">
+      <span class="s8-icon">🔄</span>
+      <span class="s8-label">
+        <span class="s8-main">StarttoBack</span>
+        <span class="s8-sub">⚘ Saiki Funeral Services - Funeral Supportto top of</span>
+      </span>
+    </button>
+  </div>
+
+  <!-- ===== Funeral Flow Timeline ===== -->
+  <div class="flow-section no-print">
+    <div class="flow-section-title">📋 Funeral Process (Typical Family Funeral)</div>
+
+    <!-- Phase1: Application & Preparation -->
+    <div class="flow-phase-label">
+      <span class="flow-phase-badge">📞 Application & Preparation</span>
+      <span class="flow-phase-line"></span>
+    </div>
+    <div class="flow-timeline">
+
+      <div class="flow-item">
+        <div class="flow-badge"><span>STEP</span><span class="badge-num">1</span></div>
+        <div class="flow-card">
+          <div class="flow-header">
+            <span class="flow-icon">📞</span>
+            <span class="flow-title">Call & Contact</span>
+            <span class="flow-timing">Immediately after passing</span>
+          </div>
+          <div class="flow-desc">
+            Please call Saiki Funeral Services first. Available 24/7/365. A hearse can arrive in as little as 30 minutes.
+            <div class="flow-note">📱 0120-315-312 (24 hours, toll-free)<br>Please inform us: Name of deceased / Pickup location / Destination</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-badge"><span>STEP</span><span class="badge-num">2</span></div>
+        <div class="flow-card">
+          <div class="flow-header">
+            <span class="flow-icon">🚐</span>
+            <span class="flow-title">Transport & Placement</span>
+            <span class="flow-timing">Day of–next dayday</span>
+          </div>
+          <div class="flow-desc">
+            Transfer from the place of death (hospital, etc.) to home or mortuary. We obtain the death certificate from the doctor. Saiki Funeral Services provides the bedside arrangement and dry ice.
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-badge"><span>STEP</span><span class="badge-num">3</span></div>
+        <div class="flow-card">
+          <div class="flow-header">
+            <span class="flow-icon">📋</span>
+            <span class="flow-title">Meeting, preparation & coffining</span>
+            <span class="flow-timing">1Day</span>
+          </div>
+          <div class="flow-desc">
+            Discuss the schedule, venue, content, and costs with our staff. We propose plans that fit your budget. We recommend a family-participation coffining ceremony.
+            <div class="flow-note">📄 Items to prepare: Death certificate / Photo of deceased / Stamp (personal seal)<br>※Saiki Funeral Services will handle the cremation permit application free of charge</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /flow-timeline Application preparation -->
+
+    <!-- Phase2: Wake -->
+    <div class="flow-phase-label">
+      <span class="flow-phase-badge">🕯️ Wake</span>
+      <span class="flow-phase-line"></span>
+    </div>
+    <div class="flow-timeline">
+
+      <div class="flow-item">
+        <div class="flow-badge"><span>STEP</span><span class="badge-num">4</span></div>
+        <div class="flow-card">
+          <div class="flow-header">
+            <span class="flow-icon">🕯️</span>
+            <span class="flow-title">Wake</span>
+            <span class="flow-timing">1–2Day Evening（18:00–）</span>
+          </div>
+          <div class="flow-desc">
+            Incense burning in order of family → relatives → mourners, led by the priest's sutra recitation. We will provide detailed guidance on reception and hospitality in advance.<br>※Held on the evening of the day of passing or the following day. It may be held on day 1 or day 2 depending on transfer and meeting schedules.
+            <div class="flow-note">
+              🕐 <strong>Estimated start: 6:00 PM</strong> (Reception begins 30 min. early at 5:30 PM)<br>
+              🕡 <strong>endceremonyEstimate：18:30–19:00</strong><br>
+              ⏱️ Wake ceremony: <strong>approx. 30–60 min.</strong><br>
+              🌙 After that、Bereaved FamilyDeceasedspending the night with the deceased（WakeBehavior）
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /flow-timeline Wake -->
+
+    <!-- Phase3: FuneralDay of -->
+    <div class="flow-phase-label">
+      <span class="flow-phase-badge">⛩️ FuneralDay of</span>
+      <span class="flow-phase-line"></span>
+    </div>
+    <div class="flow-timeline">
+
+      <div class="flow-item">
+        <div class="flow-badge"><span>STEP</span><span class="badge-num">5</span></div>
+        <div class="flow-card">
+          <div class="flow-header">
+            <span class="flow-icon">⛩️</span>
+            <span class="flow-title">Funeral / Memorial Service / Cremation</span>
+            <span class="flow-timing">Wakenext dayday</span>
+          </div>
+          <div class="flow-desc">
+            Memorial Service（approx.1hourtime）→ Farewell Ceremony → Departure of the coffin → Cremationto the venue。StaffCremationwill accompany you to the venue。CremationAfter this,Ashespick-up。
+            <div class="flow-note">⏱️ Memorial Service：approx.1hourtime / Cremation：approx.1hourtime15–30min.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-item">
+        <div class="flow-badge"><span>STEP</span><span class="badge-num">6</span></div>
+        <div class="flow-card">
+          <div class="flow-header">
+            <span class="flow-icon">🙏</span>
+            <span class="flow-title">First 7th day memorialMemorial Service / Post-funeral meal (Shojin-otoshi)</span>
+            <span class="flow-timing">FuneralDay of PM</span>
+          </div>
+          <div class="flow-desc">
+            After returning home、First 7th day memorialMemorial Servicewill be conducted、Post-funeral meal (Shojin-otoshi)（Reception meal）and then adjourn。Thank-youGreetingandconsolation'svenuewill be。
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /flow-timeline FuneralDay of（Memorial Service / Cremation） -->
+
+    <!-- Phase4: FuneralafterSupport -->
+    <div class="flow-phase-label">
+      <span class="flow-phase-badge">🤝 FuneralafterSupport</span>
+      <span class="flow-phase-line"></span>
+    </div>
+    <div class="flow-timeline">
+      <div class="flow-item">
+        <div class="flow-badge"><span>STEP</span><span class="badge-num">7</span></div>
+        <div class="flow-card">
+          <div class="flow-header">
+            <span class="flow-icon">🤝</span>
+            <span class="flow-title">FuneralafterSupport</span>
+            <span class="flow-timing">Funeralafter–</span>
+          </div>
+          <div class="flow-desc">
+            DedicatedStaffFreewith advice。Forty-ninth Day Memorial / Annual memorialMemorial Servicewill continue to support you through。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Funeralwhat is needed after -->
+    <div class="flow-after-section">
+      <div class="after-title">📝 Funeralwhat is needed after（AllFreeSupport）</div>
+      <div class="flow-after-items">
+        <span class="flow-after-tag">Temple offering / honorarium</span>
+        <span class="flow-after-tag">Condolence GiftArrangement of return gifts</span>
+        <span class="flow-after-tag">Preparing the memorial tablet & Buddhist altar</span>
+        <span class="flow-after-tag">Burial & grave preparation</span>
+        <span class="flow-after-tag">Various notifications to the municipal office</span>
+        <span class="flow-after-tag">Forty-ninth Day MemorialMemorial Service'sInformation</span>
+        <span class="flow-after-tag">Annual memorialMemorial Service'sConsultation</span>
+      </div>
+    </div>
+
+    <!-- CTAPhone -->
+    <div class="flow-phone-cta">
+      <div class="cta-text">🕐 24 hours365day &Consultation& requestYeseven</div>
+      <a href="tel:0120315312">📞 0120-315-312</a>
+      <div class="cta-sub">⚘ Saiki Funeral ServicesStaffall staff</div>
+    </div>
+
+  </div>
+  <!-- ===== /Funeral Flow Timeline ===== -->
+
+<script>
+// ========== Data definitions ==========
+
+const IMG = {
+  ai:   'https://sspark.genspark.ai/cfimages?u1=nT5quTOKQ7O6dN7%2FNZqDTumLphmArsXpAg%2FidVQwm9xnCQhDF9nD0K5Vj%2B3Ic9IiPSrjpsjx5xXkgq4y7DwnkHLTh%2Ba6HyQEHwJEx25n0YltONjDzioxzvWXdJ6ZCtqrTZRiCeC0F%2BrZHUMHJA2F9LMQWEXKwTA7ig%3D%3D&u2=GPKZhykKgNRdFIQs&width=1024',
+  hana: 'https://sspark.genspark.ai/cfimages?u1=FWRGlMdJPTl3PkI6X3H4m9beWqR1IwPAuodXFneVtcj77uRI1lhaGtGnjkW60XPe%2B50mc6%2B2l%2F8QCfmWlTTO6oGZq%2B%2BIRz9XcYLwpk2aH7tTksxRmwNH2RZqTOFP%2FBIs6675Ze1Wg4ofi%2BGsbq9GQsi1Q8MI02Pl2jnd&u2=UR%2Bcdja2fICIA7bS&width=1024',
+  kaori:'https://sspark.genspark.ai/cfimages?u1=8S5IE1Ne3ZILlI47bWm6xsbrfU4k54OwY7DeUh57bak1y4x4uiVhjYgl4oU6NVAYfK53x4d6K4aoLL2OeJyXli1wT%2Bj7OZ8Y0Gh9yCDdZJD%2F1lL65odcpj1IB%2BPf4wCFI5ewgDC5%2BVU3oRgMKtvf27wgSB0R1wkpRDdgRg%3D%3D&u2=p0bJTs%2FGuJ5EKbF%2B&width=1024',
+  kaga: 'https://sspark.genspark.ai/cfimages?u1=eLpG%2FgY9JBLEumdLrEdSh26WP5dQREM%2FhDIjvZj9XQcar2XLClGcgSrEoQDPOTNlQwfMWS594Z5XHefZjloMLGCPSG3FPAxsSTKMCYzvfQAs1ExspKqYbTqBBsb8SCr%2FuvUvIsxfixxGMmwpWDG7oW0V%2Bo9juresvwScK%2BDl5Q%3D%3D&u2=T6urtJBYLpuVuwF8&width=1024',
+  // Living SpaceCourseDedicatedAltar
+  living_ai:   'https://sspark.genspark.ai/cfimages?u1=pQpKKeEit3T9d7xBH4%2FbkbxeT%2Bwy9%2BUb0jw%2BCfOiUELGvqH%2FTHjd7IpASiGd9m83Yuc34Z3VKf021c6SMgRkAMU5dC08CnBU5ZdDrNrfwyRryR6flCHsN9qjTULqPAGXIHCY5mSFQzy3QHEWy%2FRjBepfsCSlfpZGX95SOukidbNnkQ%3D%3D&u2=iFIWuiLz%2Bzm21Ze9&width=1024',
+  living_hana: 'https://sspark.genspark.ai/cfimages?u1=cU2vptQ%2FUqgCGxAKelTq72ns9gQVLQrr7wLhjskjn6vEOR641G7HRRDjdmy4XgnZVlWDmckp6F6pqE2G8V185ViXlNLPjAieO%2B8BEHeVhefCBgKtQo65nKzKWEQLRNCxMXWzTYHDb3q7KJdI0Vkl9zqEanElyc2i1RpqcWroUOB%2B%2BhYP&u2=xCwpakZRKWanbsIT&width=1024',
+  living_kaori:'https://sspark.genspark.ai/cfimages?u1=KUY6g73bfffIgq6C1jLH%2BNXDFuxm659dFSL8N%2Fzwu2PkpOT93sV9ne0x8iUh%2BxUsgtF8c3EW6%2BKo8cD6xfN1%2Bqj%2BnZhqeqdFL1gnnGU%2BgICZvbo5Z5Sv75Q6pdXVo%2FvJP9RRHzwzgLTECBF9X8Yb378VC5qho5JSFC%2BZvkcFJpjT46Rauw%3D%3D&u2=Ve6n9dmTfkAK1ghM&width=1024',
+  living_kaga: 'https://sspark.genspark.ai/cfimages?u1=AMAkgqbTLhc7%2FogDXeBRWO1e78FQWv7SBbnyBKZkl%2BYbvezlMwzmWA8QvM506lg%2FoE7tPal9S1SP43kpOy%2FNcz7q8UigB3GNcFd%2BnHEZmIpa2Dfs6jZ%2BSCqj0dFfZGQhq7tAdPuUZ56qIgKSjLkuC4mzSzPmngZOzlcS3r7ciVLqCBl2wqzrmQ%3D%3D&u2=YJiuuTwO0gdaMBeM&width=1024',
+  // Traditional standard funeral（Standard Funeral& corporate funeral）forAltarCourseImage
+  normal_ai:   'https://sspark.genspark.ai/cfimages?u1=uMRcdm1xpP9GYchwtMAz%2BRAbf51Y3kI8JgeTOwoBpd9koXXX7hPqLXqDgQE1%2F3PaVAg4YncJ8k8G72PUiKzE9HaKZ5BlhsWBiECb7MhB%2FVxtfAWyveRLqdqbhYiBTvwGo0uM9iDewHUXWGqdjElStx74Ndg5Tcg%2Flg%3D%3D&u2=ISZiChn%2FHVtCqTYG&width=1024',
+  normal_hana: 'https://sspark.genspark.ai/cfimages?u1=etYilXsc3vfgPm%2B8f7fiKpLNqHZwwgJKvLOOD7QdCRDLymkDTKhBF0PgdTlcBPjLOBNGebzg6d0J4DeoW4mYwIq8mcUDV8IYNgnlFg88TrTIAQwkHc3aPmETDdEhvpXAWNuka4kcwp2TFFEEu9eyWHyW6qlbTj8HBWBO&u2=4l0f%2FXeCgDBIMUk2&width=1024',
+  normal_kaori:'https://sspark.genspark.ai/cfimages?u1=jOfhCOa1OBQ4eWdSgOliHfIikh99Tr9D9PWHof1pWOWAqVUYokBp0nkTCL8DB3r4gJmKY3%2BFp0mwHTTIPL%2F7KTbqf2Wwuy7Lgtfi9%2BLcgiYU6MJVz%2Bxqecy%2FBhIbMSKtmeMuiiuVFLGldiCaSPMXPigprq1WpKGJskmbzg%3D%3D&u2=UXKKjApTHPoFU0Aw&width=1024',
+  normal_kaga: 'https://sspark.genspark.ai/cfimages?u1=qBuQPaqQAofp%2BODq2Bae%2BCP%2BZhhDJ2ogcLNjXxH%2FI67HNSCmJFKWnDN%2BYONmbXMves8QF8JWcbcAJaX1O6q%2B1214%2BXd9VLILrqvp%2BAh%2Fx8Ap70MMHAyIjdcz%2B8m69gqylvfOvHJ45gFoUY8l8oOSajZZnVIwfKKGyCmMfnvzdA%3D%3D&u2=mLMLU1UrxzAkoGkL&width=1024',
+  // VenueExterior
+  hall_forest:  'https://sspark.genspark.ai/cfimages?u1=ZxNYfsT0wXO2oedmP7dwJF6PmvAgl7isNVyCT41opAVERCNiFv0VRue21cC280CRvzmH4UASNkAi2zopOpI%2FcLmbcJ%2FitYNdQbWqx0xCLSdljxTsLdpN0uE%2FvwUwv1iiDlKHPbHYAJULpklqq3nGIT%2F3gZtyBhiU&u2=IFTFT7L6ttpDl6kq&width=1024',
+  hall_yasuragi:'https://sspark.genspark.ai/cfimages?u1=JD3sdHwCd9UguUNbtp83krdMZtBaCLQtAfw9S7P3EiwqC6W1Tw5swfUwQLlSJLO3iyqd8g5qY1Nqto15akUMjHfikrZzXs5uX4IjHMZ7UJ3Rx%2BoklWi%2FQqio0ZCscMydTANKjbqMemP6vgShBwrZpp%2Ff4wpeNbOrmJI%3D&u2=0QUHL4SigXbXR1nY&width=1024',
+  hall_tsutsuji:'https://sspark.genspark.ai/cfimages?u1=7rrDkyC3hIroxC2fluFwHEeksJ0bUNtUcN4C%2Fsg2zXlQ0K9nImnPv%2F0M37bIIXoUPJoNL0OdAoTzljUC6fBdMRkhF3Xe8uTq1u46I%2F6sNDVXpHh03akakvF1JJshqzXwAvUlxD%2BlZL9wdwNU%2BJ%2Bb18cyoYIDaJi6ZbJu3Ns3qNowtw%3D%3D&u2=Y1v%2B37q6FHQe%2Fial&width=1024',
+  hall_yasuura: 'https://sspark.genspark.ai/cfimages?u1=CafYEXSmhhbBOLttGKfJ4vF5JW0t6qd5VAxckRtblge0jogyp8%2BwLD6RlFm4%2FGCZhfJ7OMQ%2FyHjC7OUGt%2BJ9qZjIQddTCdZ4cahjsugE%2FL36XjkCAtGwpVxZlvZSGc62lyceTJrh7piUj38ooHFX6EMiSDfIC3x1J3gMaNRQS88Fb%2B0%3D&u2=Twb2gJDsaPErZw3A&width=1024',
+  hall_shion:   'https://sspark.genspark.ai/cfimages?u1=PXRKn%2BQzvKjS03FE5kPb5tMyTxdDU9zeSeuyCeMczzxWaDghQv%2BtjUxgCzytV5YZiegOcjOw%2FfO3ZIce5U267jm5kkrwRnxdAaYY0YYHPWR4f0j4%2FU1Nv6mJfoP%2FRvLHGP0nrSaK92WZMkjiAdGo0IOuLJa0ELebSEjbsXZIAA%3D%3D&u2=oaG1F%2FmyUvzfUzOP&width=1024',
+  hall_living:  'https://sspark.genspark.ai/cfimages?u1=pQpKKeEit3T9d7xBH4%2FbkbxeT%2Bwy9%2BUb0jw%2BCfOiUELGvqH%2FTHjd7IpASiGd9m83Yuc34Z3VKf021c6SMgRkAMU5dC08CnBU5ZdDrNrfwyRryR6flCHsN9qjTULqPAGXIHCY5mSFQzy3QHEWy%2FRjBepfsCSlfpZGX95SOukidbNnkQ%3D%3D&u2=iFIWuiLz%2Bzm21Ze9&width=1024',
+  hall_ai_chokuso: 'https://Saiki-sousai.com/wp-content/themes/tsuqrea-child/assets/img/plan/ai-kaso/lead_pic.jpg',
+};
+
+// Pricing（MemberPrice &Regular Price）
+const PRICING = {
+  compact: { ai:[393800,573800], hana:[471800,651800], kaori:[602800,782800], kaga:[767800,947800] },
+  living:  { ai:[547800,727800], hana:[625800,805800], kaori:[756800,936800], kaga:[921800,1101800] },
+  family:  { ai:[712800,992800], hana:[800800,1080800], kaori:[931800,1211800], kaga:[1096800,1376800] },
+  normal:  { ai:[877800,1157800], hana:[987800,1267800], kaori:[1140800,1420800], kaga:[1327800,1607800] },
+  chokuso: { single:[198000,248000] },  // Direct Cremation（CourseSelectNone）
+  kasou:   { single:[148000,198000] }   // Cremationonly（Minimal）
+};
+
+// VenueData
+const HALLS = {
+  tsutsuji: {
+    id:'tsutsuji', name:'IFITVenueTsutsuji', short:'Tsutsuji',
+    address:'〒739-0006 Kamiichimachi, Saijo, Higashihiroshima City10-11',
+    access:'JRTaxi from Saijo Station4min.', capacity:'Family FuneralDedicatedVenue（–15 people）',
+    image: IMG.hall_tsutsuji, pricingType:'compact',
+    url:'https://Saiki-sousai.com/plan/premium-compact-funeral/access#itfit-tsutsuji',
+    maxPeople:15, planLabel:'PremiumCompactFamily Funeral',
+    badge:'Suitable for small groups', special:''
+  },
+  yasuura: {
+    id:'yasuura', name:'FamilyVenueYasuura', short:'Yasuura',
+    address:'〒737-2516 Annabara Chuo, Kure City5chome (street address)3-5',
+    access:'JRTaxi from Yasuura Station2min.（Walking3min.）', capacity:'Family FuneralDedicatedVenue（Up to 10 people）',
+    image: IMG.hall_yasuura, pricingType:'compact',
+    url:'https://Saiki-sousai.com/plan/premium-compact-funeral/access#family-yasuura',
+    maxPeople:10, planLabel:'PremiumCompactFamily Funeral',
+    badge:'', special:''
+  },
+  living: {
+    id:'living', name:'Yasuragi Living', short:'Living Space',
+    address:'〒739-0041 Jike, Saijo-cho, Higashihiroshima City6282（YasuragiInside the hall）',
+    access:'JRTaxi from Saijo Station3min.', capacity:'1exclusive to one group, up to20 people',
+    image: IMG.hall_living, pricingType:'living',
+    url:'https://Saiki-sousai.com/yasuragi-living',
+    maxPeople:20, planLabel:'Yasuragi Livingfuneral',
+    badge:'1day1exclusive to one group', special:'living'
+  },
+  yasuragi: {
+    id:'yasuragi', name:'YasuragiHall', short:'Yasuragi',
+    address:'〒739-0041 Jike, Saijo-cho, Higashihiroshima City6282',
+    access:'JRTaxi from Saijo Station3min.', capacity:'Medium & LargeVenue（–300 people）、SmallVenue（–50 people）',
+    image: IMG.hall_yasuragi, pricingType:'family',
+    url:'https://Saiki-sousai.com/yasuragi',
+    maxPeople:300, planLabel:"Family Funeral style funeral / Standard's funeral ceremony",
+    badge:'Large-scaleSupportpossible', special:''
+  },
+  forest: {
+    id:'forest', name:'ForestVenue', short:'Forest',
+    address:'〒739-0042 Saijo-Higashi, Saijo-cho, Higashihiroshima City1050',
+    access:'JRSaijo StationfromWalking10min.', capacity:'LargeVenue（200people or more）、MediumVenue（–150 people）、SmallVenue（–50 people）',
+    image: IMG.hall_forest, pricingType:'family',
+    url:'https://Saiki-sousai.com/forest-hall',
+    maxPeople:300, planLabel:"Family Funeral style funeral / Standard's funeral ceremony",
+    badge:'Large-scaleSupportpossible', special:''
+  },
+  shion: {
+    id:'shion', name:'AifitCeremonyVenueShion (Aster)', short:'Shion (Aster)',
+    address:'〒723-0052 Minami, Mihara City, Hiroshima Pref.2chome (street address)1-16',
+    access:'JRTaxi from Mihara Station6min.', capacity:'MediumVenue（–80 people）Family Funeralpossible',
+    image: IMG.hall_shion, pricingType:'normal',
+    url:'https://Saiki-sousai.com/plan/normal/access#ifit-shion',
+    maxPeople:80, planLabel:"Standard's funeral ceremony / Relatives Funeral",
+    badge:'MiharaArea', special:''
+  },
+  ai_chokuso: {
+    id:'ai_chokuso', name:'Ai Direct CremationVenue', short:'Ai Direct Cremation',
+    address:'〒739-0041 Jike, Saijo-cho, Higashihiroshima City, Hiroshima Pref.6288',
+    access:'📞 0120-315-312（Free）', capacity:'Direct CremationDedicated（Up to 10 people）',
+    image: IMG.hall_ai_chokuso, pricingType:'chokuso',
+    url:'https://Saiki-sousai.com/plan/ai-kaso/',
+    maxPeople:10, planLabel:'Direct CremationDedicatedVenue',
+    badge:'Direct CremationDedicated', special:'chokuso'
+  }
+};
+
+// CourseInformation
+const COURSES = {
+  ai:    { name:'loveCourse', kanji:'love', desc:'Simple yet warmAltar。Farewell in a calm atmosphere。', color:'#e8f4f8' },
+  hana:  { name:'flowersCourse', kanji:'flowers', desc:'With an abundance of beautiful flowers、Vivid and brightAltar。', color:'#fce8f0' },
+  kaori: { name:'IncenseCourse', kanji:'Incense', desc:'dignifiedAltar。Deceaseda grade-up expressing the dignity ofPlan。', color:'#f0f4e8' },
+  kaga:  { name:'Kagayaki (Brilliance)Course', kanji:'Kagayaki (Brilliance)', desc:"The highest-grade, luxurious Altar. A Premium Farewell for a beloved person.", color:'#f8f4e0' }
+};
+
+// PlanDefinition（3Plan）
+function getPlans(attendance, funeralType) {
+  const plans = [];
+  
+  if(attendance === 'under5') {
+    plans.push({
+      id:'nano', label:'small', name:'SmartPlan', icon:'🌿',
+      desc:'Very close family5 peoplethe followingsimple farewell。A heartfelt funeral at minimal cost。',
+      halls:['yasuura','tsutsuji'], priceType:'compact', sizeTag:'Compact'
+    });
+    plans.push({
+      id:'compact', label:'rec', name:'PremiumCompactFamily Funeral', icon:'🌸',
+      desc:"Even for a small group, full-featured Family Funeral. 1-day, 1-group private ceremonies also available.",
+      halls:['tsutsuji','living'], priceType:'compact', sizeTag:'Recommended'
+    });
+    plans.push({
+      id:'living', label:'large', name:'Yasuragi Livingfuneral', icon:'🏡',
+      desc:'in a home-like space, up to20farewell for up to people。1day1fully private space for one group。',
+      halls:['living'], priceType:'living', sizeTag:'Comfort'
+    });
+  } else if(attendance === 'under15') {
+    plans.push({
+      id:'compact', label:'small', name:'PremiumCompactFamily Funeral', icon:'🌸',
+      desc:'Family FuneralDedicatedVenueat15 peoplethe followingFuneral。Affordable yet full-featuredContents。',
+      halls:['tsutsuji','yasuura'], priceType:'compact', sizeTag:'Compact'
+    });
+    plans.push({
+      id:'living', label:'rec', name:'Yasuragi Livingfuneral', icon:'🏡',
+      desc:'1day1group, up to20 people。A relaxed farewell in a home-like living space。',
+      halls:['living'], priceType:'living', sizeTag:'Recommended'
+    });
+    plans.push({
+      id:'family', label:'large', name:'Family Funeralstyle funeral', icon:'🌿',
+      desc:"Using a large venue's small room. Flexible plan that supports future attendance increases.",
+      halls:['yasuragi','forest'], priceType:'family', sizeTag:'Comfort'
+    });
+  } else if(attendance === '15to30') {
+    plans.push({
+      id:'living', label:'small', name:'Yasuragi Livingfuneral', icon:'🏡',
+      desc:"An intimate Living-Room Funeral for up to 20 people. If attendance exceeds 20, please consider another venue.",
+      halls:['living'], priceType:'living', sizeTag:'Small-scale'
+    });
+    plans.push({
+      id:'family', label:'rec', name:'Family Funeralstyle funeral', icon:'🌸',
+      desc:"Family-style ceremony for approx. up to 30 people. Available at Yasuragi Hall / Forest Venue.",
+      halls:['yasuragi','forest'], priceType:'family', sizeTag:'Recommended'
+    });
+    plans.push({
+      id:'normal', label:'large', name:'Traditional standard funeral', icon:'🌿',
+      desc:'Standard FuneralStyle。Friends & acquaintances々can also welcome a wide circle with a fullContents。',
+      halls:['yasuragi','forest','shion'], priceType:'normal', sizeTag:'Comfort'
+    });
+  } else if(attendance === '30to50') {
+    plans.push({
+      id:'family', label:'small', name:'Family Funeralstyle funeral', icon:'🌸',
+      desc:'While keeping costs down30–50people forSupport。Farewell in a warm, home-like atmosphere。',
+      halls:['yasuragi','forest','shion'], priceType:'family', sizeTag:'Compact'
+    });
+    plans.push({
+      id:'normal', label:'rec', name:'Traditional standard funeral', icon:'🌿',
+      desc:'50ideal for a group of peopleStandard Funeral。Wake / Memorial Servicewill be conducted with care。',
+      halls:['yasuragi','forest','shion'], priceType:'normal', sizeTag:'Recommended'
+    });
+    plans.push({
+      id:'grand', label:'large', name:'Corporate funeral &Largefuneral', icon:'🏛️',
+      desc:'Large-scale with many company/organization attendeesFuneral。DedicatedStafffully supports you。',
+      halls:['yasuragi','forest'], priceType:'normal', sizeTag:'Large-scale'
+    });
+  } else { // over50
+    plans.push({
+      id:'normal', label:'small', name:'Traditional standard funeral', icon:'🌿',
+      desc:'50–100scale of peopleStandard Funeral。LargeVenueatwelcoming widelycan be done。',
+      halls:['yasuragi','forest','shion'], priceType:'normal', sizeTag:'Standard'
+    });
+    plans.push({
+      id:'large', label:'rec', name:'LargeStandard Funeral', icon:'🏛️',
+      desc:'100large-scale for more than peopleFuneral。Local residents々& company personnelalsoincludingLarge-scalefuneral。',
+      halls:['yasuragi','forest'], priceType:'normal', sizeTag:'Recommended'
+    });
+    plans.push({
+      id:'corp', label:'large', name:'Corporate / Group Funeral', icon:'🏢',
+      desc:'Company/organization-hostedFuneral。Dedicatedteam planningfromoperationatAllscreenSupport。',
+      halls:['yasuragi','forest'], priceType:'normal', sizeTag:'Large-scale'
+    });
+  }
+  // Direct Cremationdedicated forPlaninsert
+  if(funeralType === 'chokuso') {
+    return [
+      {
+        id:'chokuso_standard', label:'rec', name:'Direct CremationPlan', icon:'🕊️',
+        desc:'Wake / Memorial Servicewithout performing、CremationvenueatFarewellonly。A simple yet heartfelt farewell。',
+        halls:['ai_chokuso','tsutsuji','yasuura'], priceType:'chokuso', sizeTag:'Direct Cremation',
+        isSimplePlan: true
+      },
+      {
+        id:'chokuso_with_farewell', label:'large', name:'Direct Cremation＋Farewell time included', icon:'🌸',
+        desc:"A plan that allows a little extra farewell time before cremation. Your family can say goodbye at a relaxed pace.",
+        halls:['ai_chokuso','tsutsuji','living'], priceType:'chokuso', sizeTag:'Direct Cremation+Farewell',
+        isSimplePlan: true
+      }
+    ];
+  }
+  if(funeralType === 'kasouonly') {
+    return [
+      {
+        id:'kasou_only', label:'rec', name:'CremationonlyPlan', icon:'⛩️',
+        desc:'topalsoSimpleStyle。Transport, placement of remains &Cremationonly is performed。CostMinimaltothose who want to keep costs downto。',
+        halls:['ai_chokuso','tsutsuji','yasuura'], priceType:'kasou', sizeTag:'Cremationonly',
+        isSimplePlan: true
+      }
+    ];
+  }
+  return plans;
+}
+
+// VenueFiltering
+function getRecommendedHalls(attendance, funeralType, selectedPlan) {
+  const allHallIds = ['tsutsuji','yasuura','living','yasuragi','forest','shion'];
+  
+  if(!selectedPlan) return allHallIds;
+  
+  // SelectPlan'sSupportVenueprioritize
+  const planHalls = selectedPlan.halls || allHallIds;
+  
+  // Additionalthat may appear inVenue
+  let recommended = [...planHalls];
+  let others = allHallIds.filter(h => !recommended.includes(h));
+  
+  return { recommended, others };
+}
+
+// ========== State management ==========
+let state = {
+  currentStep: 1,
+  name: '', relation: '', phone: '',
+  attendance: '', funeralType: '',
+  selectedPlan: null, selectedHall: null, selectedCourse: null,
+  wishes: '', concerns: '', chatLog: [], isMember: null,
+  showingAllHalls: false
+};
+
+// ========== FAQ FAQ ==========
+
+// FAQtime(s)answerDataBase
+const FAQ_ANSWERS = {
+  'Tell me about the costs': {
+    badge: '💰 Cost',
+    text: `Saiki Funeral Servicesat / in、FuneralCosts are broadly3is divided into。\n\n① <strong>BasicFuneralSet</strong>（Altar& coffin, transport & memorial portrait, etc.）\n② <strong>Hospitality costs</strong>（Funeral AttendanceThank-yougifts, meals &Halluseforfee, etc.）\n③ <strong>Common optional add-ons</strong>（Preferences for fresh flowers, catering, etc.）\n\n<strong>Transparent Pricing</strong>as our promise:、Pre-agreedEstimateother thanAdditionalno additional charges。`
+  },
+  'AdditionalIs there a cost?？': {
+    badge: '💰 Cost',
+    text: `Please inform us in advanceEstimateagreed amountother thanAdditionalno additional charges 🙏\n\nincrease in attendeesDecrease, etc.when changes arise、Please be sure toChief MournerPleaseConfirmafterSupportwill。Please rest assured。`
+  },
+  'min.Is installment payment possible?？': {
+    badge: '💰 Payment',
+    text: `Yes、EachtypePaymentmethodis available。\n\n& cash payment\n& credit cardCardpayment\n& loan &min.installment payment（Consultationplease）\n\nDetailsOur Stafftofeel free toConsultationplease 😊`
+  },
+  'Tell me about membership discounts': {
+    badge: '💳 Member',
+    text: `YasuragiMemberupon joining、Funeralcosts<strong>35%Discount</strong>will be。\n\nEven in the case of joining on the day<strong>30%Discount</strong>will be applied。\n\nDetailsOur StaffatInquiryplease。\n📞 0120-315-312`
+  },
+  'About funeral subsidies & condolence return gifts': {
+    badge: '💰 Subsidy',
+    text: `When a national health insurance or late-stage elderly medical insurance subscriber passes away、<strong>Funeral Servicesfee（Subsidy）</strong>may be provided by your municipality（Estimate：3–70,000 JPY）。\n\nProcedures areOur Staffwill support you。Condolence Giftreturn giftConsultationis also available。`
+  },
+  'funeralceremonyflow ofPlease tell us': {
+    badge: '📋 Flow',
+    text: `general / typicalFuneralflow of：\n\n1️⃣ Passing away &Contact（24 hoursReception）\n2️⃣ Transport & Placement\n3️⃣ Meeting &Estimate\n4️⃣ Wakeceremony\n5️⃣ Memorial Service / Departure of the coffin\n6️⃣ Cremation& bone picking ceremony\n7️⃣ First 7th day memorialMemorial Service\n\nOur Staffwill support you through every step 🙏`
+  },
+  "What are the municipal office procedures after death?": {
+    badge: '📋 Procedure',
+    text: `main municipalProcedures arethe followingas stated：\n\n / <strong>Submission of Death Notification</strong>（7within days）\n / CremationObtaining the permit\n& health insurance &yearJPY'sresourcegradeloss notification\n& change of household head notification（when needed）\n\nSaiki Funeral Servicesat / in<strong>Municipal procedure support</strong>is also available。feel free toConsultationplease。`
+  },
+  'Tell me about the death certificate': {
+    badge: '📋 Documents',
+    text: `The death certificate is、issued by doctortoofficialceremonyDocuments。\n\n& hospitalatin the case of passing：Issued by attending physician\n& at homeatin the case of passing：Issued by your physician or emergency doctor\n\nSubmission of Death NotificationtoRequiredwill be。Our StaffInformationwill。`
+  },
+  'Who should I notify?': {
+    badge: '📋 Contact',
+    text: `After the passingContactOrder'sEstimate：\n\n1️⃣ Immediate family & close relatives\n2️⃣ Relatives / Sibling\n3️⃣ Deceased's friends & acquaintances（Family Funeraloptional for）\n4️⃣ Workplace / company relations（as needed）\n\nFamily Funeralin the case of、Funeralplease, afterContactis also common in many cases。`
+  },
+  'What is the difference between a wake and a memorial service?': {
+    badge: '📋 Order of ceremony',
+    text: `<strong>Wake</strong>：Ceremony held the evening after passing。Deceasedandtopafter'snightandalsoset tohourtime。\n\n<strong>Memorial Service（Funeral）</strong>：Full ceremony held the following morning。Attendeestopafter'sFarewelltoceremonyceremony。\n\nFamily Funeralat / inWakesimplified「One-Day Funeral」alsoPopularincluded。`
+  },
+  'Estimated temple offering:？': {
+    badge: '🏷️ Temple Offering',
+    text: `Temple offerings vary by denomination, sect, and region。general / typicalEstimatethe followingas stated：\n\n& Buddhismceremony：10–300,000 JPYapproximately\n& Shintoceremony：10–300,000 JPYapproximately\n& Christianity：5–200,000 JPYapproximately\n\n※Temple offering:「Heartfelt wishes」'sat、For details, please consult your family temple orOur StafftoConsultationplease。`
+  },
+  'noneReligion& noneDenominationevencan be done？': {
+    badge: '🏷️ Religion',
+    text: `Yes、Of courseSupportis being done 😊\n\nnoneReligion's「Non-religious / Free Ceremony」and「Music Funeral」, etc.is also available。Deceasedthe pre-mortem wishes of the deceased,、Family'sRequesttotailored original'sFarewell'sceremonySuggestionwill。`
+  },
+  'Other denominations also welcomeSupportcan be done？': {
+    badge: '🏷️ Denomination',
+    text: `Yes、for each denomination / religionSupportis being done。\n\n& Buddhismceremony（Jodo, Jodo Shinshu & Rinzaidoneand Soto Zen, etc.）\n& Shintoceremony\n& Christianity（Catholic / Protestant）\n / OtherReligion\n\nEven if you have no family temple、affiliated'stemple introductiontoandcan be done。`
+  },
+  'Difference between Hana-tsutsumi and Himitate:？': {
+    badge: '🏷️ Urn',
+    text: `<strong>Hana-tsutsumi (Flower Urn)</strong>：Flower-motif design urn。vibrantandatwarmth'simpression。\n\n<strong>Himitate (Elegant Urn)（Higo）</strong>：Traditional-design urn。gradeceremonyincludedcalm impression。\n\nbothDeceasedto rememberLargeprecious vessel。Our Staffwill explain。`
+  },
+  'Can young children attend?': {
+    badge: '👶 Children',
+    text: `Yes、Of course 😊\n\nSmallsmallChildrenevenwith peace of mindAttendancecan receive。EachVenueto<strong>Kids' Space</strong>is fully equipped with、We provide a safe and comfortable environment for children。`
+  },
+  "Is there a kids' space?": {
+    badge: '👶 Facilities',
+    text: `Yes、the followingVenueis equipped with a kids' space：\n\n🏛️ YasuragiHall\n🌲 ForestVenue\n🌺 IFITVenueTsutsuji\n\nFamilies with young children are also welcome toAttendancecan receive。`
+  },
+  'Nursing room& diaper changingcan be done？': {
+    badge: '👶 Nursing room',
+    text: `nursing spaceanddiaper-changing stationis available。\n\nIf you let us know in advance,、StaffSupportwill。Please feel free to let us know 😊`
+  },
+  'I want to decorate with lots of flowers': {
+    badge: '🌸 Special touches / production',
+    text: `Of course, you are welcome toSupportcan be done 🌸\n\n「flowersCourse」「IncenseCourse」「Kagayaki (Brilliance)Course」features beautifully decorated flowersAltaris available。\n\nAlso,、Flower arrangementAdditionalfill the coffin with flowers「Full-Flower Funeral」is also available。Our StafftoConsultationplease。`
+  },
+  'Musicandwant to play video': {
+    badge: '🎵 Special touches / production',
+    text: `Yes、is available 🎵\n\n / Deceasedplay the deceased's favorite music during the ceremony\n& memories'sPhoto & video slideshowatscreeningto\n / MemorialDVDproduction of\n\nin all casesSupportPossible。DetailsOur StafftoConsultationplease。`
+  },
+  'I want my pet to join the farewell': {
+    badge: '🐾 Pet',
+    text: `DeceasedandlovetoPet'sFarewelltoaboutis also available 🐾\n\nPetbringing'sAttendanceand、coffintoPet'sPhotoandplace their collarandalsoPossible。Your preferredContentsfeel free toConsultationplease。`
+  },
+  "I want to create a Memorial tablet with a photo": {
+    badge: '🎋 Memorial tablet',
+    text: `Yes、Supportis being done 📸\n\nDeceased'swith photo'sMemorial tabletand、MemorialPanel'sforintentionis also available。\n\n「IncenseCourse」「Kagayaki (Brilliance)Course」includes a memorial panelStandardis included in。`
+  },
+  'in the case of death from infectious diseaseSupport？': {
+    badge: '😷 Infectious disease',
+    text: `even if the deceased passed away from an infectious disease,、with peace of mindConsultationplease。\n\n& specialistStaffappropriate treatment by\n& infection-controlled placement & transport\n / Attendeesinfection control for（Disinfection, masks, ventilation, etc.）\n\nBereaved Familysafety is the top priority for、carefullySupportwill。📞 0120-315-312`
+  },
+  'What if I want to limit the number of attendees?': {
+    badge: '😷 Restriction',
+    text: `Attendeeseven if you wish to limitSupportis being done。\n\n / <strong>Family Funeral / 1One-Day Funeral</strong>for a small, intimate farewell\n& number of attendees'sRestriction / hourtimemin.adjourn\n& onlineAttendance（Remote Funeral）'sInformation\n\nFlexibly adapted to your wishesSupportwill。`
+  }
+};
+
+// FAQusefordoneSet
+const faqUsedSet = new Set();
+
+// FAQOpen/Close panel
+function toggleFaq() {
+  const body = document.getElementById('faqBody');
+  const icon = document.getElementById('faqToggleIcon');
+  const isOpen = body.classList.contains('open');
+  if (isOpen) {
+    body.classList.remove('open');
+    icon.classList.remove('open');
+  } else {
+    body.classList.add('open');
+    icon.classList.add('open');
+  }
+}
+
+// FAQButton click
+function faqClick(btn, question) {
+  if (btn.classList.contains('used')) return; // Already used
+
+  // usefordoneset to
+  btn.classList.add('used');
+  btn.innerHTML = '<span class="faq-icon">✅</span>' + btn.textContent.trim();
+  faqUsedSet.add(question);
+
+  // useforitem(s)numberBadgeupdate
+  const badge = document.getElementById('faqUsedCount');
+  badge.style.display = 'inline-block';
+  badge.textContent = faqUsedSet.size + 'message(s) sent';
+
+  // even if chat is closed, add to chatSend
+  // FAQpanel onceClose
+  const body = document.getElementById('faqBody');
+  const icon = document.getElementById('faqToggleIcon');
+  body.classList.remove('open');
+  icon.classList.remove('open');
+
+  // as user message to chatSend
+  sendFaqToChat(question);
+}
+
+// FAQto the chatSend
+function sendFaqToChat(question) {
+  if (chatState.isDone) {
+    // ChatCompletecan also be added later
+    addUserMsg(question);
+    chatState.log.push({ role: 'user', msg: question });
+    state.chatLog = chatState.log.slice();
+    // FAQShow answer
+    setTimeout(() => showFaqAnswer(question), 700);
+    return;
+  }
+
+  // ChatTypingdecidingFAQSend
+  const input = document.getElementById('chatInput');
+  if(input) input.value = '';
+  document.getElementById('quickReplies').style.display = 'none';
+  document.getElementById('quickReplies').innerHTML = '';
+
+  addUserMsg(question);
+  chatState.log.push({ role: 'user', msg: question });
+  state.chatLog = chatState.log.slice();
+
+  // FAQReturn dedicated answer
+  setTimeout(() => showFaqAnswer(question), 700);
+}
+
+// FAQDedicatedAnswer bubbleDisplay
+function showFaqAnswer(question) {
+  const msgs = document.getElementById('chatMessages');
+  const answer = FAQ_ANSWERS[question];
+
+  // Show typing
+  const typing = document.createElement('div');
+  typing.className = 'chat-msg bot';
+  typing.id = 'faqTypingMsg';
+  typing.innerHTML = `<div class="msg-avatar">🤝</div><div class="msg-bubble" style="background:#eee; color:#999;"><span class="typing-dots"><span></span><span></span><span></span></span> Preparing answer...</div>`;
+  msgs.appendChild(typing);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  setTimeout(() => {
+    const old = document.getElementById('faqTypingMsg');
+    if(old) old.remove();
+
+    if (answer) {
+      // FAQDedicated bubble
+      const div = document.createElement('div');
+      div.className = 'chat-msg bot';
+      div.innerHTML = `<div class="msg-avatar">🤝</div>
+        <div class="faq-answer-bubble">
+          <div class="faq-answer-badge">${answer.badge}</div>
+          <div>${answer.text.replace(/\n/g,'<br>')}</div>
+          <div style="margin-top:8px; font-size:0.75rem; color:#558B2F; border-top:1px solid #C5E1A5; padding-top:6px;">
+            💬 othertoalsoif you have questionsfeel free toPlease
+          </div>
+        </div>`;
+      msgs.appendChild(div);
+
+      // botalso log toAdditional
+      chatState.log.push({ role: 'bot', msg: answer.badge + ' ' + answer.text.replace(/<[^>]+>/g,'') });
+    } else {
+      addBotMsg('Thank you。\nOur Staffwill explain in detail。feel free toAdditionalplease ask us 🙏');
+    }
+
+    msgs.scrollTop = msgs.scrollHeight;
+
+    // Chat isCompletewhen not done、Show guidance to next flow
+    if (!chatState.isDone) {
+      setTimeout(() => {
+        showChatFaqSuggest();
+      }, 800);
+    }
+  }, 900);
+}
+
+// FAQSuggested follow-up questions
+function showChatFaqSuggest() {
+  const msgs = document.getElementById('chatMessages');
+  const qr = document.getElementById('quickReplies');
+
+  // unusedFAQup to3proposal(s)
+  const allFaqs = Object.keys(FAQ_ANSWERS);
+  const unused = allFaqs.filter(q => !faqUsedSet.has(q));
+  const suggests = unused.slice(0, 3);
+
+  if (suggests.length === 0) return;
+
+  qr.innerHTML = '';
+  qr.style.display = 'flex';
+
+  // 「other'sQuestionview」Button
+  const moreBtn = document.createElement('button');
+  moreBtn.className = 'quick-reply-btn';
+  moreBtn.textContent = '📋 View other questions';
+  moreBtn.onclick = () => {
+    const body = document.getElementById('faqBody');
+    const icon = document.getElementById('faqToggleIcon');
+    body.classList.add('open');
+    icon.classList.add('open');
+    qr.style.display = 'none';
+    // Scroll toFAQto panel
+    document.getElementById('faqPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  qr.appendChild(moreBtn);
+
+  // Suggested related questions
+  suggests.forEach(q => {
+    const btn = document.createElement('button');
+    btn.className = 'quick-reply-btn';
+    btn.textContent = q.length > 18 ? q.substring(0,16) + '…' : q;
+    btn.title = q;
+    btn.onclick = () => {
+      qr.style.display = 'none';
+      qr.innerHTML = '';
+      // FAQMark panel buttons as used
+      document.querySelectorAll('.faq-btn').forEach(fb => {
+        if(fb.getAttribute('onclick') && fb.getAttribute('onclick').includes(q.replace(/'/g,"\'"))) {
+          if(!fb.classList.contains('used')) {
+            fb.classList.add('used');
+            faqUsedSet.add(q);
+            const badge = document.getElementById('faqUsedCount');
+            badge.style.display = 'inline-block';
+            badge.textContent = faqUsedSet.size + 'message(s) sent';
+          }
+        }
+      });
+      sendFaqToChat(q);
+    };
+    qr.appendChild(btn);
+  });
+
+  // CompleteButton
+  const doneBtn = document.createElement('button');
+  doneBtn.className = 'quick-reply-btn';
+  doneBtn.textContent = '✅ Completeto';
+  doneBtn.onclick = () => {
+    qr.style.display = 'none';
+    processUserInput('Completeto');
+  };
+  qr.appendChild(doneBtn);
+}
+
+
+// ========== Chatbot ==========
+const CHAT_FLOW = [
+  {
+    id: 'greeting',
+    botMsg: 'Hello 🙏\nFuneralwishes and concerns regarding、Pleasefeel free toplease tell us。\n\nFirst,、Deceasedabout the farewell for the deceased、Do you have any preferences?？',
+    quickReplies: ['Decorate with many flowers','Play music','I want to keep costs as low as possible','I want to consult about religious matters','No particular preferences','Other'],
+    nextId: 'concerns'
+  },
+  {
+    id: 'concerns',
+    botMsg: 'Thank you 🌸\nNext,、Do you have any concerns or questions?？\nno matter how small、Please feel free to tell us without hesitation。',
+    quickReplies: ['Cost / Paymenttoabout','About Religion & Denomination','About procedures & documents',"It's my first time and I don't know anything",'Support for Attendees','No particular concerns'],
+    nextId: 'free'
+  },
+  {
+    id: 'free',
+    botMsg: 'Understood. Certainly.。Our StaffwholeheartedlySupportwill 🕊️\n\nDo you have any other requests or questions?？\n（if not「Complete」Please press the button）',
+    quickReplies: ['more options available','Completeto'],
+    nextId: 'done'
+  }
+];
+
+let chatState = {
+  flowIndex: 0,
+  isWaiting: false,
+  isDone: false,
+  log: []
+};
+
+function initChat() {
+  const msgs = document.getElementById('chatMessages');
+  if(!msgs) return;
+  msgs.innerHTML = '';
+  chatState = { flowIndex: 0, isWaiting: false, isDone: false, log: [] };
+  document.getElementById('chatDoneBanner').classList.remove('show');
+  document.getElementById('chatInput').disabled = false;
+  document.getElementById('chatSendBtn').disabled = false;
+  showTypingThenBot(CHAT_FLOW[0].botMsg, CHAT_FLOW[0].quickReplies);
+}
+
+function showTypingThenBot(message, quickReplies) {
+  const msgs = document.getElementById('chatMessages');
+  const qr = document.getElementById('quickReplies');
+  qr.style.display = 'none';
+  qr.innerHTML = '';
+
+  // Typing indicator
+  const typing = document.createElement('div');
+  typing.className = 'chat-msg bot';
+  typing.id = 'typingMsg';
+  typing.innerHTML = `<div class="msg-avatar">🤝</div><div class="msg-bubble" style="background:#eee; color:#999; font-style:italic;"><span class="typing-dots"><span></span><span></span><span></span></span> Typing...</div>`;
+  msgs.appendChild(typing);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  setTimeout(() => {
+    // Remove typing、Display message
+    const old = document.getElementById('typingMsg');
+    if(old) old.remove();
+    addBotMsg(message);
+    // Show quick replies
+    if(quickReplies && quickReplies.length > 0) {
+      qr.style.display = 'flex';
+      quickReplies.forEach(r => {
+        const btn = document.createElement('button');
+        btn.className = 'quick-reply-btn';
+        btn.textContent = r;
+        btn.onclick = () => onQuickReply(r);
+        qr.appendChild(btn);
+      });
+    }
+  }, 800);
+}
+
+function addBotMsg(text) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg bot';
+  div.innerHTML = `<div class="msg-avatar">🤝</div><div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addUserMsg(text) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg user';
+  div.innerHTML = `<div class="msg-bubble">${escHtml(text)}</div><div class="msg-avatar user-av">👤</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function onQuickReply(text) {
+  document.getElementById('quickReplies').style.display = 'none';
+  document.getElementById('quickReplies').innerHTML = '';
+  processUserInput(text);
+}
+
+function chatKeyDown(e) {
+  if(e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendChatMessage();
+  }
+}
+
+function sendChatMessage() {
+  if(chatState.isDone) return;
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  document.getElementById('quickReplies').style.display = 'none';
+  document.getElementById('quickReplies').innerHTML = '';
+  processUserInput(text);
+}
+
+function processUserInput(text) {
+  addUserMsg(text);
+  chatState.log.push({ role: 'user', msg: text });
+  state.chatLog = chatState.log.slice();
+
+  const flow = CHAT_FLOW;
+  const fi = chatState.flowIndex;
+
+  // 「Completeto」Select
+  if(text === 'Completeto' || (fi >= flow.length)) {
+    finishChat();
+    return;
+  }
+
+  // to the next flow
+  const nextId = flow[fi]?.nextId;
+  const nextFlow = flow.find(f => f.id === nextId);
+  chatState.flowIndex = flow.indexOf(nextFlow);
+
+  if(nextFlow) {
+    if(nextFlow.id === 'done') {
+      finishChat();
+    } else if(text === 'more options available') {
+      // FreeInputcontinue
+      setTimeout(() => {
+        addBotMsg('Of course。Please feel free to share anything else 😊');
+      }, 600);
+    } else {
+      showTypingThenBot(nextFlow.botMsg, nextFlow.quickReplies);
+    }
+  } else {
+    finishChat();
+  }
+}
+
+function finishChat() {
+  chatState.isDone = true;
+  setTimeout(() => {
+    addBotMsg('InputThank you very much 🙏\nOur StaffContentsConfirm、wholeheartedlySupportwill。');
+    document.getElementById('chatDoneBanner').classList.add('show');
+    document.getElementById('chatInput').disabled = true;
+    document.getElementById('chatSendBtn').disabled = true;
+    document.getElementById('quickReplies').style.display = 'none';
+    // statetoSave
+    state.chatLog = chatState.log.slice();
+    state.wishes = chatState.log.filter(l=>l.role==='user').map(l=>l.msg).join(' / ');
+  }, 700);
+}
+
+// ========== Step transition ==========
+function goToStep(n) {
+  // Validation
+  if(n > state.currentStep) {
+    if(!validate(state.currentStep)) {
+      gaTrack('validation_error', {
+        step_number: state.currentStep,
+        step_label: (typeof STEP_LABELS !== 'undefined' ? STEP_LABELS[state.currentStep] : 'step'+state.currentStep)
+      });
+      return;
+    }
+  }
+  
+  // CurrentStephidden
+  document.getElementById('step' + state.currentStep).classList.remove('active');
+  document.getElementById('dot' + state.currentStep).classList.remove('active');
+  document.getElementById('dot' + state.currentStep).classList.add('done');
+  if(state.currentStep > 1) {
+    document.getElementById('con' + (state.currentStep-1)).classList.add('done');
+  }
+  
+  state.currentStep = n;
+  
+  // newStepDisplay
+  document.getElementById('step' + n).classList.add('active');
+  document.getElementById('dot' + n).classList.add('active');
+  document.getElementById('dot' + n).classList.remove('done');
+  
+  // Step-specific initialization
+  if(n === 3) renderPlans();
+  if(n === 4) renderHalls();
+  if(n === 5) renderCourses();
+  if(n === 6) { setTimeout(initChat, 100); }
+  if(n === 7) renderEstimate();
+  if(n === 8) {
+    renderFinalSummary();
+    gaTrack('form_complete', {
+      form_name: 'funeral_support',
+      funeral_type: state.funeralType || '',
+      plan_name: (state.selectedPlan && state.selectedPlan.name) || '',
+      hall_name: (state.selectedHall && state.selectedHall.name) || '',
+      attendance: state.attendance || '',
+      is_member: state.isMember ? 'member' : 'general'
+    });
+  }
+  
+  window.scrollTo(0, 0);
+  autoSaveDebounced(); // Auto-save
+
+  // GA4: Step display event
+  gaStepView(n);
+  // STEP1 First timeInputStart
+  if(n === 1) gaTrack('form_start', { form_name: 'funeral_support' });
+}
+
+// ========== Validation ==========
+function validate(step) {
+  if(step === 1) {
+    let ok = true;
+    const name = document.getElementById('name').value.trim();
+    const relation = document.getElementById('relation').value;
+    if(!name) { document.getElementById('nameError').style.display='block'; ok=false; }
+    else { document.getElementById('nameError').style.display='none'; }
+    if(!relation) { document.getElementById('relationError').style.display='block'; ok=false; }
+    else { document.getElementById('relationError').style.display='none'; }
+    if(ok) { state.name = name; state.relation = relation; state.phone = document.getElementById('phone').value.trim(); }
+    return ok;
+  }
+  if(step === 2) {
+    let ok = true;
+    if(!state.attendance) { document.getElementById('attendanceError').style.display='block'; ok=false; }
+    else document.getElementById('attendanceError').style.display='none';
+    if(!state.funeralType) { document.getElementById('funeralTypeError').style.display='block'; ok=false; }
+    else document.getElementById('funeralTypeError').style.display='none';
+    return ok;
+  }
+  if(step === 3) {
+    if(!state.selectedPlan) { document.getElementById('planError').style.display='block'; return false; }
+    document.getElementById('planError').style.display='none'; return true;
+  }
+  if(step === 4) {
+    if(!state.selectedHall) { document.getElementById('hallError').style.display='block'; return false; }
+    document.getElementById('hallError').style.display='none'; return true;
+  }
+  if(step === 5) {
+    if(!state.selectedCourse) { document.getElementById('courseError').style.display='block'; return false; }
+    document.getElementById('courseError').style.display='none'; return true;
+  }
+  return true;
+}
+
+// ========== SelectHandler ==========
+function selectAttendance(btn, val) {
+  document.querySelectorAll('#attendanceGroup .btn-choice').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.attendance = val;
+  state.selectedPlan = null; state.selectedHall = null; state.selectedCourse = null;
+  document.getElementById('attendanceError').style.display='none';
+}
+
+function selectFuneralType(btn, val) {
+  document.querySelectorAll('#funeralTypeGroup .btn-choice').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.funeralType = val;
+  state.selectedPlan = null; state.selectedHall = null; state.selectedCourse = null;
+  document.getElementById('funeralTypeError').style.display='none';
+}
+
+function selectPlan(planId) {
+  state.selectedPlan = currentPlans.find(p => p.id === planId) || null;
+  if (state.selectedPlan) gaTrack('plan_select', { plan_id: planId, plan_name: state.selectedPlan.name || planId });
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById('plan_'+planId);
+  if(card) card.classList.add('selected');
+  state.selectedHall = null; state.selectedCourse = null;
+  document.getElementById('planError').style.display='none';
+  // Venuereset
+}
+
+function selectHall(hallId) {
+  state.selectedHall = HALLS[hallId] || null;
+  if (state.selectedHall) gaTrack('hall_select', { hall_id: hallId, hall_name: state.selectedHall.name || hallId });
+  document.querySelectorAll('.hall-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById('hall_'+hallId);
+  if(card) card.classList.add('selected');
+  state.selectedCourse = null;
+  document.getElementById('hallError').style.display='none';
+}
+
+function selectCourse(courseId) {
+  state.selectedCourse = courseId;
+  gaTrack('course_select', { course_id: courseId, course_name: (COURSES[courseId] && COURSES[courseId].name) || courseId });
+  document.querySelectorAll('.course-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById('course_'+courseId);
+  if(card) card.classList.add('selected');
+  document.getElementById('courseError').style.display='none';
+}
+
+function selectMember(btn, val) {
+  document.querySelectorAll('#memberGroup .btn-choice').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.isMember = val;
+}
+
+// ========== PlanRender ==========
+let currentPlans = [];
+
+function renderPlans() {
+  const summary = document.getElementById('step3Summary');
+  summary.textContent = `Attendanceplanned：${getAttendanceLabel(state.attendance)}　FuneralStyle：${getFuneralTypeLabel(state.funeralType)}`;
+  
+  currentPlans = getPlans(state.attendance, state.funeralType);
+  const container = document.getElementById('planCards');
+  container.innerHTML = '';
+  
+  currentPlans.forEach(plan => {
+    const badgeClass = plan.label === 'small' ? 'badge-small' : (plan.label === 'rec' ? 'badge-rec' : 'badge-large');
+    const badgeText = plan.label === 'small' ? '🔵 Small-scale' : (plan.label === 'rec' ? '⭐ Recommended' : '🔴 Large-scale');
+    
+    const card = document.createElement('div');
+    card.className = 'plan-card' + (state.selectedPlan && state.selectedPlan.id === plan.id ? ' selected' : '');
+    card.id = 'plan_' + plan.id;
+    card.onclick = () => selectPlan(plan.id);
+    card.innerHTML = `
+      <div class="plan-card-badge ${badgeClass}">${badgeText} <span class="plan-type-tag tag-${plan.priceType}">${plan.sizeTag}</span></div>
+      <div class="plan-card-body">
+        <div class="plan-card-title">${plan.icon} ${plan.name}</div>
+        <div class="plan-card-sub">SupportVenue：${plan.halls.map(h=>HALLS[h]?.short||h).join(' / ')}</div>
+        <div class="plan-card-desc">${plan.desc}</div>
+        <div style="margin-top:8px; font-size:0.8rem; color:#558B2F;">
+          EstimatePrice（Member）：${formatPrice(getMinPrice(plan.priceType))}–
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+  
+  if(!state.selectedPlan) document.getElementById('planError').style.display='none';
+}
+
+function getMinPrice(priceType) {
+  // Direct Cremation single keyonly
+  if(priceType === 'chokuso' || priceType === 'kasou') {
+    const pc = PRICING[priceType];
+    return pc ? pc.single[0] : 148000;
+  }
+  const pc = PRICING[priceType] || PRICING.compact;
+  return pc.ai[0];
+}
+
+// ========== VenueRender ==========
+function renderHalls() {
+  const summary = document.getElementById('step4Summary');
+  const planName = state.selectedPlan ? state.selectedPlan.name : '';
+  summary.textContent = `SelectPlan：${planName}`;
+  
+  const { recommended, others } = getRecommendedHalls(state.attendance, state.funeralType, state.selectedPlan);
+  state.showingAllHalls = false;
+  
+  const container = document.getElementById('hallCards');
+  container.innerHTML = '';
+  
+  renderHallCards(recommended, container, true);
+  
+  const showAllBtn = document.getElementById('showAllHallsBtn');
+  if(others.length > 0) {
+    showAllBtn.style.display = 'block';
+    showAllBtn._othersToAdd = others;
+  } else {
+    showAllBtn.style.display = 'none';
+  }
+  
+  if(!state.selectedHall) document.getElementById('hallError').style.display='none';
+}
+
+function renderHallCards(hallIds, container, isRecommended) {
+  hallIds.forEach(hallId => {
+    const hall = HALLS[hallId];
+    if(!hall) return;
+    
+    const card = document.createElement('div');
+    card.className = 'hall-card hall-card-wrapper' + (state.selectedHall && state.selectedHall.id === hallId ? ' selected' : '');
+    card.id = 'hall_' + hallId;
+    card.onclick = () => selectHall(hallId);
+    
+    const badge = hall.badge ? `<span class="hall-recommended-badge">${hall.badge}</span>` : '';
+    const livingBadge = hall.special === 'living' ? `<div class="living-badge">🏡 1day1group private</div>` : '';
+    
+    card.innerHTML = `
+      <span class="hall-selected-check">✔</span>
+      <img class="hall-card-img" src="${hall.image}" alt="${hall.name}" loading="lazy" onerror="this.style.background='#e0d5c8';this.style.height='110px';">
+      ${badge}
+      <div class="hall-card-body">
+        <div class="hall-card-name">${hall.name}</div>
+        ${livingBadge}
+        <div class="hall-card-cap">${hall.capacity}</div>
+        <div class="hall-card-addr">${hall.address}</div>
+        <div class="hall-card-addr" style="color:#558B2F; margin-top:2px;">${hall.special === 'chokuso' ? '' : '🚃 '}${hall.access}</div>
+        ${hall.url && hall.url !== 'https://Saiki-sousai.com/' ? `<div style="margin-top:6px;"><a href="${hall.url}" target="_blank" onclick="event.stopPropagation();" style="font-size:0.78rem;color:#558B2F;text-decoration:underline;">🔗 Details / Planview</a></div>` : ''}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function showAllHalls() {
+  const btn = document.getElementById('showAllHallsBtn');
+  const others = btn._othersToAdd;
+  const container = document.getElementById('hallCards');
+  renderHallCards(others, container, false);
+  btn.style.display = 'none';
+}
+
+// ========== CourseRender ==========
+function renderCourses() {
+  const plan = state.selectedPlan;
+  const hall = state.selectedHall;
+
+  // Direct CremationCourseSelectnot required
+  if(plan && plan.isSimplePlan) {
+    // ★Correction: DOMindependently of, beforestateset（validatepassing throughfor）
+    state.selectedCourse = 'single';
+    const coursesContainer = document.getElementById('courseCards');
+    if(coursesContainer) {
+      coursesContainer.innerHTML = `
+        <div style="background:#f0f8f0;border:2px solid #a8d8a8;border-radius:12px;padding:20px;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:8px;">🕊️</div>
+          <div style="font-weight:bold;color:#4a7c59;font-size:1.05rem;margin:8px 0;">AltarCourse'sSelectnot required</div>
+          <div style="font-size:0.85rem;color:#666;line-height:1.6;">Direct CremationPlanAltarCourseis not available。<br>as is「Next」Please proceed with the button。</div>
+        </div>`;
+    }
+    // step5Also update title
+    const step5Title = document.querySelector('#step5 .step-title');
+    if(step5Title) step5Title.innerHTML = '<span class="step-num">5</span>PlanConfirm（CourseSelectnot required）';
+    // courseErrorhiddenset to
+    const errEl = document.getElementById('courseError');
+    if(errEl) errEl.style.display = 'none';
+    return;
+  }
+  // hall/plan pendingSelectCheck（equivalent to old code）
+  if(!hall || !plan) return;
+  
+  // ★Correctionv6: priceType confirm first（TDZError avoidance）
+  // Dedicated living-styleVenue living Fixed、other than thatPlan's priceType prioritize
+  const isLiving = hall.special === 'living';
+  const priceType = isLiving ? 'living' : (plan.priceType || hall.pricingType);
+  const pricing = PRICING[priceType] || PRICING.compact;
+  
+  const summary = document.getElementById('step5Summary');
+  const priceTypeLabel = {'compact':'CompactFamily Funeral','living':'Living-Room Funeral','family':'Family Funeralstyle funeral','normal':'Standard Funeral／Traditional standard funeral'};
+  summary.textContent = `Venue：${hall.name}　Plan：${plan.name}　【${priceTypeLabel[priceType] || priceType}】`;
+  
+  const courseIds = ['ai','hana','kaori','kaga'];
+  const priceKeys = ['ai','hana','kaori','kaga'];
+  
+  const container = document.getElementById('courseCards');
+  container.innerHTML = '';
+  
+  courseIds.forEach((cId, i) => {
+    const course = COURSES[cId];
+    const prices = pricing[priceKeys[i]];
+    const memberPrice = prices[0];
+    const normalPrice = prices[1];
+    
+    // ImageSelect：Standard Funeral normal_ Image、Living-room funeral is living_ Image、other uses shared image
+    let imgSrc;
+    if(isLiving) {
+      imgSrc = IMG['living_'+cId] || IMG[cId];
+    } else if(priceType === 'normal') {
+      imgSrc = IMG['normal_'+cId] || IMG[cId];
+    } else {
+      imgSrc = IMG[cId];
+    }
+    
+    const card = document.createElement('div');
+    card.className = 'course-card' + (state.selectedCourse === cId ? ' selected' : '');
+    card.id = 'course_' + cId;
+    card.onclick = () => selectCourse(cId);
+    card.innerHTML = `
+      <img class="course-card-img" src="${imgSrc}" alt="${course.name}Altar" loading="lazy" onerror="this.style.background='#f5e6d0';this.style.height='130px';">
+      <div class="course-card-body" style="background:${course.color};">
+        <div class="course-card-name">⚘ ${course.name}</div>
+        <div class="course-card-price">
+          Member <span class="member-price">${formatPrice(memberPrice)}</span><br>
+          <span style="font-size:0.75rem;">Standard ${formatPrice(normalPrice)}</span>
+        </div>
+        <div class="course-card-desc">${course.desc}</div>
+      </div>
+      <div class="course-selected-mark">✔ SelectMedium</div>
+    `;
+    container.appendChild(card);
+  });
+  
+  if(!state.selectedCourse) document.getElementById('courseError').style.display='none';
+}
+
+// ========== EstimateRender ==========
+function renderEstimate() {
+  const hall = state.selectedHall;
+  const plan = state.selectedPlan;
+  const course = state.selectedCourse;
+  
+  if(!hall || !plan || !course) return;
+  
+  // ★Correction: Dedicated living-styleVenue living Fixed、other than thatPlan's priceType prioritize
+  const priceType = (hall.special === 'living') ? 'living' : (plan.priceType || hall.pricingType);
+  const pricing = PRICING[priceType] || PRICING.compact;
+  
+  // ★Direct CremationPlan（isSimplePlan）in the case of single get price by key
+  let prices;
+  if(plan.isSimplePlan || course === 'single') {
+    const simplePricing = PRICING[priceType] || PRICING.chokuso;
+    prices = simplePricing ? simplePricing.single : [198000, 248000];
+  } else {
+    const priceKey = course;
+    if(!pricing[priceKey]) {
+      console.error('[v8] renderEstimate: pricing not found for course=', priceKey, 'priceType=', priceType);
+      document.getElementById('estimateCard').innerHTML = '<div style="color:red;padding:12px;">⚠️ PriceDatareadingincludedError。We apologize for the inconvenience. Please start over.。</div>';
+      return;
+    }
+    prices = pricing[priceKey];
+  }
+  const isMember = state.isMember === 'yes' || state.isMember === 'join';
+  const basePrice = isMember ? prices[0] : prices[1];
+  
+  // ★v10Correction: Hospitality & option fees are「CoursePriceadded to」separate cost for
+  // Attendeesnumbertoaccording toalsoNoneEstimateSettings
+  // Direct Cremationin the case ofHospitality feeNone、Transportfeeonly
+  const isSimple = plan.isSimplePlan || course === 'single';
+  // ★30%Decrease（2026/02 Adjustment）
+  const attendanceHospitality = {
+    'under5':    35000,   // original100,000→50%
+    'under15':   52500,   // original150,000→50%
+    '15to30':    87500,   // original250,000→50%
+    '30to50':   140000,   // original400,000→50%
+    'over50':   210000    // original600,000→50%
+  };
+  const hospitalityEstimate = isSimple ? 30000 : (attendanceHospitality[state.attendance] || 35000);
+  const optionEstimate = isSimple ? 0 : 200000; // Direct cremation isAdditionalOptionsNone
+  const totalEstimate = basePrice + hospitalityEstimate;
+  
+  const courseInfo = COURSES[course];
+  const relationLabel = getRelationLabel(state.relation);
+  const memberNote = state.isMember === 'yes' ? '（MemberApply price）' : state.isMember === 'join' ? '（Day ofMemberJoining &30%Discountplanned）' : state.isMember === 'unknown' ? '（MemberConfirmrequired）' : '（Regular Price）';
+  
+  const card = document.getElementById('estimateCard');
+  card.innerHTML = `
+    <div class="estimate-section-title">📋 Customer Information</div>
+    <div class="estimate-row"><span class="estimate-label">Your Name</span><span class="estimate-value">${escHtml(state.name)} </span></div>
+    <div class="estimate-row"><span class="estimate-label">Deceasedrelationship with</span><span class="estimate-value">${relationLabel}</span></div>
+    <div class="estimate-row"><span class="estimate-label">AttendanceEstimated number of attendees</span><span class="estimate-value">${getAttendanceLabel(state.attendance)}</span></div>
+    <div class="estimate-row"><span class="estimate-label">FuneralStyle</span><span class="estimate-value">${getFuneralTypeLabel(state.funeralType)}</span></div>
+    
+    <div class="estimate-section-title" style="margin-top:14px">🏛️ SelectContents</div>
+    <div class="estimate-row"><span class="estimate-label">Plan</span><span class="estimate-value">${escHtml(plan.name)}</span></div>
+    <div class="estimate-row"><span class="estimate-label">Venue</span><span class="estimate-value">${escHtml(hall.name)}</span></div>
+    <div class="estimate-row"><span class="estimate-label">AltarCourse</span><span class="estimate-value">⚘ ${courseInfo.name}</span></div>
+    <div class="estimate-row"><span class="estimate-label" style="color:#888;font-size:0.78rem;">Price type</span><span class="estimate-value" style="font-size:0.78rem;color:#558B2F;">${{'compact':'CompactFamily Funeral','living':'Living-Room Funeral','family':'Family Funeralstyle funeral','normal':'Standard Funeral／Traditional standard funeral'}[priceType] || priceType}</span></div>
+    <div class="estimate-row"><span class="estimate-label">VenueAddress</span><span class="estimate-value" style="font-size:0.78rem;">${hall.address}</span></div>
+    <div class="estimate-row"><span class="estimate-label">Access</span><span class="estimate-value" style="font-size:0.78rem;">${hall.access}</span></div>
+    
+    <div class="estimate-section-title" style="margin-top:14px">💰 CostEstimate</div>
+    <div class="estimate-row">
+      <span class="estimate-label">${isSimple ? 'Direct Cremation / CremationCost' : 'FuneralBasicSet'}</span>
+      <span class="estimate-value">${formatPrice(basePrice)}</span>
+    </div>
+    <div class="estimate-row" style="font-size:0.8rem;color:#888;">
+      <span class="estimate-label">${isSimple ? '└ Transport, placement &CremationAttendance, etc.' : '└ Altar& coffin, transport, memorial portrait, etc.'}</span>
+      <span class="estimate-value">（${isSimple ? 'PlanPrice' : 'CoursePrice'}）</span>
+    </div>
+    <div class="estimate-row">
+      <span class="estimate-label">${isSimple ? 'Estimated transport fee' : 'Hospitality costs（Estimate）'}</span>
+      <span class="estimate-value">${formatPrice(hospitalityEstimate)}</span>
+    </div>
+    <div class="estimate-row" style="font-size:0.8rem;color:#888;">
+      <span class="estimate-label">${isSimple ? '└ Remains transport & dry ice, etc.' : '└ Return Giftgifts, meals &Halluseforfees, etc.'}</span>
+      <span class="estimate-value">${isSimple ? '' : '（Attendeesnumbervaries by）'}</span>
+    </div>
+    <div class="estimate-total">
+      <div class="estimate-total-label">TotalTotal（Estimate）${memberNote}</div>
+      <div class="estimate-total-price">${formatPrice(totalEstimate)}</div>
+      <div class="estimate-total-note">※Hospitality costs areAttendeesnumbermay vary。DetailsOur StafftoConfirmplease</div>
+    </div>
+    
+    <div style="margin-top:16px;padding:14px 16px;background:#fff5f5;border:2.5px solid #e53935;border-radius:10px;position:relative;">      <div style="position:absolute;top:-11px;left:14px;background:#e53935;color:#fff;font-size:0.72rem;font-weight:bold;padding:2px 10px;border-radius:20px;letter-spacing:0.05em;">⚠️ Confirmplease</div>      <p style="margin:6px 0 0 0;font-size:0.88rem;font-weight:bold;color:#c62828;line-height:1.7;">        Please note this amount is only an <u>Estimate</u>. The final amount will include additional items as a proper funeral budget.<br>        <strong>Unnecessary options can be removed</strong> based on the customer's wishes。<br>        <span style="font-size:0.85rem;color:#e53935;">Please rest assured！</span>      </p>    </div>
+    
+    ${!isSimple ? `
+    <div style="margin-top:12px; padding:10px 12px; background:#fdf6ec; border:1px dashed #d4a76a; border-radius:8px;">
+      <div style="font-size:0.82rem; font-weight:bold; color:#558B2F; margin-bottom:4px;">💡 Common optional add-ons & estimated prices（Reference）</div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:0.82rem; color:#666;">└ Fresh flowers, catering, bus/taxi, etc.</span>
+        <span style="font-size:0.88rem; font-weight:bold; color:#558B2F;">${formatPrice(optionEstimate)} before and after</span>
+      </div>
+      <div style="font-size:0.75rem; color:#aaa; margin-top:4px;">※Your preferredContentsmay vary。the aboveTotalis not included。</div>
+    </div>` : ''}
+  `;
+}
+
+// ========== CompleteScreen ==========
+function renderFinalSummary() {
+  // chatLogcompile requests & concerns from
+  if(chatState.log.length > 0) {
+    state.wishes = chatState.log.filter(l=>l.role==='user').map(l=>l.msg).join(' ／ ');
+  }
+  
+  const summary = document.getElementById('finalSummary');
+  const hall = state.selectedHall;
+  const plan = state.selectedPlan;
+  const course = state.selectedCourse;
+  const courseInfo = COURSES[course] || {};
+
+  // EstimateRecalculate price (v10: Direct CremationSupport)
+  const priceType = hall ? ((hall.special === 'living') ? 'living' : (plan?.priceType || hall.pricingType)) : 'compact';
+  const pricing = PRICING[priceType] || PRICING.compact;
+  // Direct Cremation single key
+  let prices;
+  if(priceType === 'chokuso' || priceType === 'kasou') {
+    prices = PRICING[priceType] ? PRICING[priceType].single : [198000, 248000];
+  } else {
+    prices = course ? (pricing[course] || (() => { console.error('[v10] CourseKey not found:', course, 'priceType:', priceType); return pricing.kaga || pricing.ai; })()) : pricing.ai;
+  }
+  const isMember = state.isMember === 'yes' || state.isMember === 'join';
+  const basePrice = isMember ? prices[0] : prices[1];
+  const memberNote = state.isMember === 'yes' ? '（MemberPrice 35%Discount）'
+    : state.isMember === 'join' ? '（Day ofMembership 30%Discount）'
+    : state.isMember === 'unknown' ? '（MemberConfirmrequired）' : '（Regular Price）';
+  
+  summary.innerHTML = `
+    <strong style="color:#33691E; display:block; margin-bottom:10px; font-size:0.95rem; border-bottom:2px solid #d4a76a; padding-bottom:6px;">📋 Funeral ConfirmContentsSummary</strong>
+    <table style="width:100%; border-collapse:collapse; font-size:0.86rem; line-height:1.9;">
+      <tr><td style="color:#888; width:42%; padding:3px 0;">👤 Your Name</td><td><strong>${escHtml(state.name)}</strong> </td></tr>
+      <tr><td style="color:#888;">🔗 Deceasedrelationship with</td><td>${getRelationLabel(state.relation)}</td></tr>
+      <tr><td style="color:#888;">📞 PhoneNumber</td><td>${escHtml(state.phone) || 'pendingInput'}</td></tr>
+      <tr><td style="color:#888;">👥 AttendanceEstimated number of attendees</td><td><strong>${getAttendanceLabel(state.attendance)}</strong></td></tr>
+      <tr><td style="color:#888;">⚘ FuneralStyle</td><td><strong>${getFuneralTypeLabel(state.funeralType)}</strong></td></tr>
+      <tr><td colspan="2" style="padding-top:8px; border-top:1px solid #e0d5c8;"></td></tr>
+      <tr><td style="color:#888;">📋 SelectPlan</td><td><strong>${escHtml(plan?.name||'')}</strong></td></tr>
+      <tr><td style="color:#888;">🏛️ VenueVenue</td><td><strong>${escHtml(hall?.name||'')}</strong></td></tr>
+      <tr><td style="color:#888;">📍 Address</td><td style="font-size:0.78rem;">${hall?.address||''}</td></tr>
+      <tr><td style="color:#888;">🚃 Access</td><td style="font-size:0.78rem;">${hall?.access||''}</td></tr>
+      <tr><td style="color:#888;">🎋 AltarCourse</td><td><strong>${courseInfo.name||''}</strong></td></tr>
+      <tr><td colspan="2" style="padding-top:8px; border-top:1px solid #e0d5c8;"></td></tr>
+      <tr><td style="color:#888;">💳 MemberCategory</td><td>${getMemberLabel(state.isMember)}</td></tr>
+      <tr><td style="color:#888;">💰 CostEstimate</td><td><strong style="color:#33691E; font-size:1rem;">${formatPrice(basePrice)}</strong> ${memberNote}</td></tr>
+    </table>
+  `;
+
+  // chat historyPDFfortoRender
+  renderPrintChatLog();
+}
+
+  // STEP8confetti
+  function launchConfetti() {
+    var wrap = document.getElementById('confettiWrap');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    var colors = ['#7CB342','#9CCC65','#F48FB1','#F8BBD0','#DCEDC8','#FFF9C4','#FFE0B2','#E1BEE7'];
+    for (var ci = 0; ci < 22; ci++) {
+      var p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.left = (Math.random() * 100) + '%';
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+      p.style.animationDuration = (1.2 + Math.random() * 1.2) + 's';
+      p.style.animationDelay = (Math.random() * 1.0) + 's';
+      p.style.width = (6 + Math.random() * 6) + 'px';
+      p.style.height = (6 + Math.random() * 6) + 'px';
+      p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      wrap.appendChild(p);
+    }
+    // 2seconds to restart
+    setTimeout(launchConfetti, 2600);
+  }
+
+
+function renderPrintChatLog() {
+  const log = chatState.log;
+  const container = document.getElementById('printChatMessages');
+  const section = document.getElementById('printChatLog');
+  if(!container) return;
+  container.innerHTML = '';
+
+  if(!log || log.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  // prepend bot's first messageAdditional
+  const firstBot = { role: 'bot', msg: 'Hello 🙏\nFuneralwishes and concerns regarding、Pleasefeel free toplease tell us。\nFirst,、Deceasedabout the farewell for the deceased、Do you have any preferences?？' };
+  const fullLog = [firstBot, ...log];
+
+  fullLog.forEach((entry, idx) => {
+    const isBot = entry.role === 'bot';
+    const row = document.createElement('div');
+    row.className = 'pdf-chat-row' + (isBot ? '' : ' user-row');
+
+    const label = document.createElement('div');
+    label.className = 'pdf-chat-label';
+    label.textContent = isBot ? '🤝 Staff' : '👤 Customer';
+
+    const bubbleWrap = document.createElement('div');
+    bubbleWrap.style.display = 'flex'; bubbleWrap.style.flexDirection = 'column';
+    bubbleWrap.style.maxWidth = '82%';
+
+    const bubble = document.createElement('div');
+    bubble.className = isBot ? 'pdf-chat-bubble-bot' : 'pdf-chat-bubble-user';
+    bubble.innerHTML = escHtml(entry.msg).replace(/\n/g, '<br>');
+
+    bubbleWrap.appendChild(bubble);
+    if(isBot) { row.appendChild(label); row.appendChild(bubbleWrap); }
+    else       { row.appendChild(bubbleWrap); row.appendChild(label); }
+    container.appendChild(row);
+  });
+
+  // bot closing message
+  const closingRow = document.createElement('div');
+  closingRow.className = 'pdf-chat-row';
+  const closingLabel = document.createElement('div');
+  closingLabel.className = 'pdf-chat-label'; closingLabel.textContent = '🤝 Staff';
+  const closingBubble = document.createElement('div');
+  closingBubble.className = 'pdf-chat-bubble-bot';
+  closingBubble.innerHTML = 'InputThank you very much 🙏<br>Our StaffContentsConfirm、wholeheartedlySupportwill。';
+  closingRow.appendChild(closingLabel); closingRow.appendChild(closingBubble);
+  container.appendChild(closingRow);
+
+  section.style.display = 'block';
+}
+
+// ========== Utility ==========
+function formatPrice(n) {
+  return '￥' + n.toLocaleString('ja-JP');
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function getAttendanceLabel(v) {
+  const m = {under5:'5people or fewer',under15:'15people or fewer','15to30':'15–30 people','30to50':'30–50 people',over50:'50people or more'};
+  return m[v] || v;
+}
+
+function getFuneralTypeLabel(v) {
+  const m = {family:'Family Funeral',family_friends:'Family Funeral（Small number of friends attending）',general:'Standard Funeral',general_company:'Standard Funeral（Company / Organization）',chokuso:'Direct Cremation',kasouonly:'Cremationonly'};
+  return m[v] || v;
+}
+
+function getRelationLabel(v) {
+  const m = {spouse:'Spouse',parent:'Parent (Father/Mother)',child:'Child',sibling:'Sibling',grandparent:'Grandparent',inlaw:'Parent-in-law',relative:'OtherRelatives',other:'Other'};
+  return m[v] || v;
+}
+
+function getMemberLabel(v) {
+  const m = {yes:'Member（35%Discountappropriatefor）',join:'Day ofMemberMembership application（30%Discount）',no:'non-Member（Regular Price）',unknown:'Unknown（requiredConfirm）'};
+  return m[v] || 'Unanswered';
+}
+
+
+// ============================================================
+// ===== SendProcess（EmailJS + Google Apps Script）=====
+// ============================================================
+
+// ▼▼▼ Configuration section ▼▼▼ -----------------------------------------------
+// 【EmailJSSettingsSteps】
+// 1. https://www.emailjs.com/ create account（FreePlanincluded）
+// 2. 「Add New Service」atGmailetc. to integrate → Service IDcopy
+// 3. 「Email Templates」create template → Template IDcopy
+// 4. 「Account > API Keys」atPublic Keycopy
+// 5. the below3linetojust pasteatEmailSendwill be activated！
+const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // ← Steps2'sService ID
+const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // ← Steps3'sTemplate ID
+const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // ← Steps4'sPublic Key
+const EMAILJS_TO_EMAIL    = 'info@Saiki-sousai.com'; // ← SendfirstEmail（Configured）
+
+// 【GASSettings：SpreadsheettoRecordwhen you want toonly（Optional）】
+// 1. GoogleCreate spreadsheet
+// 2. Extension / add-on > Apps Script atGASCreate & deploy script
+// 3. obtained at deploymentURLpaste below
+const GAS_WEBHOOK_URL = 'YOUR_GAS_WEBHOOK_URL';  // ← GAS WebApp'sURL（Optional）
+// ▲▲▲ Configuration section ends here ▲▲▲ ----------------------------------------
+
+function submitAndComplete() {
+  // Validation（STEP 7 passing throughCheck）
+  if(!state.selectedHall || !state.selectedCourse) {
+    alert('Venue &AltarCourseSelecthas not been。Please complete the previous stepConfirmplease。');
+    return;
+  }
+
+  // SendDisable button
+  const btn = document.getElementById('submitBtn');
+  if(btn) btn.disabled = true;
+
+  // Show overlay
+  document.getElementById('submitOverlay').classList.add('show');
+
+  // SendCreate data
+  const hall = state.selectedHall;
+  const plan = state.selectedPlan;
+  const course = state.selectedCourse;
+  const courseInfo = COURSES[course] || {};
+  const priceType = hall ? ((hall.special === 'living') ? 'living' : (plan?.priceType || hall.pricingType)) : 'compact';
+  const pricing   = PRICING[priceType] || PRICING.compact;
+  // ★v10Correction: Direct CremationSupport。SelectCoursereference accurately by key
+  let prices;
+  if(priceType === 'chokuso' || priceType === 'kasou') {
+    prices = PRICING[priceType] ? PRICING[priceType].single : [198000, 248000];
+  } else {
+    prices = course ? (pricing[course] || (() => { console.error('[v10] submitAndComplete CourseKey not found:', course); return pricing.kaga || pricing.ai; })()) : pricing.ai;
+  }
+  const isMember  = state.isMember === 'yes' || state.isMember === 'join';
+  const basePrice = isMember ? prices[0] : prices[1];
+
+  const chatLog = chatState.log
+    .map(l => (l.role === 'bot' ? '[StaffAI] ' : '[Customer] ') + l.msg)
+    .join('\n');
+
+  const now = new Date();
+  const dateStr = now.getFullYear() + '/' +
+    String(now.getMonth()+1).padStart(2,'0') + '/' +
+    String(now.getDate()).padStart(2,'0') + ' ' +
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0');
+
+  const payload = {
+    submitted_at:    dateStr,
+    name:            state.name,
+    relation:        getRelationLabel(state.relation),
+    phone:           state.phone || 'pendingInput',
+    attendance:      getAttendanceLabel(state.attendance),
+    funeral_type:    getFuneralTypeLabel(state.funeralType),
+    plan_name:       plan?.name || '',
+    hall_name:       hall?.name || '',
+    hall_address:    hall?.address || '',
+    hall_access:     hall?.access || '',
+    course_name:     courseInfo.name || '',
+    member_status:   getMemberLabel(state.isMember),
+    price_estimate:  formatPrice(basePrice),
+    price_type:      priceType,
+    wishes:          state.wishes || '（None）',
+    chat_log:        chatLog || '（None）',
+    to_email:        EMAILJS_TO_EMAIL
+  };
+
+  // parallelSend（EmailJS + GAS）
+  const emailPromise = sendViaEmailJS(payload);
+  const gasPromise   = sendViaGAS(payload);
+
+  Promise.allSettled([emailPromise, gasPromise]).then(results => {
+    // Hide overlay
+    document.getElementById('submitOverlay').classList.remove('show');
+
+    const emailOk = results[0].status === 'fulfilled';
+    const gasOk   = results[1].status === 'fulfilled';
+
+    // STEP 8 transition to
+    goToStep(8);
+
+    // ResultBannerDisplay
+    setTimeout(() => {
+      const banner = document.getElementById('submitResultBanner');
+      if(!banner) return;
+      if(emailOk && gasOk) {
+        banner.className = 'submit-result-banner success';
+        banner.innerHTML = '✅ SendComplete！<br>Our Staffemail notification and spreadsheet recordingCompletecompleted。<br>Our staff member will arrive at the scheduled time.wholeheartedly meetingContentsConfirmwe will。';
+      } else if(emailOk || gasOk) {
+        banner.className = 'submit-result-banner success';
+        const detail = emailOk ? 'Email notification isSenddone。' : 'Recording to spreadsheet isCompletecompleted。';
+        banner.innerHTML = '✅ SendComplete（some）<br>' + detail;
+      } else {
+        banner.className = 'submit-result-banner error';
+        banner.innerHTML = '⚠️ SendtoFailedcompleted。<br>We apologize for the inconvenience, <strong>📞 0120-315-312</strong> atPhoneor receive、reload the page and restartSendplease do。';
+        if(btn) btn.disabled = false;
+      }
+    }, 400);
+
+    console.log('Email:', results[0].status, results[0].reason || '');
+    console.log('GAS:',   results[1].status, results[1].reason || '');
+  });
+}
+
+// ---------- EmailJS Send ----------
+function sendViaEmailJS(payload) {
+  return new Promise((resolve, reject) => {
+    // EmailJSpendingSettingsCheck
+    if(EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+      console.warn('EmailJS: pendingSettingsforwill skip');
+      return reject('EmailJS not configured');
+    }
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+    const templateParams = {
+      to_email:         payload.to_email,
+      submitted_at:     payload.submitted_at,
+      name:             payload.name,
+      relation:         payload.relation,
+      phone:            payload.phone,
+      attendance:       payload.attendance,
+      funeral_type:     payload.funeral_type,
+      plan_name:        payload.plan_name,
+      hall_name:        payload.hall_name,
+      hall_address:     payload.hall_address,
+      hall_access:      payload.hall_access,
+      course_name:      payload.course_name,
+      member_status:    payload.member_status,
+      price_estimate:   payload.price_estimate,
+      wishes:           payload.wishes,
+      chat_log:         payload.chat_log,
+      estimate_detail:  payload.estimate_detail || ''
+    };
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+      .then(() => resolve('email_ok'))
+      .catch(err => reject(err));
+  });
+}
+
+// ---------- Google Apps Script Send ----------
+function sendViaGAS(payload) {
+  return new Promise((resolve, reject) => {
+    // GASpendingSettingsCheck
+    if(GAS_WEBHOOK_URL === 'YOUR_GAS_WEBHOOK_URL') {
+      console.warn('GAS: pendingSettingsforwill skip');
+      return reject('GAS not configured');
+    }
+    fetch(GAS_WEBHOOK_URL, {
+      method: 'POST',
+      mode: 'no-cors', // GASno-corsatSend
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(() => resolve('gas_ok'))
+    .catch(err => reject(err));
+  });
+}
+
+function printPage() {
+  // PrintDate & Timeset to header
+  const now = new Date();
+  const dateStr = now.getFullYear() + 'year' +
+    String(now.getMonth()+1).padStart(2,'0') + 'month' +
+    String(now.getDate()).padStart(2,'0') + 'day ' +
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0') +
+    ' Create';
+  const pd = document.getElementById('printDate');
+  if(pd) pd.textContent = dateStr + '　📞 0120-315-312';
+  window.print();
+}
+
+// ========== EstimateAuto emailSend ==========
+async function sendEstimateEmail() {
+  const hall = state.selectedHall;
+  const plan = state.selectedPlan;
+  const course = state.selectedCourse;
+
+  // EmailJSpendingSettingsCheck
+  if(EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+    showEstimateEmailBanner('warning',
+      '⚠️ EmailJSis not set。<br>' +
+      'HTMLinside file <code>EMAILJS_SERVICE_ID</code> / <code>EMAILJS_TEMPLATE_ID</code> / <code>EMAILJS_PUBLIC_KEY</code> please set。<br>' +
+      '<a href="https://www.emailjs.com/" target="_blank" style="color:#1565c0;">▶ EmailJSGo to settings page</a>'
+    );
+    return;
+  }
+  if(!hall || !plan || !course) {
+    gaTrack('email_send_error', { error_type: 'send_failed' });
+    showEstimateEmailBanner('error', '⚠️ Estimateis not complete。EachStepCompleteplease do。');
+    return;
+  }
+
+  const btn = document.getElementById('sendEstimateEmailBtn');
+  if(btn) { btn.disabled = true; btn.textContent = '⏳ SendMedium...'; }
+
+  // Payload assembly（submitAndCompletesame logic as）
+  const courseInfo = COURSES[course] || {};
+  const priceType  = (hall.special === 'living') ? 'living' : (plan.priceType || hall.pricingType);
+  const pricing    = PRICING[priceType] || PRICING.compact;
+  const isSimple   = plan.isSimplePlan || course === 'single';
+  let prices;
+  if(isSimple) {
+    const sp = PRICING[priceType] || PRICING.chokuso;
+    prices = sp ? sp.single : [198000, 248000];
+  } else {
+    prices = pricing[course] || pricing.ai || [0,0];
+  }
+  const isMember  = state.isMember === 'yes' || state.isMember === 'join';
+  const basePrice = isMember ? prices[0] : prices[1];
+  // ★30%Decrease（2026/02 Adjustment）
+  const attendHosp = { under5:35000, under15:52500, '15to30':87500, '30to50':140000, over50:210000 };
+  const hospEst   = isSimple ? 30000 : (attendHosp[state.attendance] || 70000);
+  const totalEst  = basePrice + hospEst;
+  const memberTag = isMember ? 'MemberPrice' : 'Regular Price';
+
+  const chatLog = chatState.log.length > 0
+    ? chatState.log.map(l => (l.role==='bot'?'[StaffAI] ':'[Customer] ') + l.msg).join('\n')
+    : '（None）';
+
+  const now = new Date();
+  const dateStr = now.getFullYear() + '/' +
+    String(now.getMonth()+1).padStart(2,'0') + '/' +
+    String(now.getDate()).padStart(2,'0') + ' ' +
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0');
+
+  // EstimateDetailsText（For email body）
+  const estimateDetail = [
+    '━━━━━━━━━━━━━━━━━━━━',
+    '⚘ Saiki Funeral Services　Estimate',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '',
+    '【Customer Information】',
+    '　Name　　　: ' + (state.name || 'pendingInput') + '　',
+    '　Deceasedrelationship with: ' + getRelationLabel(state.relation),
+    '　PhoneNumber　　: ' + (state.phone || 'pendingInput'),
+    '　AttendanceEstimated number of attendees: ' + getAttendanceLabel(state.attendance),
+    '　FuneralStyle　　: ' + getFuneralTypeLabel(state.funeralType),
+    '',
+    '【SelectPlan& venue】',
+    '　Plan　 : ' + (plan.name || ''),
+    '　meeting　venue　 : ' + (hall.name || ''),
+    '　address　place　 : ' + (hall.address || ''),
+    '　AltarCourse: ' + (isSimple ? '（Direct CremationforCourseNone）' : (courseInfo.name || course)),
+    '　MemberCategory : ' + getMemberLabel(state.isMember),
+    '',
+    '【CostEstimate（' + memberTag + '）】',
+    '　' + (isSimple ? 'Direct Cremation / CremationCost' : 'FuneralBasicSet') + ': ' + formatPrice(basePrice),
+    '　' + (isSimple ? 'Estimated transport fee' : 'Estimated hospitality costs') + ': ' + formatPrice(hospEst),
+    '　─────────────────',
+    '　TotalEstimate　　　: ' + formatPrice(totalEst),
+    '',
+    '⚠️ ━━━━ Confirmplease ━━━━ ⚠️',
+    '　Please note this amount is only an estimate、',
+    '　properly「Funeral budget」with added',
+    '　This is an estimated figure.',
+    '　Unnecessary options can be removed at customer request',
+    '　Options can be removed。',
+    '　Please rest assured！',
+    '⚠️ ━━━━━━━━━━━━━━━━ ⚠️',
+    '',
+    '【Preferences & Notes】',
+    (state.wishes ? state.wishes.trim() : '（None）'),
+    '',
+    '【Chat History】',
+    chatLog,
+    '',
+    '📞 0120-315-312（24 hoursReception）',
+    '🌐 https://Saiki-sousai.com/'
+  ].join('\n')
+  const payload = {
+    submitted_at:     dateStr,
+    name:             state.name || 'pendingInput',
+    relation:         getRelationLabel(state.relation),
+    phone:            state.phone || 'pendingInput',
+    attendance:       getAttendanceLabel(state.attendance),
+    funeral_type:     getFuneralTypeLabel(state.funeralType),
+    plan_name:        plan.name || '',
+    hall_name:        hall.name || '',
+    hall_address:     hall.address || '',
+    hall_access:      hall.access || '',
+    course_name:      isSimple ? '（Direct Cremation）' : (courseInfo.name || ''),
+    member_status:    getMemberLabel(state.isMember),
+    price_estimate:   formatPrice(totalEst) + '（Estimate）',
+    wishes:           state.wishes || '（None）',
+    chat_log:         chatLog,
+    to_email:         EMAILJS_TO_EMAIL,
+    estimate_detail:  estimateDetail
+  };
+
+  try {
+    await sendViaEmailJS(payload);
+    gaTrack('email_send_success', { hall_name: (state.selectedHall && state.selectedHall.name) || '' });
+    showEstimateEmailBanner('success',
+      '✅ EmailSendComplete！<br>' +
+      '<strong>' + EMAILJS_TO_EMAIL + '</strong> toEstimateContentsSendcompleted。<br>' +
+      'Our StaffpleaseContactplease wait。'
+    );
+    // SendUsed flag
+    if(btn) { btn.textContent = '✅ Senddone'; btn.style.background = '#4caf50'; }
+  } catch(err) {
+    console.error('EstimateEmailSendError:', err);
+    let msg = '❌ EmailSendtoFailedcompleted。<br>';
+    if(err === 'EmailJS not configured') {
+      msg += 'EmailJSis not configured。SERVICE_ID / TEMPLATE_ID / PUBLIC_KEYConfirmplease do。';
+    } else if(err && err.status === 400) {
+      msg += 'Template variable names may not match。EmailJSdashboard templateConfirmplease do。';
+    } else if(err && err.status === 401) {
+      msg += 'PUBLIC_KEYis incorrect。EmailJSin dashboardConfirmplease do。';
+    } else {
+      msg += 'We apologize for the inconvenience, <strong>📞 0120-315-312</strong> atPhoneplease。<br>';
+      msg += '<small style="color:#999;">' + JSON.stringify(err) + '</small>';
+    }
+    showEstimateEmailBanner('error', msg);
+    if(btn) { btn.disabled = false; btn.textContent = '✉️ EmailSend'; }
+  }
+}
+
+function showEstimateEmailBanner(type, html) {
+  const el = document.getElementById('estimateEmailBanner');
+  if(!el) return;
+  const styles = {
+    success: 'background:#e8f5e9; border:2px solid #4caf50; color:#1b5e20;',
+    error:   'background:#ffebee; border:2px solid #f44336; color:#b71c1c;',
+    warning: 'background:#fff8e1; border:2px solid #ffa000; color:#e65100;'
+  };
+  el.style.cssText = 'display:block; margin-top:12px; padding:14px 16px; border-radius:10px; font-size:0.9rem; font-weight:bold; line-height:1.8; ' + (styles[type] || styles.warning);
+  el.innerHTML = html;
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+// ========== PDFSave（html2canvas + jsPDF） ==========
+function downloadEstimatePDF() {
+  const hall   = state.selectedHall;
+  const plan   = state.selectedPlan;
+  const course = state.selectedCourse;
+  if (!hall || !plan || !course) { alert('EstimateInformation is insufficient。'); return; }
+
+  const now2 = new Date();
+  const dateStr = now2.getFullYear() + 'year'
+    + String(now2.getMonth()+1).padStart(2,'0') + 'month'
+    + String(now2.getDate()).padStart(2,'0') + 'day';
+
+  const cardEl = document.getElementById('estimateCard');
+  const cardHTML = cardEl ? cardEl.innerHTML : '<p>EstimateCould not retrieve information。</p>';
+
+  const printCSS = `
+    @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+    body { font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif; margin: 0; padding: 20px; font-size: 13px; color: #333; }
+    .print-header { text-align: center; border-bottom: 2px solid #7CB342; padding-bottom: 10px; margin-bottom: 16px; }
+    .print-header h1 { font-size: 20px; color:#33691E; margin: 0 0 4px 0; }
+    .print-header .date { font-size: 11px; color: #888; }
+    .estimate-section-title { font-weight: bold; color:#33691E; font-size: 13px; margin: 14px 0 6px; padding: 4px 8px; background: #F1F8E9; border-left: 3px solid #7CB342; border-radius: 3px; }
+    .estimate-row { display: flex; justify-content: space-between; padding: 5px 4px; border-bottom: 1px dashed #e0d5c5; font-size: 12px; }
+    .estimate-label { color: #666; flex: 1; }
+    .estimate-value { font-weight: 500; text-align: right; flex: 1; }
+    .estimate-total { background: linear-gradient(135deg, #558B2F, #33691E); color: #fff; padding: 12px 14px; border-radius: 8px; margin-top: 12px; text-align: center; }
+    .estimate-total-label { font-size: 11px; opacity: 0.85; margin-bottom: 4px; }
+    .estimate-total-price { font-size: 22px; font-weight: bold; }
+    .estimate-total-note { font-size: 10px; opacity: 0.75; margin-top: 4px; }
+    .print-footer { margin-top: 20px; padding-top: 10px; border-top: 1px solid #ddd; text-align: center; font-size: 10px; color: #888; }
+    .info-box-print { margin-top: 12px; padding: 10px 12px; background: #fff5f5; border: 2px solid #e53935; border-radius: 8px; font-size: 11px; color: #c62828; }
+  `;
+
+  const printHTML = '<!DOCTYPE html><html lang="en"><head>'
+    + '<meta charset="UTF-8">'
+    + '<meta name="viewport" content="width=device-width,initial-scale=1">'
+    + '<title>\u3055\u3044\u304d\u846c\u796d \u304a\u898b\u7a4d\u3082\u308a</title>'
+    + '<style>' + printCSS + '</style></head><body>'
+    + '<div class="print-header"><h1>\u29f8 \u3055\u3044\u304d\u846c\u796d \u304a\u898b\u7a4d\u3082\u308a</h1>'
+    + '<div class="date">\u4f5c\u6210\u65e5: ' + dateStr + '</div></div>'
+    + cardHTML
+    + '<div class="info-box-print">'
+    + '\u26a0\ufe0f \u4e0a\u8a18\u306f\u304a\u898b\u7a4d\u3082\u308a\u306e\u76ee\u5b89\u3067\u3059\u3002\u304a\u3082\u3066\u306a\u3057\u8cbb\u7528\u30fb\u30aa\u30d7\u30b7\u30e7\u30f3\u8cbb\u7528\u306a\u3069\u306f\u53c2\u5217\u8005\u6570\u3084\u5185\u5bb9\u306b\u3088\u308a\u5909\u52d5\u3057\u307e\u3059\u3002\u8a73\u7d30\u306f\u62c5\u5f53\u8005\u306b\u3054\u78ba\u8a8d\u304f\u3060\u3055\u3044\u3002'
+    + '</div>'
+    + '<div class="print-footer">'
+    + '\ud83d\udcde 0120-315-312\uff0824\u6642\u9593\u53d7\u4ed8\uff09 \uff5c https://Saiki-sousai.com/<br>'
+    + '\u30a2\u30a4\u30d5\u30a3\u30c3\u30c8\u3055\u3044\u304d\u846c\u796d'
+    + '</div>'
+    + '<script>window.onload=function(){window.print();};<\/script>'
+    + '</body></html>';
+
+  const blob = new Blob([printHTML], { type: 'text/html;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const win  = window.open(url, '_blank');
+  if (!win) {
+    alert('\u30dd\u30c3\u30d7\u30a2\u30c3\u30d7\u304c\u30d6\u30ed\u30c3\u30af\u3055\u308c\u3066\u3044\u307e\u3059\u3002\n\u30d6\u30e9\u30a6\u30b6\u306e\u30dd\u30c3\u30d7\u30a2\u30c3\u30d7\u3092\u8a31\u53ef\u3057\u3066\u304b\u3089\u518d\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002');
+    URL.revokeObjectURL(url);
+    return;
+  }
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 30000);
+}
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if(document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
+    const s = document.createElement('script');
+    s.src = src; s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+// ========== LINEShare ==========
+function shareToLINE() {
+  const hall   = state.selectedHall;
+  const plan   = state.selectedPlan;
+  const course = state.selectedCourse;
+  if (!hall || !plan) { alert('firstEstimateplease complete。'); return; }
+
+  /* ── Price calculation（renderEstimate same logic as） ── */
+  const priceType  = (hall.special === 'living') ? 'living' : (plan.priceType || hall.pricingType);
+  const pricing    = PRICING[priceType] || PRICING.compact;
+  const isSimple   = plan.isSimplePlan || course === 'single';
+  let prices;
+  if (isSimple) {
+    const sp = PRICING[priceType] || PRICING.chokuso;
+    prices   = sp ? sp.single : [198000, 248000];
+  } else {
+    prices = pricing[course] || [0, 0];
+  }
+  const isMember  = state.isMember === 'yes' || state.isMember === 'join';
+  const basePrice = isMember ? prices[0] : prices[1];
+  const hospMap   = { under5:35000, under15:52500, '15to30':87500, '30to50':140000, over50:210000 };
+  const hospEst   = isSimple ? 30000 : (hospMap[state.attendance] || 70000);
+  const optEst    = isSimple ? 0 : 200000;
+  const total     = basePrice + hospEst + (isSimple ? 0 : optEst);
+
+  const courseName  = isSimple
+    ? '（Direct Cremation / CourseSelectNone）'
+    : (COURSES[course] ? COURSES[course].name : course);
+  const memberTag   = isMember ? '【MemberPrice】' : '【Regular Price】';
+  const memberNote  = state.isMember === 'join' ? '\n　　※Day ofMemberupon joining30%Discountplanned' : '';
+
+  /* ── SendText assembly ── */
+  const SEP  = '━━━━━━━━━━━━━━━━━━━━';
+  const SEP2 = '┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄';
+  const lines = [
+    SEP,
+    '　🌿 Saiki Funeral Services｜EstimateContents',
+    SEP,
+    '',
+    '📋 Customer Information',
+    `　Name　　　: ${state.name || 'pendingInput'} `,
+    `　Deceasedrelationship with : ${getRelationLabel(state.relation)}`,
+    `　AttendanceEstimated number of attendees : ${getAttendanceLabel(state.attendance)}`,
+    `　Funeralstyle of　: ${getFuneralTypeLabel(state.funeralType)}`,
+    '',
+    '🏛 SelectContents',
+    `　Plan　　: ${plan.name}`,
+    `　meeting　venue　　: ${hall.name}`,
+    `　〒address　place　: ${hall.address}`,
+    `　AltarCourse : ${courseName}`,
+    `　MemberCategory　: ${getMemberLabel(state.isMember)}${memberNote}`,
+    '',
+    '💴 CostEstimate（incl. tax）',
+    `　▶ ${isSimple ? 'Direct Cremation / CremationCost' : 'FuneralBasicSet'}`,
+    `　　 ${formatPrice(basePrice)}　${memberTag}`,
+    `　▶ ${isSimple ? 'Estimated transport fee' : 'Hospitality fee（Return Giftgift items, meals, etc.）'}`,
+    `　　 ${formatPrice(hospEst)}${isSimple ? '' : '　※Attendeesnumbervaries by'}`,
+  ];
+  if (!isSimple) {
+    lines.push('　▶ Estimated optional costs（Fresh flowers, catering, bus, etc.）');
+    lines.push(`　　 ${formatPrice(optEst)}　※Contentsvaries by`);
+  }
+  lines.push(SEP2);
+  lines.push('　💰 TotalEstimate');
+  lines.push(`　　 ${formatPrice(total)}　${memberTag}`);
+  lines.push('　　 （ConsumptionTax10%included）');
+  lines.push('');
+  lines.push(SEP);
+  lines.push('⚠️ Please note this amount is only【Estimate】。');
+  lines.push('　 not requiredremove unnecessary optionscan be done。');
+  if (state.wishes && state.wishes.trim()) {
+    lines.push('');
+    lines.push('📝 Preferences & Notes');
+    lines.push(state.wishes.trim());
+  }
+  lines.push('');
+  lines.push('📞 0120-315-312（24 hours365day）');
+  lines.push('🌐 https://Saiki-sousai.com/');
+  lines.push(SEP);
+
+  const text = lines.join('\n');
+
+  /* ── URLAssembly & launch ── */
+  const encoded = encodeURIComponent(text);
+  const url     = 'https://line.me/R/msg/text/?text=' + encoded;
+
+  const a = document.createElement('a');
+  a.href    = url;
+  a.target  = '_blank';
+  a.rel     = 'noopener noreferrer';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  /* Fallback: LINEcopy to clipboard if cannot open */
+  setTimeout(() => {
+    if (document.hidden) return; // LINEdetermined to be open
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert("LINE app will open. If it can't open, the text has been copied to clipboard.\nPlease paste it into LINE chat.");
+      }).catch(() => {});
+    }
+  }, 2500);
+
+  if (typeof gaTrack === 'function') gaTrack('line_share', { step: state.currentStep });
+}
+
+function saveFormData() {
+  try {
+    const draft = {
+      state: {
+        name: state.name, relation: state.relation,
+        attendance: state.attendance, funeralType: state.funeralType,
+        isMember: state.isMember, wishes: state.wishes,
+        selectedPlan: state.selectedPlan ? state.selectedPlan.id : null,
+        selectedHall: state.selectedHall ? state.selectedHall.id : null,
+        selectedCourse: state.selectedCourse,
+        currentStep: state.currentStep
+      },
+      savedAt: new Date().toISOString()
+    };
+    localStorage.setItem(SAVE_KEY, JSON.stringify(draft));
+    showAutoSaveBanner('💾 InputContentsAuto-savecompleted');
+  } catch(e) { console.warn('Auto-saveFailed:', e); }
+}
+
+function loadFormData() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return false;
+    const draft = JSON.parse(raw);
+    if(!draft || !draft.state) return false;
+    const saved = draft.state;
+    const savedAt = draft.savedAt ? new Date(draft.savedAt) : null;
+    const now = new Date();
+    if(savedAt && (now - savedAt) > 48 * 60 * 60 * 1000) {
+      localStorage.removeItem(SAVE_KEY); return false;
+    }
+    // ConfirmDialog
+    const dateStr = savedAt ? (savedAt.getMonth()+1)+'month'+savedAt.getDate()+'day '+String(savedAt.getHours()).padStart(2,'0')+':'+String(savedAt.getMinutes()).padStart(2,'0') : '';
+    const msg = `PreviousInputData found（${dateStr}Save）。\nWould you like to resume from where you left off?？`;
+    if(!confirm(msg)) { localStorage.removeItem(SAVE_KEY); return false; }
+    // staterestore
+    state.name = saved.name || '';
+    state.relation = saved.relation || '';
+    state.attendance = saved.attendance || '';
+    state.funeralType = saved.funeralType || '';
+    state.isMember = saved.isMember || '';
+    state.wishes = saved.wishes || '';
+    if(saved.selectedPlan) {
+      // planRe-fetch object（PLANSsearch inside）
+      for(const k in PLANS){ if(PLANS[k].id === saved.selectedPlan){ state.selectedPlan = PLANS[k]; break; } }
+    }
+    if(saved.selectedHall) {
+      state.selectedHall = HALLS[saved.selectedHall] || null;
+    }
+    state.selectedCourse = saved.selectedCourse || null;
+    const step = Math.max(1, Math.min(saved.currentStep || 1, 7));
+    showAutoSaveBanner('✅ PreviousInputContentsrestorecompleted');
+    return step;
+  } catch(e) { console.warn('RestoreFailed:', e); return false; }
+}
+
+function clearSavedData() {
+  localStorage.removeItem(SAVE_KEY);
+  showAutoSaveBanner('🗑 SaveDataDeletecompleted');
+  setTimeout(() => {
+    const b = document.getElementById('autoSaveBanner');
+    if(b) b.style.display = 'none';
+  }, 2000);
+}
+
+let _saveTimer = null;
+function autoSaveDebounced() {
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(() => saveFormData(), 1500);
+}
+
+function showAutoSaveBanner(msg) {
+  const b = document.getElementById('autoSaveBanner');
+  const m = document.getElementById('autoSaveMsg');
+  if(b && m) {
+    m.textContent = msg;
+    b.style.display = 'flex';
+    clearTimeout(b._hideTimer);
+    b._hideTimer = setTimeout(() => { b.style.display = 'none'; }, 3000);
+  }
+}
+
+// ========== On launch：MidwaySaveRestore data ==========
+(function initApp() {
+  const savedStep = loadFormData();
+  if(savedStep && savedStep > 1) {
+    // Currentstep1hideSavedonesteptransition to
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('dot1').classList.remove('active');
+    // 1–savedStep-1  done set to
+    for(let i = 1; i < savedStep; i++) {
+      const dot = document.getElementById('dot'+i);
+      if(dot) { dot.classList.remove('active'); dot.classList.add('done'); }
+      const con = document.getElementById('con'+i);
+      if(con) con.classList.add('done');
+    }
+    state.currentStep = savedStep;
+    const stepEl = document.getElementById('step'+savedStep);
+    if(stepEl) stepEl.classList.add('active');
+    const dotEl = document.getElementById('dot'+savedStep);
+    if(dotEl) { dotEl.classList.add('active'); dotEl.classList.remove('done'); }
+    // Step-specific rendering
+    if(savedStep === 3) renderPlans();
+    if(savedStep === 4) renderHalls();
+    if(savedStep === 5) renderCourses();
+    if(savedStep === 7) renderEstimate();
+  }
+})();
+  // ===== StarttoBackFunction（AllStepcommon） =====
+  function restartApp() {
+    // STEP3and aboveInputdoneDatabecause data exists, stronger'swarning
+    const warningMsg = state.currentStep >= 3
+      ? 'Return to the first screen。\nup to hereInputContents（Plan / Venue / CourseSelect, etc.）will all be cleared。are you sure?？'
+      : 'Return to the first screen。InputContentsClearwill be cleared, are you sure?？';
+
+    if (!confirm(warningMsg)) return;
+
+    // state full initialization of
+    state.name           = '';
+    state.relation       = '';
+    state.phone          = '';
+    state.attendance     = '';
+    state.funeralType    = '';
+    state.selectedPlan   = null;
+    state.selectedHall   = null;
+    state.selectedCourse = null;
+    state.wishes         = '';
+    state.concerns       = '';
+    state.chatLog        = [];
+    state.isMember       = '';
+
+    // FormInputfieldClear
+    ['clientName','clientRelation','clientPhone'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+
+    // Selectdonehighlightreset
+    document.querySelectorAll('.btn-choice.selected').forEach(b => b.classList.remove('selected'));
+
+    // localStorage clear autosave of
+    try { localStorage.removeItem('SaikiFormData'); } catch(e) {}
+
+    // STEP1transition and scroll to top
+    goToStep(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+
+// ===== SMS Share =====
+function smsShare() {
+  const hall   = state.selectedHall;
+  const plan   = state.selectedPlan;
+  const course = state.selectedCourse;
+
+  /* Cost calculation */
+  let totalStr = '';
+  if (hall && plan && course) {
+    const priceType = (hall.special === 'living') ? 'living' : (plan.priceType || hall.pricingType);
+    const pricing   = PRICING[priceType] || PRICING.compact;
+    const isSimple  = plan.isSimplePlan || course === 'single';
+    let prices;
+    if (isSimple) {
+      const sp = PRICING[priceType] || PRICING.chokuso;
+      prices   = sp ? sp.single : [198000, 248000];
+    } else {
+      prices = pricing[course] || [0, 0];
+    }
+    const isMember  = state.isMember === 'yes' || state.isMember === 'join';
+    const basePrice = isMember ? prices[0] : prices[1];
+    const hospMap   = { under5:35000, under15:52500, '15to30':87500, '30to50':140000, over50:210000 };
+    const hospEst   = isSimple ? 30000 : (hospMap[state.attendance] || 70000);
+    const optEst    = isSimple ? 0 : 200000;
+    const total     = basePrice + hospEst + (isSimple ? 0 : optEst);
+    totalStr        = '\nTotalEstimate: ' + formatPrice(total) + (isMember ? '【Member】' : '【Standard】');
+  }
+
+  const hallName   = (hall && hall.name)      || 'pendingSelect';
+  const planName   = (plan && plan.name)      || 'pendingSelect';
+  const courseName = course
+    ? (COURSES[course] ? COURSES[course].name : course)
+    : 'pendingSelect';
+
+  const body = [
+    '【Saiki Funeral Services Estimate】',
+    `${state.name || 'Customer'} `,
+    '',
+    '▼ SelectContents',
+    `Venue: ${hallName}`,
+    `Plan: ${planName}`,
+    `Altar: ${courseName}`,
+    totalStr,
+    '',
+    '📞 0120-315-312',
+    '（24 hours365dayReception）',
+  ].join('\n');
+
+  const encoded = encodeURIComponent(body);
+  const ua  = navigator.userAgent;
+  const url = /iPhone|iPad|iPod/.test(ua)
+    ? 'sms:&body='  + encoded
+    : 'sms:?body='  + encoded;
+
+  window.location.href = url;
+  if (typeof gaTrack === 'function') gaTrack('sms_share', { step: state.currentStep });
+}
+
+</script>
+</body>
+</html>
