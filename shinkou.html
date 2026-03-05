@@ -24,7 +24,7 @@
 
         .header {
             background: #1a2e4a;
-            padding: 12px 16px;
+            padding: 16px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -32,28 +32,69 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            min-height: 70px;
         }
 
         .header-logo {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .header-logo img {
-            height: 32px;
+            height: 28px;
             background: white;
-            padding: 4px 8px;
+            padding: 3px 6px;
+            border-radius: 4px;
+        }
+
+        .header-logo-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-logo-right img {
+            height: 28px;
+            background: white;
+            padding: 3px 6px;
             border-radius: 4px;
         }
 
         .header-title {
-            color: #c9a84c;
-            font-size: 16px;
-            font-weight: 700;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
+            top: 50%;
+            margin-top: -16px;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .header-title-main {
+            color: #c9a84c;
+            font-size: 18px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .header-title-sub {
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            opacity: 0.9;
+            display: block;
+        }
+
+        .header-title-with {
+            color: #c9a84c;
+            font-weight: 400;
+            font-size: 10px;
+            margin: 0 4px;
         }
 
         .container {
@@ -565,13 +606,163 @@
             line-height: 1.6;
         }
 
+        .benefit-banner {
+            background: linear-gradient(135deg, #1a2e4a 0%, #2a4060 100%);
+            border: 3px solid #c9a84c;
+            border-radius: 16px;
+            padding: 4px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 20px rgba(201, 168, 76, 0.3);
+            position: relative;
+        }
+
+        .benefit-inner {
+            background: white;
+            border: 2px dashed #c9a84c;
+            border-radius: 12px;
+            padding: 24px 20px;
+            position: relative;
+        }
+
+        .benefit-badge {
+            background: linear-gradient(135deg, #c9a84c 0%, #b8973d 100%);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(201, 168, 76, 0.4);
+            letter-spacing: 1px;
+        }
+
+        .benefit-title {
+            color: #1a2e4a;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .benefit-highlight {
+            background: linear-gradient(to right, #fff3cd, #fffbf0);
+            border-left: 4px solid #c9a84c;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+
+        .benefit-point {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .benefit-icon {
+            color: #c9a84c;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .benefit-text {
+            color: #1a2e4a;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .benefit-price {
+            color: #e74c3c;
+            font-size: 20px;
+            font-weight: 700;
+            text-decoration: line-through;
+            margin-right: 8px;
+        }
+
+        .benefit-free {
+            color: #27ae60;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .benefit-discount {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            font-size: 22px;
+            font-weight: 700;
+            padding: 12px 20px;
+            border-radius: 12px;
+            display: inline-block;
+            margin: 12px 0;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .benefit-footer {
+            color: #1a2e4a;
+            font-size: 13px;
+            font-weight: 500;
+            margin-top: 16px;
+            line-height: 1.6;
+        }
+
+        .benefit-area {
+            color: #c9a84c;
+            font-weight: 700;
+        }
+
         @media (max-width: 380px) {
-            .header-title {
+            .header {
+                min-height: 60px;
+                padding: 12px 8px;
+            }
+            
+            .header-title-main {
                 font-size: 14px;
             }
             
-            .header-logo img {
-                height: 28px;
+            .header-title-sub {
+                font-size: 9px;
+                letter-spacing: 1px;
+            }
+            
+            .header-title-with {
+                font-size: 8px;
+            }
+            
+            .header-logo img,
+            .header-logo-right img {
+                height: 24px;
+                padding: 2px 4px;
+            }
+            
+            .benefit-discount {
+                font-size: 18px;
+                padding: 10px 16px;
+                letter-spacing: 1px;
+            }
+            
+            .benefit-title {
+                font-size: 14px;
+            }
+            
+            .benefit-price {
+                font-size: 18px;
+            }
+            
+            .benefit-free {
+                font-size: 20px;
             }
             
             .form-row {
@@ -584,10 +775,19 @@
 <body>
     <div class="header">
         <div class="header-logo">
-            <img src="https://www.genspark.ai/api/files/s/g7hi6hvG" alt="SHINKOU">
-            <img src="https://www.genspark.ai/api/files/s/nv667976" alt="TOHO Racing">
+            <img src="images/shinkou-logo.png" alt="SHINKOU">
+            <img src="images/toho-racing-logo.png" alt="TOHO Racing">
         </div>
-        <div class="header-title">Aifit 入会申込</div>
+        <div class="header-title">
+            <span class="header-title-main">株式会社シンコウプレゼンツ</span>
+            <span class="header-title-sub">
+                <span class="header-title-with">with</span>
+                Aifit
+            </span>
+        </div>
+        <div class="header-logo-right">
+            <img src="images/aifit-logo.png" alt="Aifit">
+        </div>
     </div>
 
     <div class="container">
@@ -610,6 +810,38 @@
             </div>
         </div>
 
+        <!-- 福利厚生バナー -->
+        <div class="benefit-banner">
+            <div class="benefit-inner">
+                <div class="benefit-badge">✨ はじめまして Aifit です ✨</div>
+                <div class="benefit-title">
+                    このたびTOHOレーシング活動を応援させていただいたところ、ご厚意で皆様の福利厚生もサポートさせていただけることになりました🎉<br>
+                    入会金免除サービスをご提供させていただきます✨
+                </div>
+                <div class="benefit-highlight">
+                    <div class="benefit-point">
+                        <span class="benefit-icon">📍</span>
+                        <span class="benefit-text benefit-area">Aifitは東広島・呉・三原の冠婚葬祭事業社です</span>
+                    </div>
+                    <div class="benefit-point">
+                        <span class="benefit-icon">🎁</span>
+                        <span class="benefit-text">
+                            通常 <span class="benefit-price">1万円</span>
+                            <span class="benefit-free">無料！</span>
+                        </span>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <div class="benefit-discount">
+                        🎊 ここ限定 冠婚葬祭費用30％OFF 🎊
+                    </div>
+                </div>
+                <div class="benefit-footer">
+                    ぜひこれを機会に将来の備えを<br>福利厚生でご登録ください
+                </div>
+            </div>
+        </div>
+
         <div class="card">
             <!-- STEP 1: 申込者区分 -->
             <div class="step-content active" data-step="1">
@@ -629,10 +861,20 @@
                     <span class="option-icon">🏍️</span>
                     <label for="cat3">TOHOレーシング 関係者</label>
                 </div>
-                <div class="option-card" onclick="selectCategory('other')">
-                    <input type="radio" name="category" id="cat4" value="other">
+                <div class="option-card" onclick="selectCategory('toho_sponsor')">
+                    <input type="radio" name="category" id="cat4" value="toho_sponsor">
+                    <span class="option-icon">🏆</span>
+                    <label for="cat4">TOHOレーシング スポンサー様</label>
+                </div>
+                <div class="option-card" onclick="selectCategory('business_partner')">
+                    <input type="radio" name="category" id="cat5" value="business_partner">
                     <span class="option-icon">🤝</span>
-                    <label for="cat4">その他 関係者</label>
+                    <label for="cat5">大切な取引先の皆様</label>
+                </div>
+                <div class="option-card" onclick="selectCategory('other')">
+                    <input type="radio" name="category" id="cat6" value="other">
+                    <span class="option-icon">✨</span>
+                    <label for="cat6">その他 関係者</label>
                 </div>
                 <div class="button-group">
                     <button class="btn btn-primary" onclick="nextStep()">次へ</button>
@@ -863,23 +1105,23 @@
             <div class="step-content" data-step="5">
                 <div class="success-screen">
                     <div class="success-icon">✅</div>
-                    <div class="success-title">ありがとうございます！</div>
+                    <div class="success-title">メッセージをコピーしました！</div>
                     <div class="success-message">
                         LINEアプリが開きます。<br>
-                        メッセージを送信してお申し込みを完了してください。
+                        コピーしたメッセージを貼り付けて送信してください。
                     </div>
                     <div class="instruction-list">
                         <div class="instruction-item">
                             <div class="instruction-number">1</div>
-                            <div class="instruction-text">LINEアプリでAifitのアカウントが開きます</div>
+                            <div class="instruction-text">LINEアプリでAifitのアカウントが開きます<br>（まだ友達追加していない場合は「追加」を押してください）</div>
                         </div>
                         <div class="instruction-item">
                             <div class="instruction-number">2</div>
-                            <div class="instruction-text">メッセージが自動入力されています</div>
+                            <div class="instruction-text">メッセージ入力欄を長押しして「貼り付け」を選択<br>（申込内容が自動でコピーされています）</div>
                         </div>
                         <div class="instruction-item">
                             <div class="instruction-number">3</div>
-                            <div class="instruction-text">「送信」ボタンを押してください</div>
+                            <div class="instruction-text">内容を確認して「送信」ボタンを押してください</div>
                         </div>
                     </div>
                     <button class="btn btn-secondary" onclick="resetForm()">最初からやり直す</button>
@@ -1174,6 +1416,8 @@
                 'shinkou_employee': '株式会社シンコウ 社員',
                 'shinkou_family': '株式会社シンコウ 社員のご家族',
                 'toho_racing': 'TOHOレーシング 関係者',
+                'toho_sponsor': 'TOHOレーシング スポンサー様',
+                'business_partner': '大切な取引先の皆様',
                 'other': 'その他 関係者'
             };
 
@@ -1207,6 +1451,8 @@
                 'shinkou_employee': '株式会社シンコウ 社員',
                 'shinkou_family': '株式会社シンコウ 社員のご家族',
                 'toho_racing': 'TOHOレーシング 関係者',
+                'toho_sponsor': 'TOHOレーシング スポンサー様',
+                'business_partner': '大切な取引先の皆様',
                 'other': 'その他 関係者'
             };
 
@@ -1239,17 +1485,43 @@
         // LINE送信
         function sendToLine() {
             const message = generateMessage();
-            const encodedMessage = encodeURIComponent(message);
-            const lineUrl = `https://line.me/R/oaMessage/@zmq9093v?text=${encodedMessage}`;
             
-            // 成功画面に移動
-            currentStep = 5;
-            updateStepDisplay();
-            
-            // LINEを開く
-            setTimeout(() => {
-                window.open(lineUrl, '_blank');
-            }, 500);
+            // クリップボードにコピー
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(message).then(() => {
+                    // 成功画面に移動
+                    currentStep = 5;
+                    updateStepDisplay();
+                    
+                    // LINEを開く（テキストは手動で貼り付け）
+                    setTimeout(() => {
+                        const lineUrl = `https://line.me/R/ti/p/@zmq9093v`;
+                        window.open(lineUrl, '_blank');
+                    }, 800);
+                }).catch(() => {
+                    // コピー失敗時は従来の方法
+                    currentStep = 5;
+                    updateStepDisplay();
+                    const lineUrl = `https://line.me/R/ti/p/@zmq9093v`;
+                    window.open(lineUrl, '_blank');
+                });
+            } else {
+                // フォールバック
+                const textarea = document.createElement('textarea');
+                textarea.value = message;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                currentStep = 5;
+                updateStepDisplay();
+                
+                setTimeout(() => {
+                    const lineUrl = `https://line.me/R/ti/p/@zmq9093v`;
+                    window.open(lineUrl, '_blank');
+                }, 800);
+            }
         }
 
         // メッセージコピー
