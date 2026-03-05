@@ -836,6 +836,25 @@
                         🎊 ここ限定 冠婚葬祭費用30％OFF 🎊
                     </div>
                 </div>
+                
+                <!-- 公式LINE登録ボタン -->
+                <div style="background: linear-gradient(to bottom, #fffbf0, #fff3cd); padding: 20px; border-radius: 12px; margin: 20px 0; border: 2px solid #c9a84c;">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <div style="font-size: 16px; font-weight: 700; color: #1a2e4a; margin-bottom: 8px;">
+                            💎 30％割引サービスを受けるために
+                        </div>
+                        <div style="font-size: 14px; color: #666; line-height: 1.6;">
+                            まずは公式LINE登録をお願いします
+                        </div>
+                    </div>
+                    <a href="https://line.me/R/ti/p/@zmq9093v" target="_blank" style="display: block; background: linear-gradient(135deg, #06C755 0%, #05b34b 100%); color: white; text-decoration: none; padding: 18px 24px; border-radius: 12px; font-weight: 700; font-size: 18px; text-align: center; box-shadow: 0 4px 12px rgba(6, 199, 85, 0.4); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(6, 199, 85, 0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(6, 199, 85, 0.4)'">
+                        💬 Aifit公式LINEに友達追加する
+                    </a>
+                    <div style="text-align: center; margin-top: 12px; font-size: 12px; color: #999;">
+                        ※ 登録後、下記フォームから入会申込をしてください
+                    </div>
+                </div>
+                
                 <div class="benefit-footer">
                     ぜひこれを機会に将来の備えを<br>福利厚生でご登録ください
                 </div>
@@ -1105,33 +1124,46 @@
             <div class="step-content" data-step="5">
                 <div class="success-screen">
                     <div class="success-icon">✅</div>
-                    <div class="success-title">LINEアプリを起動中...</div>
+                    <div class="success-title">Aifitのトークルームを開きます</div>
                     <div class="success-message">
-                        メッセージが自動入力された状態で<br>
-                        LINEが開きます。
+                        申込内容をコピーしました。<br>
+                        LINEのトークルームで貼り付けて送信してください。
                     </div>
                     <div class="instruction-list">
                         <div class="instruction-item">
                             <div class="instruction-number">1</div>
-                            <div class="instruction-text">LINEアプリでメッセージ送信画面が開きます<br>（申込内容が自動入力されています）</div>
+                            <div class="instruction-text">
+                                <strong>初めての方:</strong> Aifitの公式アカウントページが開きます。<br>
+                                「追加」ボタンを押して友達追加してください。<br>
+                                その後「トーク」ボタンを押します。
+                            </div>
                         </div>
                         <div class="instruction-item">
                             <div class="instruction-number">2</div>
-                            <div class="instruction-text">送信先に「Aifit」を選択してください</div>
+                            <div class="instruction-text">
+                                <strong>既に友達の方:</strong> Aifitとのトークルームが直接開きます。
+                            </div>
                         </div>
                         <div class="instruction-item">
                             <div class="instruction-number">3</div>
-                            <div class="instruction-text">内容を確認して「送信」ボタンを押してください</div>
+                            <div class="instruction-text">
+                                メッセージ入力欄を<strong>長押し</strong>して「貼り付け」を選択。<br>
+                                申込内容が入力されます。
+                            </div>
+                        </div>
+                        <div class="instruction-item">
+                            <div class="instruction-number">4</div>
+                            <div class="instruction-text">内容を確認して「送信」ボタンを押してください。</div>
                         </div>
                     </div>
-                    <div style="background: #fff3cd; padding: 16px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #c9a84c;">
+                    <div style="background: #e8f5e9; padding: 16px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #27ae60;">
                         <div style="font-size: 13px; color: #666; line-height: 1.6;">
-                            <strong style="color: #1a2e4a;">💡 うまく開かない場合</strong><br>
-                            下の「コピーして送信」ボタンで手動送信できます
+                            <strong style="color: #27ae60;">✅ メッセージは自動でコピー済み</strong><br>
+                            トークルームで長押し→貼り付けするだけです
                         </div>
                     </div>
-                    <button class="btn btn-copy" onclick="copyAndOpenLine()" style="margin-top: 0;">
-                        メッセージをコピーしてLINEを開く
+                    <button class="btn btn-copy" onclick="copyAndOpenLine()" style="margin-top: 0; background: #06C755;">
+                        📱 もう一度LINEを開く
                     </button>
                     <button class="btn btn-secondary" onclick="resetForm()" style="margin-top: 12px;">最初からやり直す</button>
                 </div>
@@ -1496,52 +1528,34 @@
             const message = generateMessage();
             const encodedMessage = encodeURIComponent(message);
             
-            // まずクリップボードにコピー（フォールバック用）
+            // クリップボードにコピー
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(message).catch(() => {
                     console.log('クリップボードコピー失敗');
                 });
-            } else {
-                // 古いブラウザ用フォールバック
-                try {
-                    const textarea = document.createElement('textarea');
-                    textarea.value = message;
-                    textarea.style.position = 'fixed';
-                    textarea.style.opacity = '0';
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                } catch (e) {
-                    console.log('フォールバックコピー失敗');
-                }
             }
             
             // 成功画面に移動
             currentStep = 5;
             updateStepDisplay();
             
-            // LINEアプリを開く（複数の方法を試す）
+            // LINEの公式アカウントのトークルームを直接開く
             setTimeout(() => {
-                // 方法1: line://msg/text/ (アプリ直接起動)
-                const lineAppUrl = `line://msg/text/${encodedMessage}`;
+                // 方法1: 公式アカウントのトークルームを開く（友達の場合）
+                const lineTalkUrl = `https://line.me/R/oaMessage/@zmq9093v`;
                 
-                // 方法2: https://line.me/R/share (ウェブ経由)
-                const lineWebUrl = `https://line.me/R/share?text=${encodedMessage}`;
+                // 方法2: アプリ直接（iOSで動作する可能性）
+                const lineAppUrl = `line://ti/p/@zmq9093v`;
                 
-                // 方法3: oaMessage (公式アカウント直接 - text付き)
-                const lineOAUrl = `https://line.me/R/oaMessage/@zmq9093v/?${encodedMessage}`;
+                // まずトークルームを開く試み
+                window.location.href = lineTalkUrl;
                 
-                // まずアプリ起動を試みる
-                window.location.href = lineAppUrl;
-                
-                // アプリが開かない場合のフォールバック
+                // 念のためフォールバック
                 setTimeout(() => {
-                    // 2秒後にまだページにいたらウェブURLを開く
                     if (document.hasFocus()) {
-                        window.open(lineWebUrl, '_blank');
+                        window.location.href = lineAppUrl;
                     }
-                }, 2000);
+                }, 1500);
             }, 500);
         }
 
@@ -1574,12 +1588,12 @@
             // クリップボードにコピー
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(message).then(() => {
-                    showToast('メッセージをコピーしました！LINEを開きます...');
+                    showToast('メッセージをコピーしました！');
                     setTimeout(() => {
-                        window.open('https://line.me/ti/p/@zmq9093v', '_blank');
-                    }, 1000);
+                        // 公式アカウントのトークルームを開く
+                        window.location.href = 'https://line.me/R/oaMessage/@zmq9093v';
+                    }, 800);
                 }).catch(() => {
-                    // フォールバック
                     fallbackCopy(message);
                 });
             } else {
@@ -1596,10 +1610,10 @@
             textarea.select();
             document.execCommand('copy');
             document.body.removeChild(textarea);
-            showToast('メッセージをコピーしました！LINEを開きます...');
+            showToast('メッセージをコピーしました！');
             setTimeout(() => {
-                window.open('https://line.me/ti/p/@zmq9093v', '_blank');
-            }, 1000);
+                window.location.href = 'https://line.me/R/oaMessage/@zmq9093v';
+            }, 800);
         }
 
         // トースト表示
