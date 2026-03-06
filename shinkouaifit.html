@@ -2295,7 +2295,16 @@
                 showToast('📄 PDF生成中...');
                 
                 // 確認画面の内容を取得
-                const content = document.getElementById('confirmationContent');
+                let content = document.getElementById('confirmationContent');
+                
+                // STEP 6（成功画面）の場合は、STEP 5に一時的に戻って保存
+                if (!content || content.offsetParent === null) {
+                    // 確認画面を一時的に表示して保存
+                    const step5 = document.querySelector('.step-content[data-step="5"]');
+                    if (step5) {
+                        content = step5.querySelector('#confirmationContent');
+                    }
+                }
                 
                 if (!content) {
                     showToast('❌ 保存する内容が見つかりません');
@@ -2318,18 +2327,38 @@
                 // 一時的にスクロール位置を保存
                 const scrollPos = window.scrollY;
                 
+                // 非表示の要素を一時的に表示状態にする
+                const parentContent = content.closest('.step-content');
+                const wasHidden = parentContent && !parentContent.classList.contains('active');
+                
+                if (wasHidden) {
+                    parentContent.style.display = 'block';
+                    parentContent.style.position = 'absolute';
+                    parentContent.style.left = '-9999px';
+                    parentContent.style.top = '0';
+                    parentContent.style.zIndex = '-1';
+                }
+                
                 // html2canvasでHTMLをキャプチャ
                 const canvas = await html2canvas(content, {
                     scale: 2,
                     useCORS: true,
                     allowTaint: true,
                     backgroundColor: '#ffffff',
-                    logging: true,
+                    logging: false,
                     width: content.offsetWidth,
                     height: content.offsetHeight,
-                    scrollX: 0,
-                    scrollY: 0
+                    windowWidth: 480
                 });
+                
+                // 元の状態に戻す
+                if (wasHidden) {
+                    parentContent.style.display = '';
+                    parentContent.style.position = '';
+                    parentContent.style.left = '';
+                    parentContent.style.top = '';
+                    parentContent.style.zIndex = '';
+                }
                 
                 // スクロール位置を復元
                 window.scrollTo(0, scrollPos);
@@ -2375,7 +2404,16 @@
                 showToast('🖼️ 画像生成中...');
                 
                 // 確認画面の内容を取得
-                const content = document.getElementById('confirmationContent');
+                let content = document.getElementById('confirmationContent');
+                
+                // STEP 6（成功画面）の場合は、STEP 5に一時的に戻って保存
+                if (!content || content.offsetParent === null) {
+                    // 確認画面を一時的に表示して保存
+                    const step5 = document.querySelector('.step-content[data-step="5"]');
+                    if (step5) {
+                        content = step5.querySelector('#confirmationContent');
+                    }
+                }
                 
                 if (!content) {
                     showToast('❌ 保存する内容が見つかりません');
@@ -2392,18 +2430,38 @@
                 // 一時的にスクロール位置を保存
                 const scrollPos = window.scrollY;
                 
+                // 非表示の要素を一時的に表示状態にする
+                const parentContent = content.closest('.step-content');
+                const wasHidden = parentContent && !parentContent.classList.contains('active');
+                
+                if (wasHidden) {
+                    parentContent.style.display = 'block';
+                    parentContent.style.position = 'absolute';
+                    parentContent.style.left = '-9999px';
+                    parentContent.style.top = '0';
+                    parentContent.style.zIndex = '-1';
+                }
+                
                 // html2canvasでHTMLをキャプチャ
                 const canvas = await html2canvas(content, {
                     scale: 2,
                     useCORS: true,
                     allowTaint: true,
                     backgroundColor: '#ffffff',
-                    logging: true,
+                    logging: false,
                     width: content.offsetWidth,
                     height: content.offsetHeight,
-                    scrollX: 0,
-                    scrollY: 0
+                    windowWidth: 480
                 });
+                
+                // 元の状態に戻す
+                if (wasHidden) {
+                    parentContent.style.display = '';
+                    parentContent.style.position = '';
+                    parentContent.style.left = '';
+                    parentContent.style.top = '';
+                    parentContent.style.zIndex = '';
+                }
                 
                 // スクロール位置を復元
                 window.scrollTo(0, scrollPos);
