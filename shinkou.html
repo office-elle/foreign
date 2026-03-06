@@ -12,6 +12,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
+    <!-- 
+    【メール送信先】
+    support@saiki-sousai.com
+    -->
+    
     <style>
         * {
             margin: 0;
@@ -832,8 +837,8 @@
             </div>
         </div>
 
-        <!-- 福利厚生バナー -->
-        <div class="benefit-banner">
+        <!-- 福利厚生バナー（STEP 1のみ表示） -->
+        <div class="benefit-banner" id="benefitBanner">
             <div class="benefit-inner">
                 <div class="benefit-badge">✨ はじめまして Aifit です ✨</div>
                 <div class="benefit-title">
@@ -869,11 +874,27 @@
                             まずは公式LINE登録をお願いします
                         </div>
                     </div>
-                    <a href="https://line.me/R/ti/p/@zmq9093v" target="_blank" style="display: block; background: linear-gradient(135deg, #06C755 0%, #05b34b 100%); color: white; text-decoration: none; padding: 18px 24px; border-radius: 12px; font-weight: 700; font-size: 18px; text-align: center; box-shadow: 0 4px 12px rgba(6, 199, 85, 0.4); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(6, 199, 85, 0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(6, 199, 85, 0.4)'">
+                    <a href="https://line.me/R/ti/p/@zmq9093v" target="_blank" style="display: block; background: linear-gradient(135deg, #06C755 0%, #05b34b 100%); color: white; text-decoration: none; padding: 18px 24px; border-radius: 12px; font-weight: 700; font-size: 18px; text-align: center; box-shadow: 0 4px 12px rgba(6, 199, 85, 0.4); transition: all 0.3s; margin-bottom: 12px;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(6, 199, 85, 0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(6, 199, 85, 0.4)'">
                         💬 Aifit公式LINEに友達追加する
                     </a>
                     <div style="text-align: center; margin-top: 14px; font-size: 13px; color: #2e7d32; font-weight: 500;">
                         ✅ 登録後、下記フォームから入会申込をしてください
+                    </div>
+                    
+                    <!-- LINEを使っていない方向けの案内 -->
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 2px dashed #66bb6a;">
+                        <div style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); padding: 16px 20px; border-radius: 10px; border: 2px solid #ff9800; text-align: center;">
+                            <div style="font-size: 15px; font-weight: 700; color: #e65100; margin-bottom: 8px;">
+                                📧 LINEを使っていない方へ
+                            </div>
+                            <div style="font-size: 14px; color: #f57c00; font-weight: 600; line-height: 1.7;">
+                                そのままお進みください<br>
+                                <span style="font-size: 13px; color: #ef6c00;">（最後はメールで送信できます）</span>
+                            </div>
+                            <div style="margin-top: 10px; font-size: 24px;">
+                                👇
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -895,6 +916,24 @@
                         途中から続けることができます。最初からやり直す場合は「データクリア」ボタンをご利用ください。
                     </div>
                 </div>
+            </div>
+        </div>
+        
+        <!-- シンプルリマインダー（STEP 2以降に表示） -->
+        <div id="simpleReminder" style="display: none; background: linear-gradient(135deg, #fff9e6 0%, #ffe5b4 100%); border: 2px solid #ffa726; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(255,167,38,0.3); text-align: center;">
+            <div style="font-size: 15px; font-weight: 700; color: #e65100; line-height: 1.7;">
+                📝 最終ページまで記入を終えたら自動的にコピーされるので公式LINEトークに貼ってくださいね！
+            </div>
+        </div>
+        
+        <!-- メール送信オプション（STEP 2以降に表示） -->
+        <div id="emailReminderOption" style="display: none; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #42a5f5; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(66,165,245,0.3); text-align: center;">
+            <div style="font-size: 15px; font-weight: 700; color: #1565c0; margin-bottom: 8px;">
+                📧 LINEを使っていない方
+            </div>
+            <div style="font-size: 13px; color: #1976d2; line-height: 1.6;">
+                メールでも申し込みを受け付けています<br>
+                <span style="font-size: 12px; color: #1565c0;">※ 最終ページでメール送信ボタンがあります</span>
             </div>
         </div>
 
@@ -1345,13 +1384,22 @@
                         🗑️ データクリア
                     </button>
                 </div>
-                <button class="btn btn-line" onclick="sendToLine()" style="font-size: 20px; padding: 20px;">
+                
+                <!-- LINE申込ボタン -->
+                <button class="btn btn-line" onclick="sendToLine()" style="font-size: 20px; padding: 20px; margin-bottom: 16px;">
                     <span>📱</span>
                     LINEで申し込む
                 </button>
-                <div style="background: #fff9e6; padding: 16px; border-radius: 12px; margin-top: 16px; border: 3px solid #ffa726; text-align: center;">
+                
+                <!-- メール申込ボタン（LINEと同じサイズ） -->
+                <button class="btn" onclick="sendByEmail()" style="background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%); color: white; font-size: 20px; padding: 20px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(25,118,210,0.4); transition: all 0.3s;" onmouseover="this.style.background='linear-gradient(135deg, #1565c0 0%, #0d47a1 100%)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(25,118,210,0.5)'" onmouseout="this.style.background='linear-gradient(135deg, #1976d2 0%, #1565c0 100%)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(25,118,210,0.4)'">
+                    <span>📧</span>
+                    メールで申し込む
+                </button>
+                
+                <div style="background: #fff9e6; padding: 16px; border-radius: 12px; margin-top: 0; border: 3px solid #ffa726; text-align: center;">
                     <div style="font-size: 15px; color: #e65100; font-weight: 700; line-height: 1.8; margin-bottom: 8px;">
-                        ⚡ タップ後の操作
+                        ⚡ LINEをご利用の方
                     </div>
                     <div style="background: white; padding: 12px; border-radius: 8px; margin-bottom: 8px;">
                         <div style="font-size: 18px; font-weight: 700; color: #e53935;">
@@ -1470,6 +1518,22 @@
                     <button class="btn btn-line" onclick="copyAndOpenLine()" style="margin-top: 0; font-size: 20px; padding: 20px; box-shadow: 0 6px 20px rgba(6,199,85,0.4); animation: pulse-button 2s infinite;">
                         👉 LINEを開く 👈
                     </button>
+                    
+                    <!-- LINEを使っていない方向けセクション -->
+                    <div style="margin-top: 24px; padding: 20px; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-radius: 12px; border: 3px solid #42a5f5;">
+                        <div style="font-size: 16px; font-weight: 700; color: #1565c0; margin-bottom: 12px; text-align: center;">
+                            📧 LINEを使っていない方はこちら
+                        </div>
+                        <div style="font-size: 13px; color: #1976d2; margin-bottom: 16px; text-align: center; line-height: 1.6;">
+                            メールアプリから申し込みができます
+                        </div>
+                        <button class="btn" onclick="sendByEmail()" style="background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%); color: white; font-size: 18px; font-weight: 700; padding: 18px; width: 100%; box-shadow: 0 4px 12px rgba(25,118,210,0.4);">
+                            📧 メールで申し込む
+                        </button>
+                        <div style="font-size: 12px; color: #1565c0; margin-top: 12px; text-align: center;">
+                            ※ 申込内容が自動入力されたメールが開きます
+                        </div>
+                    </div>
                     
                     <style>
                         @keyframes pulse-button {
@@ -1950,6 +2014,26 @@
                 content.classList.remove('active');
             });
             document.querySelector(`.step-content[data-step="${currentStep}"]`).classList.add('active');
+            
+            // バナーの表示/非表示（STEP 1のみ表示）
+            const benefitBanner = document.getElementById('benefitBanner');
+            const simpleReminder = document.getElementById('simpleReminder');
+            const emailReminderOption = document.getElementById('emailReminderOption');
+            
+            if (currentStep === 1) {
+                benefitBanner.style.display = 'block';
+                simpleReminder.style.display = 'none';
+                emailReminderOption.style.display = 'none';
+            } else if (currentStep >= 2 && currentStep <= 5) {
+                benefitBanner.style.display = 'none';
+                simpleReminder.style.display = 'block';
+                emailReminderOption.style.display = 'block';
+            } else {
+                // STEP 6 (成功画面) では全て非表示
+                benefitBanner.style.display = 'none';
+                simpleReminder.style.display = 'none';
+                emailReminderOption.style.display = 'none';
+            }
 
             // スクロールをトップに
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2301,6 +2385,33 @@
             }, 800);
         }
         
+        // メール送信
+        function sendByEmail() {
+            const message = generateMessage();
+            
+            // メールの件名と本文を設定
+            const subject = encodeURIComponent('【Aifit】入会申し込み');
+            const body = encodeURIComponent(message);
+            
+            // Aifitのメールアドレス
+            const toEmail = 'support@saiki-sousai.com';
+            
+            // mailtoリンクを生成
+            const mailtoLink = `mailto:${toEmail}?subject=${subject}&body=${body}`;
+            
+            // メールアプリを開く
+            window.location.href = mailtoLink;
+            
+            // トーストメッセージを表示
+            showToast('📧 メールアプリを開きました');
+            
+            // 成功画面に移動（メール版）
+            setTimeout(() => {
+                currentStep = 6;
+                updateStepDisplay();
+            }, 1000);
+        }
+        
         // フォールバックコピー関数
         function fallbackCopy(text) {
             const textarea = document.createElement('textarea');
@@ -2390,14 +2501,22 @@
             try {
                 showToast('📄 PDF生成中...');
                 
+                // 確認画面の内容を取得
                 const content = document.getElementById('confirmationContent');
+                
+                if (!content) {
+                    showToast('❌ 保存する内容が見つかりません');
+                    return;
+                }
                 
                 // html2canvasでHTMLをキャプチャ
                 const canvas = await html2canvas(content, {
                     scale: 2,
                     useCORS: true,
                     backgroundColor: '#ffffff',
-                    logging: false
+                    logging: false,
+                    windowWidth: content.scrollWidth,
+                    windowHeight: content.scrollHeight
                 });
                 
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
@@ -2435,7 +2554,7 @@
                 showToast('✅ PDFを保存しました');
             } catch (error) {
                 console.error('PDF生成エラー:', error);
-                showToast('❌ PDF生成に失敗しました');
+                showToast('❌ PDF生成に失敗しました: ' + error.message);
             }
         }
         
@@ -2444,18 +2563,31 @@
             try {
                 showToast('🖼️ 画像生成中...');
                 
+                // 確認画面の内容を取得
                 const content = document.getElementById('confirmationContent');
+                
+                if (!content) {
+                    showToast('❌ 保存する内容が見つかりません');
+                    return;
+                }
                 
                 // html2canvasでHTMLをキャプチャ
                 const canvas = await html2canvas(content, {
                     scale: 2,
                     useCORS: true,
                     backgroundColor: '#ffffff',
-                    logging: false
+                    logging: false,
+                    windowWidth: content.scrollWidth,
+                    windowHeight: content.scrollHeight
                 });
                 
                 // Canvasを画像に変換
                 canvas.toBlob(function(blob) {
+                    if (!blob) {
+                        showToast('❌ 画像生成に失敗しました');
+                        return;
+                    }
+                    
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
@@ -2470,7 +2602,7 @@
                 
             } catch (error) {
                 console.error('画像生成エラー:', error);
-                showToast('❌ 画像生成に失敗しました');
+                showToast('❌ 画像生成に失敗しました: ' + error.message);
             }
         }
         
@@ -2483,7 +2615,10 @@
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             
-            const applicantName = formData.lastName + formData.firstName;
+            // formDataから名前を取得、なければデフォルト値
+            const applicantName = (formData.lastName && formData.firstName) 
+                ? formData.lastName + formData.firstName 
+                : '申込者';
             
             return `Aifit入会申込_${applicantName}_${year}${month}${day}_${hours}${minutes}.${extension}`;
         }
@@ -2520,109 +2655,6 @@
                 resetForm();
                 showToast('🗑️ 入力データを削除しました');
             }
-        }
-        
-        // PDFとして保存
-        async function downloadAsPDF() {
-            try {
-                showToast('📄 PDF生成中...');
-                
-                const content = document.getElementById('confirmationContent');
-                
-                // html2canvasでHTMLをキャプチャ
-                const canvas = await html2canvas(content, {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor: '#ffffff',
-                    logging: false
-                });
-                
-                const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                const imgWidth = 210; // A4サイズ（mm）
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                
-                // jsPDFでPDF生成
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                
-                let position = 0;
-                const pageHeight = 297; // A4の高さ（mm）
-                
-                if (imgHeight > pageHeight) {
-                    // 複数ページに分割
-                    let heightLeft = imgHeight;
-                    
-                    while (heightLeft > 0) {
-                        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                        heightLeft -= pageHeight;
-                        
-                        if (heightLeft > 0) {
-                            pdf.addPage();
-                            position = -pageHeight;
-                        }
-                    }
-                } else {
-                    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-                }
-                
-                // ファイル名生成
-                const fileName = generateFileName('pdf');
-                pdf.save(fileName);
-                
-                showToast('✅ PDFを保存しました');
-            } catch (error) {
-                console.error('PDF生成エラー:', error);
-                showToast('❌ PDF生成に失敗しました');
-            }
-        }
-        
-        // JPGとして保存
-        async function downloadAsJPG() {
-            try {
-                showToast('🖼️ 画像生成中...');
-                
-                const content = document.getElementById('confirmationContent');
-                
-                // html2canvasでHTMLをキャプチャ
-                const canvas = await html2canvas(content, {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor: '#ffffff',
-                    logging: false
-                });
-                
-                // Canvasを画像に変換
-                canvas.toBlob(function(blob) {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = generateFileName('jpg');
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                    
-                    showToast('✅ 画像を保存しました');
-                }, 'image/jpeg', 1.0);
-                
-            } catch (error) {
-                console.error('画像生成エラー:', error);
-                showToast('❌ 画像生成に失敗しました');
-            }
-        }
-        
-        // ファイル名生成
-        function generateFileName(extension) {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            
-            const applicantName = formData.lastName + formData.firstName;
-            
-            return `Aifit入会申込_${applicantName}_${year}${month}${day}_${hours}${minutes}.${extension}`;
         }
         
         // 送信完了後にデータをクリア
