@@ -1345,22 +1345,79 @@
                         🗑️ データクリア
                     </button>
                 </div>
-                <button class="btn btn-line" onclick="sendToLine()">
+                <button class="btn btn-line" onclick="sendToLine()" style="font-size: 20px; padding: 20px;">
                     <span>📱</span>
                     LINEで申し込む
                 </button>
+                <div style="background: #fff9e6; padding: 16px; border-radius: 12px; margin-top: 16px; border: 3px solid #ffa726; text-align: center;">
+                    <div style="font-size: 15px; color: #e65100; font-weight: 700; line-height: 1.8; margin-bottom: 8px;">
+                        ⚡ タップ後の操作
+                    </div>
+                    <div style="background: white; padding: 12px; border-radius: 8px; margin-bottom: 8px;">
+                        <div style="font-size: 18px; font-weight: 700; color: #e53935;">
+                            ① 入力欄を長押し<br>
+                            ② 「貼り付け」タップ<br>
+                            ③ 送信
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; color: #666;">
+                        ※ たったこれだけで完了です
+                    </div>
+                </div>
                 </div>
             </div>
 
             <!-- Success Screen -->
             <div class="step-content" data-step="6">
                 <div class="success-screen">
-                    <div class="success-icon">✅</div>
-                    <div class="success-title">メッセージをコピーしました！</div>
-                    <div class="success-message">
-                        LINEが開きます。<br>
-                        トークルームで<strong>貼り付けて送信</strong>してください。
+                    <div style="animation: bounce 1s infinite;">
+                        <div class="success-icon" style="font-size: 80px;">✅</div>
                     </div>
+                    <div class="success-title" style="color: #06C755; font-size: 26px;">準備完了！</div>
+                    
+                    <!-- 超シンプルな3ステップ -->
+                    <div style="background: linear-gradient(135deg, #fff9e6 0%, #ffe5b4 100%); border: 4px solid #ffa726; border-radius: 16px; padding: 24px; margin: 24px 0; box-shadow: 0 6px 16px rgba(255,167,38,0.3);">
+                        <div style="font-size: 20px; font-weight: 700; color: #e65100; margin-bottom: 20px; text-align: center;">
+                            📱 LINEでこの3つだけ
+                        </div>
+                        
+                        <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 12px; border: 3px solid #4CAF50;">
+                            <div style="font-size: 36px; font-weight: 700; color: #4CAF50; margin-bottom: 8px; text-align: center;">①</div>
+                            <div style="font-size: 18px; color: #333; text-align: center; font-weight: 700;">
+                                メッセージ欄を<br>
+                                <span style="font-size: 24px; color: #e53935;">👆 長押し（1秒）</span>
+                            </div>
+                        </div>
+                        
+                        <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 12px; border: 3px solid #FF9800;">
+                            <div style="font-size: 36px; font-weight: 700; color: #FF9800; margin-bottom: 8px; text-align: center;">②</div>
+                            <div style="font-size: 18px; color: #333; text-align: center; font-weight: 700;">
+                                <span style="font-size: 24px; color: #e53935;">📋 貼り付け</span><br>
+                                をタップ
+                            </div>
+                        </div>
+                        
+                        <div style="background: white; padding: 20px; border-radius: 12px; border: 3px solid #2196F3;">
+                            <div style="font-size: 36px; font-weight: 700; color: #2196F3; margin-bottom: 8px; text-align: center;">③</div>
+                            <div style="font-size: 18px; color: #333; text-align: center; font-weight: 700;">
+                                <span style="font-size: 24px; color: #e53935;">📨 送信</span><br>
+                                ボタンをタップ
+                            </div>
+                        </div>
+                        
+                        <div style="background: #e8f5e9; padding: 12px; border-radius: 8px; margin-top: 16px; text-align: center;">
+                            <div style="font-size: 14px; color: #2e7d32; font-weight: 600;">
+                                ✅ これで申込完了です！
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <style>
+                        @keyframes bounce {
+                            0%, 100% { transform: translateY(0); }
+                            50% { transform: translateY(-15px); }
+                        }
+                    </style>
                     
                     <!-- 大きな3ステップガイド -->
                     <div style="background: linear-gradient(135deg, #fff9e6 0%, #ffe5b4 100%); border: 3px solid #ffa726; border-radius: 16px; padding: 24px; margin: 24px 0; box-shadow: 0 6px 16px rgba(255,167,38,0.2);">
@@ -1381,12 +1438,24 @@
                             </div>
                         </div>
                         
-                        <div style="background: white; padding: 16px; border-radius: 12px; margin-bottom: 16px; border-left: 5px solid #ffa726;">
-                            <div style="font-size: 24px; font-weight: 700; color: #ffa726; margin-bottom: 8px;">STEP 2</div>
-                            <div style="font-size: 15px; color: #333; line-height: 1.6;">
-                                メッセージ入力欄を<strong>長押し</strong><br>
-                                →「貼り付け」を選択<br>
-                                → 申込内容が自動入力されます
+                        <div style="background: linear-gradient(135deg, #fff9e6 0%, #fff 100%); padding: 20px; border-radius: 12px; margin-bottom: 16px; border: 4px solid #ffa726; box-shadow: 0 4px 12px rgba(255,167,38,0.4);">
+                            <div style="font-size: 28px; font-weight: 700; color: #e65100; margin-bottom: 12px; text-align: center;">STEP 2 👈 ここが重要！</div>
+                            <div style="background: white; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                                <div style="font-size: 17px; color: #333; line-height: 2; font-weight: 600;">
+                                    ① メッセージ入力欄を<br>
+                                    <span style="font-size: 24px; color: #e53935;">👆 長押し（1秒）</span>
+                                </div>
+                            </div>
+                            <div style="background: white; padding: 16px; border-radius: 8px;">
+                                <div style="font-size: 17px; color: #333; line-height: 2; font-weight: 600;">
+                                    ② 表示されたメニューから<br>
+                                    <span style="font-size: 24px; color: #e53935;">「📋 貼り付け」</span>をタップ
+                                </div>
+                            </div>
+                            <div style="margin-top: 12px; padding: 12px; background: #e8f5e9; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 14px; color: #2e7d32; font-weight: 600;">
+                                    ✅ 申込内容が自動で入力されます
+                                </div>
                             </div>
                         </div>
                         
@@ -1397,17 +1466,17 @@
                                 <strong style="color: #e53935; font-size: 17px;">「送信」ボタン</strong>をタップ！
                             </div>
                         </div>
-                    </div>
                     
-                    <div style="background: #e3f2fd; padding: 16px; border-radius: 8px; margin: 20px 0; border: 2px solid #42a5f5; text-align: center;">
-                        <div style="font-size: 14px; color: #1976d2; line-height: 1.6; font-weight: 600;">
-                            💡 LINEが開かない場合は<br>下のボタンをタップしてください
-                        </div>
-                    </div>
-                    
-                    <button class="btn btn-line" onclick="copyAndOpenLine()" style="margin-top: 0; font-size: 18px; padding: 18px;">
-                        📱 LINEを開く
+                    <button class="btn btn-line" onclick="copyAndOpenLine()" style="margin-top: 0; font-size: 20px; padding: 20px; box-shadow: 0 6px 20px rgba(6,199,85,0.4); animation: pulse-button 2s infinite;">
+                        👉 LINEを開く 👈
                     </button>
+                    
+                    <style>
+                        @keyframes pulse-button {
+                            0%, 100% { transform: scale(1); }
+                            50% { transform: scale(1.05); }
+                        }
+                    </style>
                     
                     <!-- 申込内容保存ボタン -->
                     <div style="margin-top: 24px; padding-top: 24px; border-top: 2px dashed #e0e0e0;">
@@ -2314,6 +2383,109 @@
             setTimeout(() => {
                 toast.style.display = 'none';
             }, 3000);
+        }
+        
+        // PDFとして保存
+        async function downloadAsPDF() {
+            try {
+                showToast('📄 PDF生成中...');
+                
+                const content = document.getElementById('confirmationContent');
+                
+                // html2canvasでHTMLをキャプチャ
+                const canvas = await html2canvas(content, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+                
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                const imgWidth = 210; // A4サイズ（mm）
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                // jsPDFでPDF生成
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                let position = 0;
+                const pageHeight = 297; // A4の高さ（mm）
+                
+                if (imgHeight > pageHeight) {
+                    // 複数ページに分割
+                    let heightLeft = imgHeight;
+                    
+                    while (heightLeft > 0) {
+                        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+                        
+                        if (heightLeft > 0) {
+                            pdf.addPage();
+                            position = -pageHeight;
+                        }
+                    }
+                } else {
+                    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                }
+                
+                // ファイル名生成
+                const fileName = generateFileName('pdf');
+                pdf.save(fileName);
+                
+                showToast('✅ PDFを保存しました');
+            } catch (error) {
+                console.error('PDF生成エラー:', error);
+                showToast('❌ PDF生成に失敗しました');
+            }
+        }
+        
+        // JPGとして保存
+        async function downloadAsJPG() {
+            try {
+                showToast('🖼️ 画像生成中...');
+                
+                const content = document.getElementById('confirmationContent');
+                
+                // html2canvasでHTMLをキャプチャ
+                const canvas = await html2canvas(content, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+                
+                // Canvasを画像に変換
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = generateFileName('jpg');
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    showToast('✅ 画像を保存しました');
+                }, 'image/jpeg', 1.0);
+                
+            } catch (error) {
+                console.error('画像生成エラー:', error);
+                showToast('❌ 画像生成に失敗しました');
+            }
+        }
+        
+        // ファイル名生成
+        function generateFileName(extension) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            const applicantName = formData.lastName + formData.firstName;
+            
+            return `Aifit入会申込_${applicantName}_${year}${month}${day}_${hours}${minutes}.${extension}`;
         }
 
         // フォームリセット
