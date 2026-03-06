@@ -1,5 +1,21 @@
 <!DOCTYPE html>
 <html lang="ja">
+<!--
+╔═══════════════════════════════════════════════════════════════════════╗
+║  Aifit 入会申込フォーム v4.1.0                                          ║
+║  株式会社シンコウ × TOHOレーシング × Aifit                                ║
+║                                                                        ║
+║  【運営サイド向け】送信先設定の変更方法:                                    ║
+║  このファイルの約1450行目にある CONFIG 変数を編集してください。              ║
+║                                                                        ║
+║  const CONFIG = {                                                      ║
+║      LINE_ACCOUNT_ID: '',                    // LINE公式アカウントID      ║
+║      DESTINATION_EMAIL: 'support@saiki-sousai.com'  // メール送信先      ║
+║  };                                                                    ║
+║                                                                        ║
+║  更新日: 2026年3月6日                                                   ║
+╚═══════════════════════════════════════════════════════════════════════╝
+-->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -12,13 +28,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     
     <!-- PDF生成ライブラリ -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
-    <!-- 
-    【メール送信先】
-    support@saiki-sousai.com
-    -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     
     <style>
         * {
@@ -50,7 +61,7 @@
 
         .header-logos-row {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             width: 100%;
             max-width: 480px;
@@ -69,18 +80,7 @@
             border-radius: 4px;
         }
 
-        .header-logo-right {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
 
-        .header-logo-right img {
-            height: 26px;
-            background: white;
-            padding: 3px 6px;
-            border-radius: 4px;
-        }
 
         .header-title {
             text-align: center;
@@ -773,9 +773,6 @@
                 <img src="images/shinkou-logo.png" alt="SHINKOU">
                 <img src="images/toho-racing-logo.png" alt="TOHO Racing">
             </div>
-            <div class="header-logo-right">
-                <img src="images/aifitlogo.png" alt="Aifit">
-            </div>
         </div>
         <div class="header-title">
             <span class="header-title-main">株式会社シンコウプレゼンツ</span>
@@ -1440,7 +1437,7 @@
                 © Aifit | 東広島・呉エリア 終活・葬儀サポート
             </div>
             <div style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 12px;">
-                お問い合わせ：support@saiki-sousai.com
+                <span id="footer-contact-email">お問い合わせ：support@saiki-sousai.com</span>
             </div>
         </div>
     </div>
@@ -1448,6 +1445,15 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        // =====================================
+        // 【運営サイド設定】送信先の変数化
+        // =====================================
+        const CONFIG = {
+            LINE_ACCOUNT_ID: '', // LINE公式アカウントID（将来LINE送信を追加する場合に使用）
+            DESTINATION_EMAIL: 'support@saiki-sousai.com' // 申込送信先メールアドレス
+        };
+        // =====================================
+
         let currentStep = 1;
         let formData = {};
         let familyMembers = []; // 家族メンバーリスト
@@ -1461,7 +1467,16 @@
             loadSavedData(); // 保存データの復元
             setupAutoSave(); // 自動保存の設定
             renderFamilyList(); // 家族リストの初期表示
+            updateFooterEmail(); // フッターのメールアドレス表示を更新
         });
+        
+        // フッターのメールアドレスを設定値から動的に表示
+        function updateFooterEmail() {
+            const footerEmailElement = document.getElementById('footer-contact-email');
+            if (footerEmailElement) {
+                footerEmailElement.textContent = `お問い合わせ：${CONFIG.DESTINATION_EMAIL}`;
+            }
+        }
         
         // 資料送付先の表示/非表示
         function toggleMailingAddress() {
@@ -2223,8 +2238,8 @@
             const subject = encodeURIComponent('【Aifit】入会申し込み');
             const body = encodeURIComponent(message);
             
-            // Aifitのメールアドレス
-            const toEmail = 'support@saiki-sousai.com';
+            // Aifitのメールアドレス（CONFIG変数から取得）
+            const toEmail = CONFIG.DESTINATION_EMAIL;
             
             // mailtoリンクを生成
             const mailtoLink = `mailto:${toEmail}?subject=${subject}&body=${body}`;
@@ -2284,42 +2299,60 @@
                     return;
                 }
                 
+                // ライブラリの読み込み確認
+                if (typeof html2canvas === 'undefined') {
+                    showToast('❌ html2canvasライブラリが読み込まれていません');
+                    console.error('html2canvas is not loaded');
+                    return;
+                }
+                
+                if (typeof window.jspdf === 'undefined') {
+                    showToast('❌ jsPDFライブラリが読み込まれていません');
+                    console.error('jsPDF is not loaded');
+                    return;
+                }
+                
+                // 一時的にスクロール位置を保存
+                const scrollPos = window.scrollY;
+                
                 // html2canvasでHTMLをキャプチャ
                 const canvas = await html2canvas(content, {
                     scale: 2,
                     useCORS: true,
+                    allowTaint: true,
                     backgroundColor: '#ffffff',
-                    logging: false,
-                    windowWidth: content.scrollWidth,
-                    windowHeight: content.scrollHeight
+                    logging: true,
+                    width: content.offsetWidth,
+                    height: content.offsetHeight,
+                    scrollX: 0,
+                    scrollY: 0
                 });
                 
-                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                // スクロール位置を復元
+                window.scrollTo(0, scrollPos);
+                
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
                 const imgWidth = 210; // A4サイズ（mm）
+                const pageHeight = 297; // A4の高さ（mm）
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
                 
                 // jsPDFでPDF生成
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 
+                let heightLeft = imgHeight;
                 let position = 0;
-                const pageHeight = 297; // A4の高さ（mm）
                 
-                if (imgHeight > pageHeight) {
-                    // 複数ページに分割
-                    let heightLeft = imgHeight;
-                    
-                    while (heightLeft > 0) {
-                        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                        heightLeft -= pageHeight;
-                        
-                        if (heightLeft > 0) {
-                            pdf.addPage();
-                            position = -pageHeight;
-                        }
-                    }
-                } else {
-                    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                // 最初のページ
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                
+                // 複数ページが必要な場合
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
                 }
                 
                 // ファイル名生成
@@ -2329,7 +2362,7 @@
                 showToast('✅ PDFを保存しました');
             } catch (error) {
                 console.error('PDF生成エラー:', error);
-                showToast('❌ PDF生成に失敗しました: ' + error.message);
+                showToast('❌ PDF生成に失敗: ' + error.message);
             }
         }
         
@@ -2346,15 +2379,31 @@
                     return;
                 }
                 
+                // ライブラリの読み込み確認
+                if (typeof html2canvas === 'undefined') {
+                    showToast('❌ html2canvasライブラリが読み込まれていません');
+                    console.error('html2canvas is not loaded');
+                    return;
+                }
+                
+                // 一時的にスクロール位置を保存
+                const scrollPos = window.scrollY;
+                
                 // html2canvasでHTMLをキャプチャ
                 const canvas = await html2canvas(content, {
                     scale: 2,
                     useCORS: true,
+                    allowTaint: true,
                     backgroundColor: '#ffffff',
-                    logging: false,
-                    windowWidth: content.scrollWidth,
-                    windowHeight: content.scrollHeight
+                    logging: true,
+                    width: content.offsetWidth,
+                    height: content.offsetHeight,
+                    scrollX: 0,
+                    scrollY: 0
                 });
+                
+                // スクロール位置を復元
+                window.scrollTo(0, scrollPos);
                 
                 // Canvasを画像に変換
                 canvas.toBlob(function(blob) {
@@ -2367,17 +2416,22 @@
                     const a = document.createElement('a');
                     a.href = url;
                     a.download = generateFileName('jpg');
+                    a.style.display = 'none';
                     document.body.appendChild(a);
                     a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
+                    
+                    // クリーンアップ
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 100);
                     
                     showToast('✅ 画像を保存しました');
-                }, 'image/jpeg', 1.0);
+                }, 'image/jpeg', 0.95);
                 
             } catch (error) {
                 console.error('画像生成エラー:', error);
-                showToast('❌ 画像生成に失敗しました: ' + error.message);
+                showToast('❌ 画像生成に失敗: ' + error.message);
             }
         }
         
