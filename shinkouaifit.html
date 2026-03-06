@@ -2297,17 +2297,9 @@
                 // 確認画面の内容を取得
                 let content = document.getElementById('confirmationContent');
                 
-                // STEP 6（成功画面）の場合は、STEP 5に一時的に戻って保存
-                if (!content || content.offsetParent === null) {
-                    // 確認画面を一時的に表示して保存
-                    const step5 = document.querySelector('.step-content[data-step="5"]');
-                    if (step5) {
-                        content = step5.querySelector('#confirmationContent');
-                    }
-                }
-                
                 if (!content) {
                     showToast('❌ 保存する内容が見つかりません');
+                    console.error('confirmationContent element not found');
                     return;
                 }
                 
@@ -2327,16 +2319,29 @@
                 // 一時的にスクロール位置を保存
                 const scrollPos = window.scrollY;
                 
-                // 非表示の要素を一時的に表示状態にする
-                const parentContent = content.closest('.step-content');
-                const wasHidden = parentContent && !parentContent.classList.contains('active');
+                // STEP 5の親要素を取得して一時的に表示
+                const step5 = document.querySelector('.step-content[data-step="5"]');
+                const wasHidden = step5 && !step5.classList.contains('active');
                 
-                if (wasHidden) {
-                    parentContent.style.display = 'block';
-                    parentContent.style.position = 'absolute';
-                    parentContent.style.left = '-9999px';
-                    parentContent.style.top = '0';
-                    parentContent.style.zIndex = '-1';
+                // 元のスタイルを保存
+                const originalDisplay = step5 ? step5.style.display : '';
+                const originalPosition = step5 ? step5.style.position : '';
+                const originalLeft = step5 ? step5.style.left : '';
+                const originalTop = step5 ? step5.style.top : '';
+                const originalZIndex = step5 ? step5.style.zIndex : '';
+                const originalVisibility = step5 ? step5.style.visibility : '';
+                
+                if (wasHidden && step5) {
+                    // 画面外に表示して描画させる
+                    step5.style.display = 'block';
+                    step5.style.position = 'absolute';
+                    step5.style.left = '-9999px';
+                    step5.style.top = '0';
+                    step5.style.zIndex = '-1';
+                    step5.style.visibility = 'visible';
+                    
+                    // DOMの再描画を待つ
+                    await new Promise(resolve => setTimeout(resolve, 100));
                 }
                 
                 // html2canvasでHTMLをキャプチャ
@@ -2352,12 +2357,13 @@
                 });
                 
                 // 元の状態に戻す
-                if (wasHidden) {
-                    parentContent.style.display = '';
-                    parentContent.style.position = '';
-                    parentContent.style.left = '';
-                    parentContent.style.top = '';
-                    parentContent.style.zIndex = '';
+                if (wasHidden && step5) {
+                    step5.style.display = originalDisplay;
+                    step5.style.position = originalPosition;
+                    step5.style.left = originalLeft;
+                    step5.style.top = originalTop;
+                    step5.style.zIndex = originalZIndex;
+                    step5.style.visibility = originalVisibility;
                 }
                 
                 // スクロール位置を復元
@@ -2406,17 +2412,9 @@
                 // 確認画面の内容を取得
                 let content = document.getElementById('confirmationContent');
                 
-                // STEP 6（成功画面）の場合は、STEP 5に一時的に戻って保存
-                if (!content || content.offsetParent === null) {
-                    // 確認画面を一時的に表示して保存
-                    const step5 = document.querySelector('.step-content[data-step="5"]');
-                    if (step5) {
-                        content = step5.querySelector('#confirmationContent');
-                    }
-                }
-                
                 if (!content) {
                     showToast('❌ 保存する内容が見つかりません');
+                    console.error('confirmationContent element not found');
                     return;
                 }
                 
@@ -2430,16 +2428,29 @@
                 // 一時的にスクロール位置を保存
                 const scrollPos = window.scrollY;
                 
-                // 非表示の要素を一時的に表示状態にする
-                const parentContent = content.closest('.step-content');
-                const wasHidden = parentContent && !parentContent.classList.contains('active');
+                // STEP 5の親要素を取得して一時的に表示
+                const step5 = document.querySelector('.step-content[data-step="5"]');
+                const wasHidden = step5 && !step5.classList.contains('active');
                 
-                if (wasHidden) {
-                    parentContent.style.display = 'block';
-                    parentContent.style.position = 'absolute';
-                    parentContent.style.left = '-9999px';
-                    parentContent.style.top = '0';
-                    parentContent.style.zIndex = '-1';
+                // 元のスタイルを保存
+                const originalDisplay = step5 ? step5.style.display : '';
+                const originalPosition = step5 ? step5.style.position : '';
+                const originalLeft = step5 ? step5.style.left : '';
+                const originalTop = step5 ? step5.style.top : '';
+                const originalZIndex = step5 ? step5.style.zIndex : '';
+                const originalVisibility = step5 ? step5.style.visibility : '';
+                
+                if (wasHidden && step5) {
+                    // 画面外に表示して描画させる
+                    step5.style.display = 'block';
+                    step5.style.position = 'absolute';
+                    step5.style.left = '-9999px';
+                    step5.style.top = '0';
+                    step5.style.zIndex = '-1';
+                    step5.style.visibility = 'visible';
+                    
+                    // DOMの再描画を待つ
+                    await new Promise(resolve => setTimeout(resolve, 100));
                 }
                 
                 // html2canvasでHTMLをキャプチャ
@@ -2455,12 +2466,13 @@
                 });
                 
                 // 元の状態に戻す
-                if (wasHidden) {
-                    parentContent.style.display = '';
-                    parentContent.style.position = '';
-                    parentContent.style.left = '';
-                    parentContent.style.top = '';
-                    parentContent.style.zIndex = '';
+                if (wasHidden && step5) {
+                    step5.style.display = originalDisplay;
+                    step5.style.position = originalPosition;
+                    step5.style.left = originalLeft;
+                    step5.style.top = originalTop;
+                    step5.style.zIndex = originalZIndex;
+                    step5.style.visibility = originalVisibility;
                 }
                 
                 // スクロール位置を復元
